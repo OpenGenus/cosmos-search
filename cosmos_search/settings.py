@@ -25,7 +25,7 @@ SECRET_KEY = 'groe@_2fh_a68s=kbjdb1$zy3jut%2%*)cg^ji0qq_*&a*d-r_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cosmos-search.herokuapp.com', 'localhost']
 
 
 # Application definition
