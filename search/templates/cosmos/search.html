@@ -1,0 +1,22 @@
+{% extends 'cosmos/header.html' %} {% block body %}
+<h6>Showing results for: <span style="color: #5D337F;">{{ query }}</span></h6>
+<hr> {% for entry in result %}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+        {% for i in entry.dirs %}
+         {{ i }} /
+         {% endfor %}
+    </h4>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Solutions
+      </button>
+            <div class="dropdown-menu" aria-labelledby="soln">
+                {% for file in entry.files %}
+                <a href="https://github.com/OpenGenus/cosmos/blob/master/{{entry.path}}/{{file}}" target="_blank" class="dropdown-item">{{file}}</a> {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<br> {% endfor %} {% endblock %}
