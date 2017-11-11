@@ -6,6 +6,25 @@ import json
 def index(request):
     return render(request, 'cosmos/index.html')
 
+
+# Handlers for error pages
+def error400(request):
+    return render(request, 'cosmos/error/HTTP400.html')
+
+
+def error403(request):
+    return render(request, 'cosmos/error/HTTP403.html')
+
+
+def error404(request):
+    return render(request, 'cosmos/error/HTTP404.html')
+
+
+def error500(request):
+    return render(request, 'cosmos/error/HTTP500.html')
+
+
+# Search query
 def query(request):
     query = request.GET['q']
     q = query.replace(' ', '_')
@@ -19,8 +38,9 @@ def query(request):
         if subsq(a, b, len(a), len(b)):
             path = k
             k = k.split('/')[1:]
-            ans.append({'path' : path , 'dirs': k , 'files' : v })
-    return render(request, 'cosmos/search.html', {'result': ans , 'query': query })
+            ans.append({'path': path, 'dirs': k, 'files': v})
+    return render(request, 'cosmos/search.html', {'result': ans, 'query': query})
+
 
 # search strategy
 def subsq(a, b, m, n):
@@ -28,7 +48,7 @@ def subsq(a, b, m, n):
     if m == 0:    return True
     if n == 0:    return False
     # If last characters of two strings are matching
-    if a[m-1] == b[n-1]:
-        return subsq(a, b, m-1, n-1)
+    if a[m - 1] == b[n - 1]:
+        return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
-    return subsq(a, b, m, n-1)
+    return subsq(a, b, m, n - 1)
