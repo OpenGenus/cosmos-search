@@ -39,7 +39,9 @@ def query(request):
             path = k
             k = k.split('/')[1:]
             ans.append({'path': path, 'dirs': k, 'files': v})
-    return render(request, 'cosmos/search.html', {'result': ans, 'query': query})
+    if (ans == []):
+        return render(request, 'cosmos/notfound.html', {'query': query})
+    return render(request, 'cosmos/searchresults.html', {'result': ans, 'query': query})
 
 
 # search strategy
