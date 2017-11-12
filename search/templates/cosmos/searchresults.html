@@ -1,10 +1,10 @@
 {% extends 'cosmos/header.html' %} {% block body %}
-<h6>Showing results for: <span style="color: #5D337F;">{{ query }}</span></h6>
+<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span></h6>
 <hr> {% for entry in result %}
 <div class="card">
     <div class="card-body">
         <h4 class="card-title">
-        {% for i in entry.dirs %}
+         {% for i in entry.dirs %}
          {{ i }} /
          {% endfor %}
     </h4>

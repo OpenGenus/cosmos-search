@@ -41,7 +41,7 @@ def query(request):
             ans.append({'path': path, 'dirs': k, 'files': v})
     if (ans == []):
         return render(request, 'cosmos/notfound.html', {'query': query})
-    return render(request, 'cosmos/searchresults.html', {'result': ans, 'query': query})
+    return render(request, 'cosmos/searchresults.html', {'amount': len(ans), 'result': ans, 'query': query})
 
 
 # search strategy
