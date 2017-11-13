@@ -7,3 +7,6 @@ install:
 # django environment
 env:
   - DJANGO_VERSION=1.11.7
+
+script:
+  - python3 manage.py --noinput
