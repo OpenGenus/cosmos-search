@@ -23,6 +23,7 @@ from search import views
 
 urlpatterns = [
     url(r'^', include('search.urls')),
+    url(r'^update/', include('update.urls')),
     url(r'^admin/', admin.site.urls),
 ]
 

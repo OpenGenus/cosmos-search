@@ -25,11 +25,21 @@ SECRET_KEY = 'groe@_2fh_a68s=kbjdb1$zy3jut%2%*)cg^ji0qq_*&a*d-r_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['search.opengenus.org', 'localhost']
+ALLOWED_HOSTS = ['search.opengenus.org', 'localhost', 'd08287bb.ngrok.io']
+
+# OpenGenus specific
+GITHUB_WEBHOOK_SECRET = b'b8049cbcf55b2ee998c9be302220064757421f85'
+
+COSMOS_LINK = 'https://github.com/OpenGenus/cosmos.git'
+
+COSMOS_PATH = 'cosmos/code/'
+
+METADATA_JSON = 'metadata.json'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'update.apps.UpdateConfig',
     'search.apps.SearchConfig',
     'django.contrib.admin',
     'django.contrib.auth',
