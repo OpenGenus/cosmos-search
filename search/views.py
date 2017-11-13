@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.conf import settings
 import json
 
 
@@ -28,16 +29,14 @@ def error500(request):
 def query(request):
     query = request.GET['q']
     q = query.replace(' ', '_')
-    fo = open('metadata.json', 'r')
-    s = fo.readline()
-    data = json.loads(s)
+    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     for (k, v) in data.items():
         a = q.lower()
         b = k.lower()
         if subsq(a, b, len(a), len(b)):
             path = k
-            k = k.split('/')[1:]
+            k = k.split('/')
             ans.append({'path': path, 'dirs': k, 'files': v})
     if (ans == []):
         return render(request, 'cosmos/notfound.html', {'query': query})
