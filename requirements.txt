@@ -9,3 +9,4 @@ pytz==2017.3
 requests==2.18.4
 smmap2==2.0.3
 urllib3==1.22
+pep8==1.7.1
