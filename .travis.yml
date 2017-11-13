@@ -1,5 +1,9 @@
 language: python
 python:
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
   - "3.6"
 # command to install dependencies
 install:
@@ -7,6 +11,6 @@ install:
 # django environment
 env:
   - DJANGO_VERSION=1.11.7
-
+# script
 script:
-  - python3 manage.py --noinput
+  - python3 manage.py test
