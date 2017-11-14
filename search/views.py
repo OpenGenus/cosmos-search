@@ -32,18 +32,19 @@ def query(request):
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     for (k, v) in data.items():
-        filtered_v = v
-        for f in v:
-            if (f.split('.')[-1] == 'md'):
-                filtered_v.remove(f)
-        a = q.lower()
-        b = k.lower()
-        if subsq(a, b, len(a), len(b)):
-            if(filtered_v != []):
+        filtered_v = []
+        try:
+            for f in v:
+                if f.split('.')[-1] != 'md':
+                    filtered_v.append(f)
+        except TypeError:
+            print('TypeError')
+            if filtered_v:
                 path = k
                 k = k.split('/')
                 ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-    if (ans == []):
+
+    if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
     return render(request, 'cosmos/searchresults.html', {'amount': len(ans), 'result': ans, 'query': query})
 
