@@ -39,6 +39,7 @@ def query(request):
                     filtered_v.append(f)
         except TypeError:
             print('TypeError')
+        if q in k:
             if filtered_v:
                 path = k
                 k = k.split('/')
