@@ -95,3 +95,4 @@ oshc/db.sqlite3
 staticfiles/
 *.sqlite3
 *.pyc
+.idea/
