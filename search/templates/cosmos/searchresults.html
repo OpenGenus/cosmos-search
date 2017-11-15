@@ -1,4 +1,8 @@
-{% extends 'cosmos/header.html' %} {% block body %}
+{% extends 'cosmos/header.html' %}
+{% block head %}
+  <title>{{ query }} | cosmos-search</title>
+{% endblock %}
+{% block body %}
 <h6>Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span></h6>
 <hr> {% for entry in result %}
 <div class="card">

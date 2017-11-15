@@ -32,13 +32,20 @@ def query(request):
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     for (k, v) in data.items():
-        a = q.lower()
-        b = k.lower()
-        if subsq(a, b, len(a), len(b)):
-            path = k
-            k = k.split('/')
-            ans.append({'path': path, 'dirs': k, 'files': v})
-    if (ans == []):
+        filtered_v = []
+        try:
+            for f in v:
+                if f.split('.')[-1] != 'md':
+                    filtered_v.append(f)
+        except TypeError:
+            print('TypeError')
+        if q in k:
+            if filtered_v:
+                path = k
+                k = k.split('/')
+                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+
+    if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
     return render(request, 'cosmos/searchresults.html', {'amount': len(ans), 'result': ans, 'query': query})
 
@@ -46,8 +53,10 @@ def query(request):
 # search strategy
 def subsq(a, b, m, n):
     # Base Cases
-    if m == 0:    return True
-    if n == 0:    return False
+    if m == 0:
+        return True
+    if n == 0:
+        return False
     # If last characters of two strings are matching
     if a[m - 1] == b[n - 1]:
         return subsq(a, b, m - 1, n - 1)
