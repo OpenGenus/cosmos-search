@@ -52,7 +52,13 @@ to install everything required to run this project on heroku as well as on your 
 	```
 	$ python manage.py runserver
 	```
-
+	
+4. View the locally built site
+	```
+	localhost:8000
+	```
+	
+	
 To run the web app in Debug mode set the DEBUG environment variable.
 In Linux, run the `export DEBUG=True` command in the terminal.
 
