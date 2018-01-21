@@ -58,16 +58,18 @@ This project uses a number of open source projects:
 	```
 	$ git clone https://github.com/OpenGenus/cosmos-search.git
  	```
-2.  Install local dependencies
 
-       ```
-        pip install -r requirements.txt
-       ```
-3. Go inside main Django app 
+2. Go inside main Django app 
 
 	```
 	$ cd cosmos-search
 	```
+
+3.  Install local dependencies
+
+       ```
+        pip install -r requirements.txt
+       ```
 
 4. Collectstatic files using
 	```
