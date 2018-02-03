@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.conf import settings
 import json
+import random
+from random import shuffle
 
 
 # Create your views here.
@@ -31,7 +33,8 @@ def query(request):
     q = query.replace(' ', '_')
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
-    for (k, v) in data.items():
+    rec = []
+    for k, v in data.items():
         filtered_v = []
         try:
             for f in v:
@@ -44,11 +47,19 @@ def query(request):
                 path = k
                 k = k.split('/')
                 ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-
+                d = k[len(k)-2] + '/'
+                for i, j in data.items():
+                        if d in i:
+                            if not q in i:
+                                p = i
+                                p = p.split('/')
+                                l = p[len(p)-1]
+                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
+    shuffle(rec)
     return render(request, 'cosmos/searchresults.html',
-                  {'amount': len(ans), 'result': ans, 'query': query})
+                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
 
 
 # search strategy

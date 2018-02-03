@@ -23,4 +23,22 @@
         </div>
     </div>
 </div>
+<br> {% endfor %}
+<h1>Recommended results</h1>
+<hr> {% for j in recommend %}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+         {% for k in j.recdirs %}
+         {{ k }} /
+         {% endfor %}
+       </h4>
+        <form method="get" action="/query/">
+          <div>
+              <button name="q" value="{{ j.last }}">solution
+              </button>
+          </div>
+        </form>
+    </div>
+</div>
 <br> {% endfor %} {% endblock %}
