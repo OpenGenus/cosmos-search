@@ -47,7 +47,10 @@ def query(request):
                 path = k
                 k = k.split('/')
                 ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-                d = k[len(k)-2] + '/'
+                if len(k) == 2:
+                    d = k[len(k)-2] + '/'
+                else:
+                    d = k[len(k)-3] + '/'    
                 for i, j in data.items():
                         if d in i:
                             if not q in i:
