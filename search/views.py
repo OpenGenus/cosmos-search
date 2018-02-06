@@ -64,7 +64,6 @@ def query(request):
     return render(request, 'cosmos/searchresults.html',
                   {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
 
-
 # search strategy
 def subsq(a, b, m, n):
     # Base Cases
