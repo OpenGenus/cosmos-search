@@ -65,28 +65,40 @@ This project uses a number of open source projects:
 	$ cd cosmos-search
 	```
 
-3.  Install local dependencies
+3. Setup a virtual environment
+	
+	`$ virtualenv -m python3 env_name` **OR** `$ python3 -m venv env_name`
+
+
+4. Activate the virtual environment
+	```
+	$ source env_name/bin/activate
+	```
+
+	The virtual environment can be deactivated with the `deactivate` command.
+
+5.  Install local dependencies
 
        ```
         pip install -r requirements.txt
        ```
 
-4. Collectstatic files using
+6. Collectstatic files using
 	```
 	$ python manage.py collectstatic
 	```
 
-5. Migrating files using
+7. Migrating files using
 	```
     $ python manage.py migrate
 	```
 
-6. Run the app
+8. Run the app
 	```
 	$ python manage.py runserver
 	```
 	
-7. View the locally built site
+9. View the locally built site
 	```
 	localhost:8000
 	```
