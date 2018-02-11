@@ -4,10 +4,31 @@ import json
 import random
 from random import shuffle
 
-
 # Create your views here.
+
+# To prefill the searchbar
+def searchbar():
+    jsonFile = open('metadata.json', 'r')
+    data = json.load(jsonFile)
+    r_no = random.randint(1,len(data))
+    key = list(data.keys())
+    # for selecting tag having atleast one file other than README.md
+    while len(data[key[r_no]])==0:
+        r_no =   random.randint(1,len(data))
+        data[key[r_no]].remove('README.md')
+        try:
+            data[key[r_no]].remove('README.md')
+        except:
+            print()
+    algo_tag = key[r_no]
+    algo_tag = algo_tag.split("/")[1]
+    algo_tag = algo_tag.replace("_"," ")
+    return algo_tag
+
+
 def index(request):
-    return render(request, 'cosmos/index.html')
+    algo_tag = searchbar()
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
 
 
 # Handlers for error pages
@@ -50,7 +71,7 @@ def query(request):
                 if len(k) == 2:
                     d = k[len(k)-2] + '/'
                 else:
-                    d = k[len(k)-3] + '/'    
+                    d = k[len(k)-3] + '/'
                 for i, j in data.items():
                         if d in i:
                             if not q in i:
