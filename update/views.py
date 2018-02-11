@@ -13,6 +13,17 @@ def update_metadata(updated_at):
     with open(settings.METADATA_JSON, 'w') as f:
         json.dump(data, f)
 
+def update_tags(updated_at):
+    topics = []
+    data = {'updated_at' : updated_at}
+    for keys in json.load(open(settings.METADATA_JSON)):
+        for topic in keys.split('/'):
+            if topic not in (topics + ['unclassified', 'updated_at']):
+                topics.append(topic)
+    data['tags'] = list(map(lambda v: v.replace('_', ' ').lower(), topics))
+    with open(settings.TAGS_JSON, 'w') as f:
+        json.dump(data, f)
+
 def manage_webhook_event(event, payload):
     """Simple webhook handler that prints the event and payload to the console"""
     if event == 'push':
@@ -28,6 +39,7 @@ def manage_webhook_event(event, payload):
             git.Git().clone(settings.COSMOS_LINK)
             print("Cloning done!")
         update_metadata(updated_at)
+        update_tags(updated_at)
 
 @csrf_exempt
 def github_webhook(request):
