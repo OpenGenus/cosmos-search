@@ -87,4 +87,8 @@ def display(request):
     pre = BeautifulSoup(r.text, 'html.parser')
     print "pre:"
     print pre
-    return render(request, 'cosmos/data.html',{'code':pre.text})
+    file = open("search/templates/cosmos/data.html","w+")
+    file.write(pre.text.encode('utf-8').strip())
+    file.close()
+    print "FUCK"
+    return render(request, 'cosmos/data.html',{})
