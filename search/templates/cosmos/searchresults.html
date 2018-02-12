@@ -20,7 +20,7 @@
                 {% for file in entry.files %}
                 <form method="post" action="/display/">
                   {% csrf_token %}
-                  <button type="submit" name = "path" value = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/{{entry.path}}/{{file}}" target="_blank" class="dropdown-item">{{file}}</button>
+                  <button type="submit" name = "path" value = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/{{entry.path}}{{file}}" target="_blank" class="dropdown-item">{{file}}</button>
                 </form>
                  {% endfor %}
             </div>

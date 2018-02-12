@@ -48,7 +48,12 @@ def query(request):
             if filtered_v:
                 path = k
                 k = k.split('/')
-                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                print path
+                k.insert(len(k)-2, "scr")
+                p = ''
+                for i in range(0,len(k)):
+                    p = p + k[i] + '/'
+                ans.append({'path': p, 'dirs': k, 'files': filtered_v})
                 if len(k) == 2:
                     d = k[len(k)-2] + '/'
                 else:
@@ -83,7 +88,7 @@ def display(request):
     if request.method == 'POST':
         display = request.POST.get('path')
         print display
-    r = requests.get("https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/artificial_intelligence/src/DBSCAN_Clustering/dbscan.py")
+    r = requests.get(display)
     pre = BeautifulSoup(r.text, 'html.parser')
     print "pre:"
     print pre
