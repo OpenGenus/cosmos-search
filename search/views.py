@@ -3,6 +3,8 @@ from django.conf import settings
 import json
 import random
 from random import shuffle
+from bs4 import BeautifulSoup
+import requests
 
 
 # Create your views here.
@@ -50,7 +52,7 @@ def query(request):
                 if len(k) == 2:
                     d = k[len(k)-2] + '/'
                 else:
-                    d = k[len(k)-3] + '/'    
+                    d = k[len(k)-3] + '/'
                 for i, j in data.items():
                         if d in i:
                             if not q in i:
@@ -76,3 +78,13 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+def display(request):
+    if request.method == 'POST':
+        display = request.POST.get('path')
+        print display
+    r = requests.get("https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/artificial_intelligence/src/DBSCAN_Clustering/dbscan.py")
+    pre = BeautifulSoup(r.text, 'html.parser')
+    print "pre:"
+    print pre
+    return render(request, 'cosmos/data.html',{'code':pre.text})
