@@ -18,9 +18,10 @@ def update_tags(updated_at):
     data = {'updated_at' : updated_at}
     for keys in json.load(open(settings.METADATA_JSON)):
         for topic in keys.split('/'):
-            if topic not in (topics + ['unclassified', 'updated_at']):
+            if topic not in (topics + ['unclassified', 'updated_at', 'src', 'test']):
                 topics.append(topic)
-    data['tags'] = list(map(lambda v: v.replace('_', ' ').lower(), topics))
+    data['tags'] = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(),
+                            topics))
     with open(settings.TAGS_JSON, 'w') as f:
         json.dump(data, f)
 
