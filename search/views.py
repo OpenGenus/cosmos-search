@@ -8,21 +8,12 @@ from random import shuffle
 
 # To prefill the searchbar
 def searchbar():
-    jsonFile = open('metadata.json', 'r')
+    jsonFile = open('tags.json', 'r')
     data = json.load(jsonFile)
-    r_no = random.randint(1,len(data))
-    key = list(data.keys())
-    # for selecting tag having atleast one file other than README.md
-    while len(data[key[r_no]])==0:
-        r_no =   random.randint(1,len(data))
-        data[key[r_no]].remove('README.md')
-        try:
-            data[key[r_no]].remove('README.md')
-        except:
-            print()
-    algo_tag = key[r_no]
-    algo_tag = algo_tag.split("/")[1]
-    algo_tag = algo_tag.replace("_"," ")
+    algo_list = data['tags']
+    print(algo_list[0])
+    r_no = random.randint(0,len(algo_list))
+    algo_tag = algo_list[r_no]
     return algo_tag
 
 
