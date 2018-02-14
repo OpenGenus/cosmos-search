@@ -65,7 +65,6 @@ This project uses a number of open source projects:
 	$ cd cosmos-search
 	```
 
-
 3. Setup a virtual environment
 
 	`$ virtualenv -m python3 env_name` **OR** `$ python3 -m venv env_name`
@@ -80,7 +79,6 @@ This project uses a number of open source projects:
 
 5.  Install local dependencies
 
-
        ```
         pip install -r requirements.txt
        ```
@@ -94,6 +92,7 @@ This project uses a number of open source projects:
 	```
 
 8. Migrating files using
+
 	```
     $ python manage.py migrate
 	```
@@ -104,6 +103,7 @@ This project uses a number of open source projects:
 	```
 
 10. View the locally built site
+
 	```
 	localhost:8000
 	```
