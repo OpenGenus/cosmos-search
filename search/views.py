@@ -4,10 +4,21 @@ import json
 import random
 from random import shuffle
 
+# Create your views here
 
-# Create your views here.
+# To prefill the searchbar
+def searchbar():
+    jsonFile = open('tags.json', 'r')
+    data = json.load(jsonFile)
+    algo_list = data['tags']
+    r_no = random.randint(0,len(algo_list))
+    algo_tag = algo_list[r_no]
+    return algo_tag
+
+
 def index(request):
-    return render(request, 'cosmos/index.html')
+    algo_tag = searchbar()
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
 
 
 # Handlers for error pages
@@ -50,7 +61,7 @@ def query(request):
                 if len(k) == 2:
                     d = k[len(k)-2] + '/'
                 else:
-                    d = k[len(k)-3] + '/'    
+                    d = k[len(k)-3] + '/'
                 for i, j in data.items():
                         if d in i:
                             if not q in i:
