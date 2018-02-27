@@ -90,7 +90,7 @@ def query(request):
         
         for q in combs:
             # We do not want /test/ in the results if the user types in "test" in the searchbox
-            if q in k and "test" not in k.split("/"):
+            if q in k:
                 if filtered_v:
                     path = k
                     k = k.split('/')
