@@ -89,7 +89,8 @@ def query(request):
             print('TypeError')
         
         for q in combs:
-            if q in k:
+            # We do not want /test/ in the results if the user types in "test" in the searchbox
+            if q in k and "test" not in k.split("/"):
                 if filtered_v:
                     path = k
                     k = k.split('/')
