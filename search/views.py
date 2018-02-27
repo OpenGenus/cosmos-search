@@ -93,6 +93,7 @@ def query(request):
         except TypeError:
             print('TypeError')
         if q in k and "test" not in k.split("/"):
+        if q in folder and "test" not in folder.split("/"):
             if filtered_v:
                 path = folder
                 folder = folder.split('/')
