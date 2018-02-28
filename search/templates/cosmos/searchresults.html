@@ -3,7 +3,18 @@
   <title>"{{ query }}" | cosmos-search</title>
 {% endblock %}
 {% block body %}
-<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>
+
+
+
+{% if amount|add:"0" == 1%}
+	<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>
+{%else%}
+	<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>
+{% endif %}
+    
+    
+    
+
 <span>
     <a href="#" style="color: #1b1e21"><div data-network="twitter" class="st-custom-button fa fa-twitter-square"></div></a>
     <a href="#" style="color: #1b1e21"><div data-network="facebook" class="st-custom-button fa fa-facebook-square"></div></a>
