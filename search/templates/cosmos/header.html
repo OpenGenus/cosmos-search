@@ -1,5 +1,5 @@
-{% load static %}
 <!doctype html>
+{% load static %}
 <html lang="en">
 
 <head>
@@ -55,7 +55,7 @@
                 <a class="navbar-brand" href="/">cosmos-search</a>
             </div>
             <div class="col-sm-4">
-                <form class="form-inline justify-content-center" action="/query/" method="GET">
+                <form class="form-inline justify-content-center" id="formq" action="/query/" method="GET">
                     <div class="input-group">
                         <input class="form-control text-center" id = "search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
                     </div>
@@ -86,6 +86,9 @@
                 $("#search").autocomplete({
                     source: "/",
                     minLength: 1,
+                    select : function (e, ui) {
+                        $("#formq").submit()
+                    }
                 });
             });
         </script>
