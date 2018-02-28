@@ -30,7 +30,6 @@ def searchbar():
 
 def index(request):
     algo_tag,tabbed_algos = searchbar()
-    print(tabbed_algos)
     return render(request,'cosmos/index.html',{'algo_name':algo_tag,'tabbed_algos':tabbed_algos[5:],'tabbed_algos_shortlist':tabbed_algos[:5]})
 
 
