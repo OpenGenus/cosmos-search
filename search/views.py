@@ -13,12 +13,28 @@ def searchbar():
     algo_list = data['tags']
     r_no = random.randint(0,len(algo_list))
     algo_tag = algo_list[r_no]
-    return algo_tag
+
+    tabbed_algos=set()
+
+    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+    for k,v in data.items():
+        if k!="updated_at":
+            ans=k.split("/")[0].title().split("_")
+            ans2=' '.join(ans)
+            tabbed_algos.add(ans2)
+
+    tabbed_algos_list=list(tabbed_algos)
+    tabbed_algos_list.sort()
+    return algo_tag,list(tabbed_algos_list)
 
 
 def index(request):
-    algo_tag = searchbar()
-    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
+    algo_tag,tabbed_algos = searchbar()
+    print(tabbed_algos)
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag,'tabbed_algos':tabbed_algos[5:],'tabbed_algos_shortlist':tabbed_algos[:5]})
+
+
+
 
 
 # Handlers for error pages
