@@ -1,11 +1,17 @@
-import json, hashlib, hmac, http.client, json, git, os
-from django.shortcuts import render
+import json
+import hashlib
+import hmac
+import http.client
+import git
+import os
+
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 
+
 def update_metadata(updated_at):
-    data = {'updated_at' : updated_at}
+    data = {'updated_at': updated_at}
     for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_PATH):
         if dirnames == []:
             dirpath = '/'.join(dirpath.split('/')[2:])
@@ -13,20 +19,23 @@ def update_metadata(updated_at):
     with open(settings.METADATA_JSON, 'w') as f:
         json.dump(data, f)
 
+
 def update_tags(updated_at):
     topics = []
-    data = {'updated_at' : updated_at}
+    data = {'updated_at': updated_at}
     for keys in json.load(open(settings.METADATA_JSON)):
         for topic in keys.split('/'):
-            if topic not in (topics + ['unclassified', 'updated_at', 'src', 'test']):
+            if topic not in (topics + ['unclassified', 'src', 'updated_at', 'test']):
                 topics.append(topic)
-    data['tags'] = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(),
-                            topics))
+    data['tags'] = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(), topics))
     with open(settings.TAGS_JSON, 'w') as f:
         json.dump(data, f)
 
+
 def manage_webhook_event(event, payload):
+
     """Simple webhook handler that prints the event and payload to the console"""
+
     if event == 'push':
         updated_at = payload['repository']['pushed_at']
         try:
@@ -41,6 +50,7 @@ def manage_webhook_event(event, payload):
             print("Cloning done!")
         update_metadata(updated_at)
         update_tags(updated_at)
+
 
 @csrf_exempt
 def github_webhook(request):
