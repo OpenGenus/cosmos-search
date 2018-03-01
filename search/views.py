@@ -1,15 +1,17 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 import json
 import random
 from random import shuffle
 
+
 # Create your views here
 
 
 # To prefill the searchbar
 def searchbar():
-    jsonFile = open('tags.json', 'r')
+    jsonFile = open(settings.TAGS_JSON, 'r')
     data = json.load(jsonFile)
     algo_list = data['tags']
     r_no = random.randint(0, len(algo_list))
@@ -17,8 +19,40 @@ def searchbar():
     return algo_tag
 
 
+def searchSuggestion(request):
+    jsonFile = open(settings.TAGS_JSON, 'r')
+    data = json.load(jsonFile)
+    algo_list = list(data['tags'])
+    filterData = []
+    results = []
+    if request.is_ajax():
+        val = request.GET.get('term', '')
+        filterData = []
+        for word in algo_list:
+            if word.startswith(val):
+                filterData.append(word)
+        i = 0
+        for tag in filterData:
+            tag_json = {}
+            tag_json['id'] = filterData.index(tag)
+            tag_json['label'] = tag
+            tag_json['value'] = tag
+            results.append(tag_json)
+            i = i + 1
+            if i >= 6:
+                break
+        searchTag = json.dumps(results)
+    else:
+        searchTag = 'fail'
+    return searchTag
+
+
 def index(request):
     algo_tag = searchbar()
+    algo = searchSuggestion(request)
+    if request.is_ajax():
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
     return render(request, 'cosmos/index.html', {'algo_name': algo_tag})
 
 
@@ -73,8 +107,17 @@ def query(request):
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
     shuffle(rec)
-    return render(request, 'cosmos/searchresults.html',
-                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
+    if request.is_ajax():
+        algo = searchSuggestion(request)
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
+    else:
+        return render(request, 'cosmos/searchresults.html',
+                      {'amount': len(ans),
+                       'result': ans,
+                       'recommend': rec[0:5],
+                       'query': query
+                       })
 
 
 # Search strategy
