@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 ]
 
-handler400 = views.error400
-handler403 = views.error403
-handler404 = views.error404
-handler500 = views.error500
+handler400 = views.error400  # noqa
+handler403 = views.error403  # noqa
+handler404 = views.error404  # noqa
+handler500 = views.error500  # noqa

@@ -1,6 +1,7 @@
 certifi==2017.11.5
 chardet==3.0.4
 Django==1.11.7
+flake8==3.5.0
 gitdb2==2.0.3
 GitPython==2.1.7
 gunicorn==19.7.1
@@ -10,3 +11,4 @@ requests==2.18.4
 smmap2==2.0.3
 urllib3==1.22
 pep8==1.7.1
+python-decouple==3.1

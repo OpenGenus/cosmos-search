@@ -1,13 +1,13 @@
 # Cosmos Search
 
-This is the real-time code search engine for all. We aim to revolutionize the way people interact and search for code. This is evident in our on-going work. Cosmos Search is privacy-focussed as we do not store any data. 
+This is the real-time code search engine for all. We aim to revolutionize the way people interact and search for code. This is evident in our on-going work. Cosmos Search is privacy-focussed as we do not store any data.
 
 Some of our **core beliefs** that drive the development of this search engine:
 
 * Searching is more of a social act.
-* The Divide between programming languages and native languages must be minimized. 
+* The Divide between programming languages and native languages must be minimized.
 * Time spend on searching must be minimized.
-* Time spend on learning, discussing and socializing must be maximized. 
+* Time spend on learning, discussing and socializing must be maximized.
 
 Link: [**search.opengenus.org**](http://search.opengenus.org)
 
@@ -39,9 +39,9 @@ When you contribute, your name with a link (if available) is added to our [**con
 
 You can contribute by writing code, documentation, making Cosmos search friendly and many others. There are endless possibilities.
 
-You might, also, like to take a look at our [Ideas List](https://github.com/OpenGenus/cosmos-search/wiki/Idea-List). You can take up a task from the list or suggest your own. Open a pull request to indicate the work you are doing. 
+You might, also, like to take a look at our [Ideas List](https://github.com/OpenGenus/cosmos-search/wiki/Idea-List). You can take up a task from the list or suggest your own. Open a pull request to indicate the work you are doing.
 
-Feel free to discuss anything with us. 💭 
+Feel free to discuss anything with us. 💭
 
 ### Technologies Used
 
@@ -59,14 +59,14 @@ This project uses a number of open source projects:
 	$ git clone https://github.com/OpenGenus/cosmos-search.git
  	```
 
-2. Go inside main Django app 
+2. Go inside main Django app
 
 	```
 	$ cd cosmos-search
 	```
 
 3. Setup a virtual environment
-	
+
 	`$ virtualenv -m python3 env_name` **OR** `$ python3 -m venv env_name`
 
 
@@ -83,22 +83,27 @@ This project uses a number of open source projects:
         pip install -r requirements.txt
        ```
 
-6. Collectstatic files using
+6. Copy the .env.example file to .env and supply values for the required variables.
+
+7. Collectstatic files using
+
 	```
 	$ python manage.py collectstatic
 	```
 
-7. Migrating files using
+8. Migrating files using
+
 	```
     $ python manage.py migrate
 	```
 
-8. Run the app
+9. Run the app
 	```
 	$ python manage.py runserver
 	```
-	
-9. View the locally built site
+
+10. View the locally built site
+
 	```
 	localhost:8000
 	```

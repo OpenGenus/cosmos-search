@@ -8,12 +8,13 @@ from random import shuffle
 
 # Create your views here
 
+
 # To prefill the searchbar
 def searchbar():
     jsonFile = open(settings.TAGS_JSON, 'r')
     data = json.load(jsonFile)
     algo_list = data['tags']
-    r_no = random.randint(0,len(algo_list))
+    r_no = random.randint(0, len(algo_list))
     algo_tag = algo_list[r_no]
     return algo_tag
 
@@ -53,9 +54,7 @@ def index(request):
     if request.is_ajax():
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
-    else:
-        return render(request,'cosmos/index.html',{'algo_name':algo_tag})
-
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
 
 # Handlers for error pages
 def error400(request):
@@ -95,16 +94,16 @@ def query(request):
                 k = k.split('/')
                 ans.append({'path': path, 'dirs': k, 'files': filtered_v})
                 if len(k) == 2:
-                    d = k[len(k)-2] + '/'
+                    d = k[len(k) - 2] + '/'
                 else:
-                    d = k[len(k)-3] + '/'
+                    d = k[len(k) - 3] + '/'
                 for i, j in data.items():
-                        if d in i:
-                            if not q in i:
-                                p = i
-                                p = p.split('/')
-                                l = p[len(p)-1]
-                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
+                    if d in i:
+                        if q not in i:
+                            p = i
+                            p = p.split('/')
+                            l = p[len(p) - 1]
+                            rec.append({'recpath': i, 'recdirs': p, 'last': l})
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
     shuffle(rec)
@@ -116,7 +115,8 @@ def query(request):
         return render(request, 'cosmos/searchresults.html',
                   {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query })
 
-# search strategy
+
+# Search strategy
 def subsq(a, b, m, n):
     # Base Cases
     if m == 0:
