@@ -80,9 +80,8 @@ def query(request):
     shuffle(rec)
     return render(request, 'cosmos/searchresults.html',
                   {'amount': amount, 'result': ans, 'recommend': rec[0:5],
-                  'query': query, 'algo_name': query,
-                  'amount_is_plural': amount > 1})
-
+                   'query': query.split(' '), 'algo_name': query,
+                   'amount_is_plural': amount > 1})
 
 
 # Search strategy
