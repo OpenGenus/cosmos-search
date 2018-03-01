@@ -3,22 +3,25 @@ from django.conf import settings
 import json
 import random
 from random import shuffle
+import re
+
+COSMOS_SEP = '_'
 
 # Create your views here
 
 
 # To prefill the searchbar
-def searchbar():
+def get_random_tag():
     jsonFile = open('tags.json', 'r')
     data = json.load(jsonFile)
     algo_list = data['tags']
-    r_no = random.randint(0, len(algo_list))
+    r_no = random.randint(0, len(algo_list) - 1)
     algo_tag = algo_list[r_no]
     return algo_tag
 
 
 def index(request):
-    algo_tag = searchbar()
+    algo_tag = get_random_tag()
     return render(request, 'cosmos/index.html', {'algo_name': algo_tag})
 
 
@@ -41,28 +44,30 @@ def error500(request):
 
 # Search query
 def query(request):
-    query = request.GET['q']
-    q = query.replace(' ', '_')
+    query = re.escape(request.GET['q']).replace('\ ', ' ')
+    q = query.replace(' ', COSMOS_SEP)
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     rec = []
-    for k, v in data.items():
+    amount = 0
+    for folder, file in data.items():
         filtered_v = []
         try:
-            for f in v:
+            for f in file:
                 if f.split('.')[-1] != 'md':
                     filtered_v.append(f)
         except TypeError:
             print('TypeError')
-        if q in k:
+        if q in folder:
             if filtered_v:
-                path = k
-                k = k.split('/')
-                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-                if len(k) == 2:
-                    d = k[len(k) - 2] + '/'
+                path = folder
+                folder = folder.split('/')
+                ans.append({'path': path, 'dirs': folder, 'files': filtered_v})
+                amount += len(filtered_v)
+                if len(folder) == 2:
+                    d = folder[len(folder) - 2] + '/'
                 else:
-                    d = k[len(k) - 3] + '/'
+                    d = folder[len(folder) - 3] + '/'
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
@@ -74,7 +79,10 @@ def query(request):
         return render(request, 'cosmos/notfound.html', {'query': query})
     shuffle(rec)
     return render(request, 'cosmos/searchresults.html',
-                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
+                  {'amount': amount, 'result': ans, 'recommend': rec[0:5],
+                  'query': query, 'algo_name': query,
+                  'amount_is_plural': amount > 1})
+
 
 
 # Search strategy
