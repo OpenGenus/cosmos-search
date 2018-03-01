@@ -121,7 +121,7 @@ def query(request):
                       {'amount': amount,
                        'result': ans,
                        'recommend': rec[0:5],
-                       'query': query.split(' '),
+                       'query': query,
                        'algo_name': query,
                        'amount_is_plural': amount > 1})
 
