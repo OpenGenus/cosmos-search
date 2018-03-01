@@ -38,13 +38,12 @@ def searchSuggestion(request):
             tag_json['label'] = tag
             tag_json['value'] = tag
             results.append(tag_json)
-            i = i+1
+            i = i + 1
             if i >= 6:
                 break
         searchTag = json.dumps(results)
     else:
-         searchTag = 'fail'
-    mimetype = 'application/json'
+        searchTag = 'fail'
     return searchTag
 
 
@@ -54,7 +53,8 @@ def index(request):
     if request.is_ajax():
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
-    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
+    return render(request, 'cosmos/index.html', {'algo_name': algo_tag})
+
 
 # Handlers for error pages
 def error400(request):
@@ -113,7 +113,11 @@ def query(request):
         return HttpResponse(algo, mimetype)
     else:
         return render(request, 'cosmos/searchresults.html',
-                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query })
+                      {'amount': len(ans),
+                       'result': ans,
+                       'recommend': rec[0:5],
+                       'query': query
+                       })
 
 
 # Search strategy
