@@ -76,34 +76,14 @@ def query(request):
     return render(request, 'cosmos/searchresults.html',
                   {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
 
-def searchbar1():
-    jsonFile = open('tags.json', 'r')
-    data = json.load(jsonFile)
-    algo_list = data['tags']
-    r_no = random.randint(0,len(algo_list))
-    algo_tag1 = algo_list[r_no]
-    return algo_tag1
+
 
 def index1(request):
     algo_tag1 = searchbar()
     return render(request,'cosmos/index.html',{'testingalgo_name':algo_tag1})
 
 
-# Handlers for error pages
-def error400(request):
-    return render(request, 'cosmos/error/HTTP400.html')
 
-
-def error403(request):
-    return render(request, 'cosmos/error/HTTP403.html')
-
-
-def error404(request):
-    return render(request, 'cosmos/error/HTTP404.html')
-
-
-def error500(request):
-    return render(request, 'cosmos/error/HTTP500.html')
 
 
 # Search query
