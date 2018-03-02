@@ -1,98 +1,158 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
+from django.shortcuts import render
+from django.conf import settings
+import json
+import random
+from random import shuffle
 
-<head>
-    {% block head %}
-    <title>cosmos-search</title>{% endblock %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
-    <style>
-        html {
-            position: relative;
-            min-height: 100%;
-        }
+# Create your views here
 
-        body {
-            font-family: 'Roboto Mono', monospace;
-            margin-bottom: 60px;
-        }
+# To prefill the searchbar
+def searchbar():
+    jsonFile = open('tags.json', 'r')
+    data = json.load(jsonFile)
+    algo_list = data['tags']
+    r_no = random.randint(0,len(algo_list))
+    algo_tag = algo_list[r_no]
+    return algo_tag
 
-        article {
-            display: block;
-            text-align: left;
-            width: 80%;
-            padding-top: 15%;
-            padding-bottom: 15%;
-            margin: 0 auto;
-        }
 
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-            line-height: 60px;
-            background-color: #f5f5f5;
-        }
-        .ui-menu .ui-menu-item a{
-            font-size: 16px !important;
-            line-height: 1.2 !important;
-        }
-    </style>
+def index(request):
+    algo_tag = searchbar()
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
 
-</head>
 
-<body>
-    <div class="container">
-        <br>
-        <div class="row">
-            <div class="col-sm-4">
-                <a class="navbar-brand" href="/">cosmos-search</a>
-            </div>
-            <div class="col-sm-4">
-                <form class="form-inline justify-content-center" id="formq" action="/query/" method="GET">
-                    <div class="input-group">
-                        <input class="form-control text-center" id = "search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
-                    </div>
-                </form>
-            </div>
-            <div class="col-sm-4">
-                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
-                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
-            </div>
-        </div><br>
-        {% block body %} {% endblock %}
-    </div>
-    <footer class="footer">
-        <div class="container">
-              <span class="text-muted">Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></span>
-              <span class="text-muted float-right">Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></span>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a8129cbe45fbb001342fed3&product=custom-share-buttons"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-    {% block javascript %}
-        <script>
-            $(function() {
-                $("#search").autocomplete({
-                    source: "/",
-                    minLength: 1,
-                    select : function (e, ui) {
-                        $("#formq").submit()
-                    }
-                });
-            });
-        </script>
-    {% endblock %}
-</body>
+# Handlers for error pages
+def error400(request):
+    return render(request, 'cosmos/error/HTTP400.html')
 
-</html>
+
+def error403(request):
+    return render(request, 'cosmos/error/HTTP403.html')
+
+
+def error404(request):
+    return render(request, 'cosmos/error/HTTP404.html')
+
+
+def error500(request):
+    return render(request, 'cosmos/error/HTTP500.html')
+
+
+# Search query
+def query(request):
+    query = request.GET['q']
+    q = query.replace(' ', '_')
+    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+    ans = []
+    rec = []
+    for k, v in data.items():
+        filtered_v = []
+        try:
+
+            for f in v:
+                if f.split('.')[-1] != 'md':
+                    filtered_v.append(f)
+        except TypeError:
+            print('TypeError')
+        if q in k and "test" not in k.split("/"):
+            if filtered_v:
+                path = k
+                k = k.split('/')
+                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                if len(k) == 2:
+                    d = k[len(k)-2] + '/'
+                else:
+                    d = k[len(k)-3] + '/'
+                for i, j in data.items():
+                        if d in i:
+                            if not q in i:
+                                p = i
+                                p = p.split('/')
+                                l = p[len(p)-1]
+                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
+    if not ans:
+        return render(request, 'cosmos/notfound.html', {'query': query})
+    shuffle(rec)
+    return render(request, 'cosmos/searchresults.html',
+                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
+
+def searchbar1():
+    jsonFile = open('tags.json', 'r')
+    data = json.load(jsonFile)
+    algo_list = data['tags']
+    r_no = random.randint(0,len(algo_list))
+    algo_tag1 = algo_list[r_no]
+    return algo_tag1
+
+def index1(request):
+    algo_tag1 = searchbar()
+    return render(request,'cosmos/index.html',{'testingalgo_name':algo_tag1})
+
+
+# Handlers for error pages
+def error400(request):
+    return render(request, 'cosmos/error/HTTP400.html')
+
+
+def error403(request):
+    return render(request, 'cosmos/error/HTTP403.html')
+
+
+def error404(request):
+    return render(request, 'cosmos/error/HTTP404.html')
+
+
+def error500(request):
+    return render(request, 'cosmos/error/HTTP500.html')
+
+
+# Search query
+def query1(request):
+    query1 = request.GET['q1']
+    q1 = query1.replace(' ', '_')
+    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+    ans = []
+    rec = []
+    for k, v in data.items():
+        filtered_v = []
+        try:
+            for f in v:
+                if f.split('.')[-1] != 'md':
+                    filtered_v.append(f)
+        except TypeError:
+            print('TypeError')
+        if q1 in k  and "test" in k.split("/"):
+            if filtered_v:
+                path = k
+                k = k.split('/')
+                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                if len(k) == 2:
+                    d = k[len(k)-2] + '/'
+                else:
+                    d = k[len(k)-3] + '/'
+                for i, j in data.items():
+                        if d in i:
+                            if not q1 in i:
+                                p = i
+                                p = p.split('/')
+                                l = p[len(p)-1]
+                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
+    if not ans:
+        return render(request, 'cosmos/notfound.html', {'query1': query1})
+    shuffle(rec)
+    return render(request, 'cosmos/searchresults.html',
+                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query1': query1})
+
+
+# search strategy
+def subsq(a, b, m, n):
+    # Base Cases
+    if m == 0:
+        return True
+    if n == 0:
+        return False
+    # If last characters of two strings are matching
+    if a[m - 1] == b[n - 1]:
+        return subsq(a, b, m - 1, n - 1)
+    # If last characters are not matching
+    return subsq(a, b, m, n - 1)
