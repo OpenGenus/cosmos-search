@@ -12,8 +12,7 @@ from random import shuffle
 # To prefill the searchbar
 def searchbar():
     jsonFile = open(settings.TAGS_JSON, 'r')
-    data = json.load(jsonFile)
-    algo_list = data['tags']
+    algo_list = json.load(jsonFile)
     r_no = random.randint(0, len(algo_list))
     algo_tag = algo_list[r_no]
     return algo_tag
@@ -21,8 +20,7 @@ def searchbar():
 
 def searchSuggestion(request):
     jsonFile = open(settings.TAGS_JSON, 'r')
-    data = json.load(jsonFile)
-    algo_list = list(data['tags'])
+    algo_list = json.load(jsonFile)
     filterData = []
     results = []
     if request.is_ajax():
@@ -82,12 +80,9 @@ def query(request):
     rec = []
     for k, v in data.items():
         filtered_v = []
-        try:
-            for f in v:
-                if f.split('.')[-1] != 'md':
-                    filtered_v.append(f)
-        except TypeError:
-            print('TypeError')
+        for f in v:
+            if f.split('.')[-1] != 'md':
+                filtered_v.append(f)
         if q in k and "test" not in k.split("/"):
             if filtered_v:
                 path = k

@@ -10,8 +10,8 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 
 
-def update_metadata(updated_at):
-    data = {'updated_at': updated_at}
+def update_metadata():
+    data = {}
     for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_PATH):
         if dirnames == []:
             dirpath = '/'.join(dirpath.split('/')[2:])
@@ -20,14 +20,13 @@ def update_metadata(updated_at):
         json.dump(data, f)
 
 
-def update_tags(updated_at):
+def update_tags():
     topics = []
-    data = {'updated_at': updated_at}
     for keys in json.load(open(settings.METADATA_JSON)):
         for topic in keys.split('/'):
             if topic not in (topics + ['unclassified', 'src', 'updated_at', 'test']):
                 topics.append(topic)
-    data['tags'] = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(), topics))
+    data = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(), topics))
     with open(settings.TAGS_JSON, 'w') as f:
         json.dump(data, f)
 
@@ -48,8 +47,8 @@ def manage_webhook_event(event, payload):
             print("Cloning cosmos!")
             git.Git().clone(settings.COSMOS_LINK)
             print("Cloning done!")
-        update_metadata(updated_at)
-        update_tags(updated_at)
+        update_metadata()
+        update_tags()
 
 
 @csrf_exempt
