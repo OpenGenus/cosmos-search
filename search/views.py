@@ -121,7 +121,8 @@ def query(request):
                       {'amount': amount,
                        'result': ans,
                        'recommend': rec[0:5],
-                       'query': query
+                       'query': query,
+                       'algo_name': query
                        })
 
 
