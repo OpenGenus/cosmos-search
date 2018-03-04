@@ -40,6 +40,8 @@ METADATA_JSON = 'metadata.json'
 
 TAGS_JSON = 'tags.json'
 
+TIMESTAMPS_JSON = 'timestamps.json'
+
 # Application definition
 
 INSTALLED_APPS = [
