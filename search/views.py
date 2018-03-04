@@ -4,6 +4,9 @@ from django.conf import settings
 import json
 import random
 from random import shuffle
+import re
+
+COSMOS_SEP = '_'
 
 
 # Create your views here
@@ -75,8 +78,8 @@ def error500(request):
 
 # Search query
 def query(request):
-    query = request.GET['q']
-    q = query.replace(' ', '_')
+    query = re.escape(request.GET['q']).replace('\ ', ' ')
+    q = query.replace(' ', COSMOS_SEP)
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     rec = []
