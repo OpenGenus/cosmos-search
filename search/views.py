@@ -13,7 +13,7 @@ COSMOS_SEP = '_'
 
 
 # To prefill the searchbar
-def searchbar():
+def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     data = json.load(jsonFile)
     algo_list = data['tags']
@@ -51,7 +51,7 @@ def searchSuggestion(request):
 
 
 def index(request):
-    algo_tag = searchbar()
+    algo_tag = get_random_tag()
     algo = searchSuggestion(request)
     if request.is_ajax():
         mimetype = 'application/json'
@@ -84,24 +84,24 @@ def query(request):
     ans = []
     rec = []
     amount = 0
-    for k, v in data.items():
+    for folder, file in data.items():
         filtered_v = []
         try:
-            for f in v:
+            for f in file:
                 if f.split('.')[-1] != 'md':
                     filtered_v.append(f)
         except TypeError:
             print('TypeError')
-        if q in k and "test" not in k.split("/"):
+        if q in folder and "test" not in folder.split("/"):
             if filtered_v:
-                path = k
-                k = k.split('/')
-                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                path = folder
+                folder_list = folder.split('/')
+                ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
                 amount += len(filtered_v)
-                if len(k) == 2:
-                    d = k[len(k) - 2] + '/'
+                if len(folder_list) == 2:
+                    d = folder_list[len(folder_list) - 2] + '/'
                 else:
-                    d = k[len(k) - 3] + '/'
+                    d = folder_list[len(folder_list) - 3] + '/'
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
