@@ -96,13 +96,13 @@ def query(request):
         if q in folder and "test" not in folder.split("/"):
             if filtered_v:
                 path = folder
-                folder = folder.split('/')
-                ans.append({'path': path, 'dirs': folder, 'files': filtered_v})
+                folder_list = folder.split('/')
+                ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
                 amount += len(filtered_v)
-                if len(folder) == 2:
-                    d = folder[len(folder) - 2] + '/'
+                if len(folder_list) == 2:
+                    d = folder_list[len(folder_list) - 2] + '/'
                 else:
-                    d = folder[len(folder) - 3] + '/'
+                    d = folder_list[len(folder_list) - 3] + '/'
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
