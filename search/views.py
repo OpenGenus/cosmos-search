@@ -103,9 +103,9 @@ def query(request):
                 ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
                 amount += len(filtered_v)
                 if len(folder_list) == 2:
-                    d = folder_list[len(folder_list) - 2] + '/'
+                    d = folder_list[-2] + '/'
                 else:
-                    d = folder_list[len(folder_list) - 3] + '/'
+                    d = folder_list[-3] + '/'
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
@@ -120,7 +120,7 @@ def query(request):
 
                             p = i
                             p = p.split('/')
-                            l = p[len(p) - 1]
+                            l = p[-1]
                             rec.append({'recpath': i, 'recdirs': p, 'last': l})
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
