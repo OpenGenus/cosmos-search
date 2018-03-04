@@ -51,20 +51,26 @@
     <div class="container">
         <br>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-4">
                 <a class="navbar-brand" href="/">cosmos-search</a>
             </div>
-            <div class="col-sm-4">
+            <div class="col-8">
+                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
+                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
+            </div>
+        </div></br>
+        <div class="row">
+            {# align search bar and middle of vw #}
+            <div class="col"></div>
+            <div class="col-md-8">
                 <form class="form-inline justify-content-center" id="formq" action="/query/" method="GET">
                     <div class="input-group">
                         <input class="form-control text-center" id = "search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
                     </div>
                 </form>
             </div>
-            <div class="col-sm-4">
-                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
-                  <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
-            </div>
+            {# align search bar and middle of vw #}
+            <div class="col float-right"></div>
         </div><br>
         {% block body %} {% endblock %}
     </div>
