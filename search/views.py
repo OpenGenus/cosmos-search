@@ -83,6 +83,7 @@ def query(request):
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     rec = []
+    amount = 0
     for k, v in data.items():
         filtered_v = []
         try:
@@ -96,6 +97,7 @@ def query(request):
                 path = k
                 k = k.split('/')
                 ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                amount += len(filtered_v)
                 if len(k) == 2:
                     d = k[len(k) - 2] + '/'
                 else:
@@ -116,7 +118,7 @@ def query(request):
         return HttpResponse(algo, mimetype)
     else:
         return render(request, 'cosmos/searchresults.html',
-                      {'amount': len(ans),
+                      {'amount': amount,
                        'result': ans,
                        'recommend': rec[0:5],
                        'query': query
