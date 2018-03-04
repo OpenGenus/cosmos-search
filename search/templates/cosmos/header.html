@@ -19,7 +19,7 @@
 
         body {
             font-family: 'Roboto Mono', monospace;
-            margin-bottom: 60px;
+            margin-bottom: 5em;
         }
 
         article {
@@ -35,8 +35,7 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 60px;
-            line-height: 60px;
+            padding: 1em;
             background-color: #f5f5f5;
         }
         .ui-menu .ui-menu-item a{
@@ -75,9 +74,9 @@
         {% block body %} {% endblock %}
     </div>
     <footer class="footer">
-        <div class="container">
-            <span class="text-muted">Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></span>
-            <span class="text-muted float-right">Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></span>
+        <div class="text-muted" style="text-align: center">
+            <div>Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></div>
+            <div>Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></div>
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
