@@ -76,6 +76,10 @@ def error500(request):
     return render(request, 'cosmos/error/HTTP500.html')
 
 
+def is_file_extension_ignored(file_):
+    return file_.split('.')[-1] in ['md', 'MD']
+
+
 # Search query
 def query(request):
     query = re.escape(request.GET['q']).replace('\ ', ' ')
@@ -88,7 +92,7 @@ def query(request):
         filtered_v = []
         try:
             for f in file:
-                if f.split('.')[-1] != 'md':
+                if not is_file_extension_ignored(f):
                     filtered_v.append(f)
         except TypeError:
             print('TypeError')
@@ -106,6 +110,15 @@ def query(request):
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
+
+                            only_contents_md = True
+                            for f in j:
+                                if not is_file_extension_ignored(f):
+                                    only_contents_md = False
+                                    break
+                            if only_contents_md:
+                                continue
+
                             p = i
                             p = p.split('/')
                             l = p[len(p) - 1]
