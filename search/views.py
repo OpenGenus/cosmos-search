@@ -128,7 +128,7 @@ def query(request):
         return render(request, 'cosmos/searchresults.html',
                       {'amount': amount,
                        'result': ans,
-                       'recommend': rec,
+                       'recommend': rec[:5],
                        'query': query,
                        'algo_name': query
                        })
