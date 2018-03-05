@@ -15,8 +15,7 @@ COSMOS_SEP = '_'
 # To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
-    data = json.load(jsonFile)
-    algo_list = data['tags']
+    algo_list = json.load(jsonFile)
     r_no = random.randint(0, len(algo_list) - 1)
     algo_tag = algo_list[r_no]
     return algo_tag
@@ -24,8 +23,7 @@ def get_random_tag():
 
 def searchSuggestion(request):
     jsonFile = open(settings.TAGS_JSON, 'r')
-    data = json.load(jsonFile)
-    algo_list = list(data['tags'])
+    algo_list = json.load(jsonFile)
     filterData = []
     results = []
     if request.is_ajax():
@@ -90,12 +88,9 @@ def query(request):
     amount = 0
     for folder, file in data.items():
         filtered_v = []
-        try:
-            for f in file:
-                if not is_file_extension_ignored(f):
-                    filtered_v.append(f)
-        except TypeError:
-            print('TypeError')
+        for f in file:
+            if not is_file_extension_ignored(f):
+                filtered_v.append(f)
         if q in folder and "test" not in folder.split("/"):
             if filtered_v:
                 path = folder
@@ -133,7 +128,7 @@ def query(request):
         return render(request, 'cosmos/searchresults.html',
                       {'amount': amount,
                        'result': ans,
-                       'recommend': rec[0:5],
+                       'recommend': rec,
                        'query': query,
                        'algo_name': query
                        })
