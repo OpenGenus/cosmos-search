@@ -4,16 +4,19 @@ from django.conf import settings
 import json
 import random
 from random import shuffle
+import re
+
+COSMOS_SEP = '_'
 
 
 # Create your views here
 
 
 # To prefill the searchbar
-def searchbar():
+def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
-    r_no = random.randint(0, len(algo_list))
+    r_no = random.randint(0, len(algo_list) - 1)
     algo_tag = algo_list[r_no]
     return algo_tag
 
@@ -46,7 +49,7 @@ def searchSuggestion(request):
 
 
 def index(request):
-    algo_tag = searchbar()
+    algo_tag = get_random_tag()
     algo = searchSuggestion(request)
     if request.is_ajax():
         mimetype = 'application/json'
@@ -71,33 +74,48 @@ def error500(request):
     return render(request, 'cosmos/error/HTTP500.html')
 
 
+def is_file_extension_ignored(file_):
+    return file_.split('.')[-1] in ['md', 'MD']
+
+
 # Search query
 def query(request):
-    query = request.GET['q']
-    q = query.replace(' ', '_')
+    query = re.escape(request.GET['q']).replace('\ ', ' ')
+    q = query.replace(' ', COSMOS_SEP)
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     rec = []
-    for k, v in data.items():
+    amount = 0
+    for folder, file in data.items():
         filtered_v = []
-        for f in v:
-            if f.split('.')[-1] != 'md':
+        for f in file:
+            if not is_file_extension_ignored(f):
                 filtered_v.append(f)
-        if q in k and "test" not in k.split("/"):
+        if q in folder and "test" not in folder.split("/"):
             if filtered_v:
-                path = k
-                k = k.split('/')
-                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-                if len(k) == 2:
-                    d = k[len(k) - 2] + '/'
+                path = folder
+                folder_list = folder.split('/')
+                ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                amount += len(filtered_v)
+                if len(folder_list) == 2:
+                    d = folder_list[-2] + '/'
                 else:
-                    d = k[len(k) - 3] + '/'
+                    d = folder_list[-3] + '/'
                 for i, j in data.items():
                     if d in i:
                         if q not in i:
+
+                            only_contents_md = True
+                            for f in j:
+                                if not is_file_extension_ignored(f):
+                                    only_contents_md = False
+                                    break
+                            if only_contents_md:
+                                continue
+
                             p = i
                             p = p.split('/')
-                            l = p[len(p) - 1]
+                            l = p[-1]
                             rec.append({'recpath': i, 'recdirs': p, 'last': l})
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
@@ -108,10 +126,11 @@ def query(request):
         return HttpResponse(algo, mimetype)
     else:
         return render(request, 'cosmos/searchresults.html',
-                      {'amount': len(ans),
+                      {'amount': amount,
                        'result': ans,
-                       'recommend': rec[0:5],
-                       'query': query
+                       'recommend': rec[:5],
+                       'query': query,
+                       'algo_name': query
                        })
 
 
