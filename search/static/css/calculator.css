@@ -1,0 +1,146 @@
+#calculator {
+    width: 475px;
+    height: auto;
+
+    margin: 100px auto;
+    padding: 20px 20px 9px;
+
+    background: #b2a5c8;
+    /*background: linear-gradient(#9dd2ea, #8bceec);*/
+    border-radius: 3px;
+ }
+
+/* Top portion */
+.top span.clear {
+    float: left;
+}
+
+/* Inset shadow on the screen to create indent */
+.top .screen {
+    height: 75px;
+    width: 426px;
+    float: left;
+    padding: 10px 10px;
+    background: rgba(15, 5, 29, 0.5);
+    border-radius: 3px;
+    box-shadow: inset 0px 4px rgba(0, 0, 0, 0.2);
+    font-size: 17px;
+    line-height: 40px;
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    text-align: right;
+    letter-spacing: 1px;
+    margin-bottom: 2%;
+}
+
+/* Clear floats */
+.keys, .top {
+    overflow: hidden;
+}
+
+/* Applying same to the keys */
+.keys span, .top span.clear {
+    float: left;
+    position: relative;
+    top: 0;
+
+    cursor: pointer;
+
+    width: 65px;
+    height: 36px;
+
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0px 2px rgba(0, 0, 0, 0.2);
+
+    margin: 0 7px 11px 0;
+
+    line-height: 36px;
+    text-align: center;
+
+    /* prevent selection of text inside keys */
+    user-select: none;
+
+    /* Smoothing out hover and active states using css3 transitions */
+    transition: all 0.2s ease;
+}
+
+/* Remove right margins from operator keys */
+/* style different type of keys (operators/evaluate/clear) differently */
+.keys span.operator {
+    background: #FFF0F5;
+    margin-right: 0;
+}
+
+.keys span.eval {
+    background: #176e78;
+    box-shadow: 0px 4px #9da853;
+
+}
+
+.top span.clear {
+    background: #ff9fa8;
+    box-shadow: 0px 4px #ff7c87;
+    color: white;
+}
+
+/* Some hover effects */
+.keys span:hover {
+    background: #d9d5ec;
+    color: white;
+}
+
+.keys span.eval:hover {
+    background: #17828f;
+    box-shadow: 0px 4px #717a33;
+    color: #ffffff;
+}
+
+.top span.clear:hover {
+    background: #f68991;
+    box-shadow: 0px 4px #d3545d;
+    color: white;
+}
+
+.keys span:active {
+    top: 4px;
+}
+
+.keys span.eval:active {
+    box-shadow: 0px 0px #717a33;
+    top: 4px;
+}
+
+.top span.clear:active {
+    top: 4px;
+    box-shadow: 0px 0px #d3545d;
+}
+
+.sp {
+    margin-right: 7px !important;
+}
+
+input {
+    border: none;
+    background: none;
+}
+
+.clear {
+    background: #de31ca !important;
+    color: #fff;
+}
+
+input.num {
+    width: 100% !important;
+}
+input.num:focus {
+    outline: none;
+}
+input#abc {
+    outline: none;
+}
+input[type="text"], textarea {
+    background-color: rgb(250, 255, 189);
+    background-image: none;
+    color: rgb(0, 0, 0);
+}
