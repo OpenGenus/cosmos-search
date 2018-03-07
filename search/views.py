@@ -5,9 +5,9 @@ import json
 import random
 from random import shuffle
 import re
+import math
 
 COSMOS_SEP = '_'
-import math
 
 # Create your views here
 
