@@ -351,7 +351,7 @@ def query(request):
                            })
 
         if '\\' in query:
-            query = query.replace('\\','')
+            query = query.replace('\\', '')
 
         res = getResult(query)
         if type(res) == int or type(res) == float:
@@ -407,7 +407,7 @@ def query(request):
         shuffle(rec)
         return render(request, 'cosmos/searchresults.html',
                       {'amount': amount,
-                       'title' : title,
+                       'title': title,
                        'result': ans,
                        'recommend': rec[:5],
                        'query': query,
