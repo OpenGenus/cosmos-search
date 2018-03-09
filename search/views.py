@@ -94,19 +94,16 @@ class Stack:
     def size(self):
         return len(self.item)
 
-    def show(self):
-        return self.item
-
 
 def isMathExpression(expr, op_math):
     token = []
     i = 0
     while i < len(expr):
         if expr[i] == ' ':
-            i = i + 1
+            i += 1
         if expr[i] == '+' and ((len(token) > 0 and token[-1] == '(') or i == 0):
             token.append('u+')
-            i = i + 1
+            i += 1
         elif expr[i] == '-' and ((len(token) > 0 and token[-1] == '(') or i == 0):
             token.append('u-')
             i += 1
@@ -119,7 +116,7 @@ def isMathExpression(expr, op_math):
                         flot = 1
                     else:
                         return False
-                j = j + 1
+                j += 1
             try:
                 val = int(expr[i:j])
             except ValueError:
@@ -134,11 +131,11 @@ def isMathExpression(expr, op_math):
                 expr[i] == '*' or expr[i] == '-' or expr[i] == '/' or \
                 expr[i] == '%' or expr[i] == '^':
             token.append(expr[i])
-            i = i + 1
+            i += 1
 
         elif expr[i] == 'x' or expr[i] == 'X':
             token.append('*')
-            i = i + 1
+            i += 1
 
         elif expr[i:i + 5].lower() in op_math:
             token.append(expr[i:i + 5].lower())
@@ -146,7 +143,7 @@ def isMathExpression(expr, op_math):
                 return False
             elif expr[i + 5] != '(':
                 return False
-            i = i + 5
+            i += 5
 
         elif expr[i:i + 4].lower() in op_math:
             token.append(expr[i:i + 4].lower())
@@ -154,7 +151,7 @@ def isMathExpression(expr, op_math):
                 return False
             elif expr[i + 4] != '(':
                 return False
-            i = i + 4
+            i += 4
 
         elif expr[i:i + 3].lower() in op_math:
             token.append(expr[i:i + 3].lower())
@@ -162,7 +159,7 @@ def isMathExpression(expr, op_math):
                 return False
             elif expr[i + 3] != '(':
                 return False
-            i = i + 3
+            i += 3
 
         else:
             return False
@@ -171,7 +168,7 @@ def isMathExpression(expr, op_math):
 
 def calculate(val1, val2, op):
     if op == 'u-':
-        return - val1
+        return -val1
     if op == 'u+':
         return val1
     if op == '^':
@@ -344,12 +341,24 @@ def query(request):
         try:
             query = re.escape(request.GET['q']).replace('\ ', ' ')
         except Exception:
-            return render(request, 'cosmos/calculator.html')
-        res = getResult(query.replace('\\', ''))
+            return render(request, 'cosmos/searchresults.html',
+                          {'result': None,
+                           'title': "Calculator",
+                           'recommend': None,
+                           'query': None,
+                           'result_val': None,
+                           'algo_name': ""
+                           })
+
+        if '\\' in query:
+            query = query.replace('\\','')
+
+        res = getResult(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
         else:
             exprResult = None
+
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
@@ -384,23 +393,39 @@ def query(request):
                                     p = p.split('/')
                                     l = p[len(p) - 1]
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
+
         if not ans and exprResult is None:
             return render(request, 'cosmos/notfound.html', {'query': query})
-        shuffle(rec)
+
         if exprResult is not None:
-            return render(request, 'cosmos/calculator.html', {"result_val": exprResult})
+            title = "Calculator"
+            algo_name = ""
+        else:
+            title = query
+            algo_name = query
+
+        shuffle(rec)
         return render(request, 'cosmos/searchresults.html',
                       {'amount': amount,
+                       'title' : title,
                        'result': ans,
                        'recommend': rec[:5],
                        'query': query,
                        'result_val': exprResult,
-                       'algo_name': query
+                       'algo_name': algo_name
                        })
 
     elif request.method == 'POST':
         exprResult = calculator(request)
-        return render(request, 'cosmos/calculator.html', {'result_val': exprResult})
+        q = request.POST.get('txt')
+        return render(request, 'cosmos/searchresults.html',
+                      {'result': None,
+                       'recommend': None,
+                       'title': "Calculator",
+                       'query': q,
+                       'result_val': exprResult,
+                       'algo_name': ""
+                       })
 
     if request.is_ajax():
         algo = searchSuggestion(request)
