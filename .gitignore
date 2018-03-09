@@ -1,5 +1,6 @@
 # Cosmos related
 cosmos/
+static/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -96,3 +97,4 @@ staticfiles/
 *.sqlite3
 *.pyc
 .idea/
+.DS_Store
