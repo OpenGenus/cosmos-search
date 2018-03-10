@@ -142,9 +142,9 @@ input.num {
 input.num:focus {
     outline: none;
 }
-input#abc {
+input#resultText {
     outline: none;
-
+    padding-bottom: 5px;
     width: 100%;
     float: right;
     text-align: right;

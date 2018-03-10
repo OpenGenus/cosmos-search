@@ -107,6 +107,7 @@ def isMathExpression(expr, op_math):
         elif expr[i] == '-' and ((len(token) > 0 and token[-1] == '(') or i == 0):
             token.append('u-')
             i += 1
+
         elif expr[i].isdigit() or expr[i] == '.':
             j = i
             flot = 0
@@ -124,7 +125,8 @@ def isMathExpression(expr, op_math):
             token.append(val)
             i = j
 
-        elif expr[i] == '(' and len(token) > 0 and (str(token[-1]).isdigit() or token[-1] == ')'):
+        elif expr[i] == '(' and len(token) > 0 and \
+                (str(token[-1]).isdigit() or isinstance(token[-1], float) or token[-1] == ')'):
             token.append('*')
 
         elif expr[i] == '(' or expr[i] == ')' or expr[i] == '+' or \
@@ -319,16 +321,24 @@ def getResult(expr):
 
 # calculator
 def calculator(request):
-    q = request.POST.get('txt')
-    if q is not None:
-        getResult(q)
-        res = getResult(q)
-        if type(res) == int or type(res) == float:
-            exprResult = round(res, 3)
-        else:
-            exprResult = 'NaN'
-        return exprResult
-    return 'NaN'
+    global exprResult
+    if request.method == 'POST':
+        q = request.POST.get('txt')
+        if q is not None:
+            getResult(q)
+            res = getResult(q)
+            if type(res) == int or type(res) == float:
+                exprResult = round(res, 3)
+            else:
+                exprResult = 'NaN'
+    else:
+        exprResult = None
+        q = None
+    return render(request, 'cosmos/searchresults.html',
+                  {'title': "Calculator",
+                   'query': q,
+                   'result_val': exprResult,
+                   })
 
 
 def is_file_extension_ignored(file_):
@@ -337,18 +347,9 @@ def is_file_extension_ignored(file_):
 
 # Search query
 def query(request):
+    global algo_name, title
     if request.method == 'GET':
-        try:
-            query = re.escape(request.GET['q']).replace('\ ', ' ')
-        except Exception:
-            return render(request, 'cosmos/searchresults.html',
-                          {'result': None,
-                           'title': "Calculator",
-                           'recommend': None,
-                           'query': None,
-                           'result_val': None,
-                           'algo_name': ""
-                           })
+        query = re.escape(request.GET['q']).replace('\ ', ' ')
 
         if '\\' in query:
             query = query.replace('\\', '')
@@ -356,6 +357,8 @@ def query(request):
         res = getResult(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
+            title = "Calculator"
+            algo_name = ""
         else:
             exprResult = None
 
@@ -397,12 +400,12 @@ def query(request):
         if not ans and exprResult is None:
             return render(request, 'cosmos/notfound.html', {'query': query})
 
-        if exprResult is not None:
-            title = "Calculator"
-            algo_name = ""
-        else:
-            title = query
+        if ans:
             algo_name = query
+            title = query
+
+        if ans and exprResult:
+            amount += 1
 
         shuffle(rec)
         return render(request, 'cosmos/searchresults.html',
@@ -416,16 +419,7 @@ def query(request):
                        })
 
     elif request.method == 'POST':
-        exprResult = calculator(request)
-        q = request.POST.get('txt')
-        return render(request, 'cosmos/searchresults.html',
-                      {'result': None,
-                       'recommend': None,
-                       'title': "Calculator",
-                       'query': q,
-                       'result_val': exprResult,
-                       'algo_name': ""
-                       })
+        calculator(request)
 
     if request.is_ajax():
         algo = searchSuggestion(request)
