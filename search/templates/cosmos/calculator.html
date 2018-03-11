@@ -1,37 +1,9 @@
 {% load staticfiles %}
-<script>
-    function displ(x, end) {
-        if (frm.txt.value === 'NaN') {
-            frm.txt.value = "";
-            frm.seq.value = "";
-        }
-        if (end === '(') {
-            frm.txt.value = frm.txt.value + x + end;
-        }
-        else {
-            frm.txt.value = frm.txt.value + x;
-        }
-
-    }
-
-    function cleartext(x) {
-        frm.txt.value = "";
-    }
-
-    function equals(x) {
-        $("#cl").submit();
-    }
-
-    function textD(x) {
-        if (x === 'NaN') {
-            frm.txt.value = ""
-        }
-    }
-</script>
 
 {% block style %}
     <link rel="stylesheet" href="{% static 'css/calculator.css' %}">
 {% endblock %}
+
 <div class="cal-top">
     <form name="frm" id="cl" action="{% url 'calculator' %}" method="POST">{% csrf_token %}
         <div id="calculator">
@@ -40,12 +12,14 @@
                     {% if result_val is not None %}
                         <input type="text" value="{{ query }}" name="seq" id="seq" disabled/>
                         <input type="text" id="resultText" name="txt" value="{{ result_val }}"
-                               onclick="textD(resultText.value)">
+                                onclick="textD(resultText.value)"  autocomplete="off" onfocus="focusOn(this.value)">
                         <br>
                     {% else %}
                         <input type="text" value="" name="seq" id="seq" disabled/>
-                        <input type="text" id="resultText" name="txt" value="0" onclick="textD(resultText.value)"><br>
+                        <input type="text" id="resultText" name="txt" value="0" onclick="textD(resultText.value)" autocomplete="off" onfocus="focusOn(this.value)"><br>
                     {% endif %}
+                     <input type="submit">
+
                 </div>
             </div>
             <div class="keys">
@@ -103,3 +77,48 @@
         </div>
     </form>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+     $(document).ready(function() {
+         window.onload = function () {
+             $("#resultText").focus();
+
+         }
+     });
+
+     function focusOn(x) {
+         var temp_value=x;
+         frm.txt.value='';
+         frm.txt.value = temp_value;
+     }
+    function displ(x, end) {
+        if (frm.txt.value === 'NaN') {
+            frm.txt.value = "";
+            frm.seq.value = "";
+        }
+        if (end === '(') {
+            frm.txt.value = frm.txt.value + x + end;
+        }
+        else {
+            frm.txt.value = frm.txt.value + x;
+        }
+
+    }
+
+    function cleartext(x) {
+        frm.txt.value = "";
+    }
+
+    function equals(x) {
+        $("#cl").submit();
+    }
+
+    function textD(x) {
+        if (x === 'NaN') {
+            frm.txt.value = "";
+            frm.seq.value = "";
+        }
+     }
+
+</script>
