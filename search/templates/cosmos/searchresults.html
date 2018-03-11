@@ -1,26 +1,24 @@
 {% extends 'cosmos/header.html' %}
 {% block head %}
-  <title>"{{ query }}" | cosmos-search</title>
+    <title>"{{ query }}" | cosmos-search</title>
 {% endblock %}
 {% block body %}
 
+{% if amount > 1 %}
+<h6>Showing
+    <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>
 
+{% else %}
+<h6>Showing
+    <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>
 
-{% if amount|add:"0" == 1%}
-	<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>
-{%else%}
-	<h6>Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>
 {% endif %}
-    
-    
-    
-
-<span>
-    <a href="#" style="color: #1b1e21"><div data-network="twitter" class="st-custom-button fa fa-twitter-square"></div></a>
-    <a href="#" style="color: #1b1e21"><div data-network="facebook" class="st-custom-button fa fa-facebook-square"></div></a>
-    <a href="#" style="color: #1b1e21"><div data-network="linkedin" class="st-custom-button fa fa-linkedin-square"></div></a>
-    <a href="#" style="color: #1b1e21"><div data-network="googleplus" class="st-custom-button fa fa-google-plus-square"></div></a>
-</span>
+    <span>
+        <a href="#" style="color: #1b1e21"><div data-network="twitter" class="st-custom-button fa fa-twitter-square"></div></a>
+        <a href="#" style="color: #1b1e21"><div data-network="facebook" class="st-custom-button fa fa-facebook-square"></div></a>
+        <a href="#" style="color: #1b1e21"><div data-network="linkedin" class="st-custom-button fa fa-linkedin-square"></div></a>
+        <a href="#" style="color: #1b1e21"><div data-network="googleplus" class="st-custom-button fa fa-google-plus-square"></div></a>
+    </span>
 </h6>
 <hr> {% for entry in result %}
 <div class="card">
@@ -29,11 +27,11 @@
          {% for i in entry.dirs %}
          {{ i }} /
          {% endfor %}
-    </h4>
+        </h4>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Solutions
-      </button>
+            </button>
             <div class="dropdown-menu" aria-labelledby="soln">
                 {% for file in entry.files %}
                 <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{entry.path}}/{{file}}" target="_blank" class="dropdown-item">{{file}}</a> {% endfor %}
@@ -48,15 +46,14 @@
     <div class="card-body">
 
         <form method="get">
-          <div>
-            <h6 class="card-title">
-             {% for k in j.recdirs %}
-             {{ k }} /
-             {% endfor %}
-        </h6>
-              <a class="btn-link" href="/query/?q={{j.last}}">solution
-              </a>
-          </div>
+            <div>
+                <h6 class="card-title">
+                 {% for k in j.recdirs %}
+                 {{ k }} /
+                 {% endfor %}
+                </h6>
+                <a class="btn-link" href="/query/?q={{j.last}}">solution</a>
+            </div>
         </form>
     </div>
 </div>
