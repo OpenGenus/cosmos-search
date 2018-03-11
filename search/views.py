@@ -148,6 +148,7 @@ def subsq(a, b, m, n):
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
 
+
 def display(request):
     display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + request.GET['path']
     r = requests.get(display)
