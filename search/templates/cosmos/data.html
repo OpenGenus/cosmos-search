@@ -1,6 +1,7 @@
 {% extends 'cosmos/header.html' %}
 {% block head %}
   <title>"cosmos-search</title>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/atelier-seaside-dark.min.css">
 {% endblock %}
 {% block body %}
 <pre>
@@ -8,4 +9,6 @@
     {{code}}
   </code>
 </pre>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}
