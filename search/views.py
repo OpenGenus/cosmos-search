@@ -14,25 +14,21 @@ def searchbar():
     r_no = random.randint(0,len(algo_list))
     algo_tag = algo_list[r_no]
 
-    tabbed_algos=set()
+    return algo_tag,algo_list
 
-    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-    for k,v in data.items():
-        if k!="updated_at":
-            ans=k.split("/")[0].title().split("_")
-            ans2=' '.join(ans)
-            tabbed_algos.add(ans2)
-
-    tabbed_algos_list=list(tabbed_algos)
-    tabbed_algos_list.sort()
-    return algo_tag,list(tabbed_algos_list)
-
+    
 
 def index(request):
-    algo_tag,tabbed_algos = searchbar()
-    return render(request,'cosmos/index.html',{'algo_name':algo_tag,'tabbed_algos':tabbed_algos[4:],'tabbed_algos_shortlist':tabbed_algos[:4]})
+    algo_tag,algo_list = searchbar()
+    algo_list_query=[]
+    for a in algo_list:
+        s=a.split(" ")
+        ss='+'.join(s)
+        algo_list_query.append(ss)
 
-
+    tabbed_algos_shortlist=zip(algo_list[:10],algo_list_query[:10])
+    tabbed_algos=zip(algo_list[10:],algo_list_query[10:])
+    return render(request,'cosmos/index.html',{'algo_name':algo_tag,'tabbed_algos':tabbed_algos,'tabbed_algos_shortlist':tabbed_algos_shortlist})
 
 
 
@@ -52,35 +48,6 @@ def error404(request):
 def error500(request):
     return render(request, 'cosmos/error/HTTP500.html')
 
-# Generate all combinations of a search literal
-def generate_perm(query):
-
-    # Use bitmasking to generate all cases where the first letter of a word in the query is capitalized.
-    binary = []
-    final = []
-
-    n = len(query.split('_'))
-    for i in range(pow(2,n)):
-        b = bin(i)[2:].zfill(n)
-        binary.append(b)
-
-
-    # Create a query for the bitmask.
-
-    for b in binary:
-        perms = []
-        count = 0
-        for word in query.split('_'):
-            if b[count] == '0':
-                perms.append(word[0].lower() + word[1:]) 
-            else:
-                perms.append(word[0].upper() + word[1:] )
-            count = count+1
-        p='_'.join(perms)
-        final.append(p)
-      
-    # Return the final list of queries to be passed to the query view.  
-    return final
 
 
 # Search query
@@ -88,7 +55,6 @@ def query(request):
     query = request.GET['q']
     q = query.replace(' ', '_')
 
-    combs=generate_perm(q)
 
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
@@ -103,24 +69,23 @@ def query(request):
         except TypeError:
             print('TypeError')
         
-        for q in combs:
-            # We do not want /test/ in the results if the user types in "test" in the searchbox
-            if q in k:
-                if filtered_v:
-                    path = k
-                    k = k.split('/')
-                    ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-                    if len(k) == 2:
-                        d = k[len(k)-2] + '/'
-                    else:
-                        d = k[len(k)-3] + '/'
-                    for i, j in data.items():
-                            if d in i:
-                                if not q in i:
-                                    p = i
-                                    p = p.split('/')
-                                    l = p[len(p)-1]
-                                    rec.append({'recpath': i, 'recdirs':p, 'last': l})
+        # We do not want /test/ in the results if the user types in "test" in the searchbox
+        if q in k:
+            if filtered_v:
+                path = k
+                k = k.split('/')
+                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
+                if len(k) == 2:
+                    d = k[len(k)-2] + '/'
+                else:
+                    d = k[len(k)-3] + '/'
+                for i, j in data.items():
+                        if d in i:
+                            if not q in i:
+                                p = i
+                                p = p.split('/')
+                                l = p[len(p)-1]
+                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
     if not ans:
         return render(request, 'cosmos/notfound.html', {'query': query})
     shuffle(rec)
