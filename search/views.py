@@ -149,6 +149,6 @@ def subsq(a, b, m, n):
     return subsq(a, b, m, n - 1)
 
 def display(request):
-    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/"+request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + request.GET['path']
     r = requests.get(display)
-    return render(request, 'cosmos/data.html',{'code':r.text})
+    return render(request, 'cosmos/data.html', {'code': r.text})
