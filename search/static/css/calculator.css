@@ -144,7 +144,7 @@ input.num:focus {
 }
 input#resultText {
     outline: none;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
     width: 100%;
     float: right;
     text-align: right;
