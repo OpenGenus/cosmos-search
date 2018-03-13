@@ -92,7 +92,7 @@ def update_kv_to_file(key, value, filename):
 
 def update_metadata():
     data = {}
-    for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_PATH):
+    for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_ROOT + 'code/'):
         if dirnames == []:
             dirpath = '/'.join(dirpath.split('/')[2:])
             data[dirpath] = filenames
@@ -118,7 +118,7 @@ def manage_webhook_event(event, payload):
     if event == 'push':
         updated_at = payload['repository']['pushed_at']
         try:
-            repo = git.Repo(settings.COSMOS_PATH)
+            repo = git.Repo(settings.COSMOS_ROOT)
             o = repo.remotes.origin
             print("Pulling cosmos!")
             o.pull()
