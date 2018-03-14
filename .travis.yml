@@ -20,4 +20,7 @@ env:
   - DJANGO_VERSION=1.11.7
 # script
 script:
+  - flake8 .
+  - python3 manage.py makemigrations
+  - python3 manage.py migrate
   - python3 manage.py test
