@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 ]
 
+<<<<<<< HEAD
+=======
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
@@ -38,6 +40,7 @@ if settings.DEBUG is False:
     urlpatterns += [url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}), ]
 
 
+>>>>>>> 9ee3be589a447d0d0023b0cd76e89c7792b278a8
 handler400 = views.error400  # noqa
 handler403 = views.error403  # noqa
 handler404 = views.error404  # noqa

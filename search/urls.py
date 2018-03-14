@@ -6,3 +6,4 @@ urlpatterns = [
     url(r'^query/', views.query, name='query'),
     url(r'^calculator/', views.calculator, name='calculator'),
 ]
+
