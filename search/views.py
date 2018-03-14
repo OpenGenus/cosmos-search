@@ -85,7 +85,7 @@ def calculator(request):
             if type(res) == int or type(res) == float:
                 exprResult = round(res, 3)
             else:
-                exprResult = 'NaN'
+                exprResult = 'Error'
     else:
         exprResult = None
         q = None

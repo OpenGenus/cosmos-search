@@ -13,7 +13,7 @@
             <span style="color: #5D337F;">{{ query }}</span>
 
         {% elif result_val and not result %}
-            Showing result for expression:
+            Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
         {% elif amount is 1 %}
             Showing

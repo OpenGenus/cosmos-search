@@ -93,7 +93,7 @@
          frm.txt.value = temp_value;
      }
     function displ(x, end) {
-        if (frm.txt.value === 'NaN') {
+        if (frm.txt.value === 'Error') {
             frm.txt.value = "";
             frm.seq.value = "";
         }
@@ -115,7 +115,7 @@
     }
 
     function textD(x) {
-        if (x === 'NaN') {
+        if (x === 'Error') {
             frm.txt.value = "";
             frm.seq.value = "";
         }
