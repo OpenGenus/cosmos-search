@@ -1,16 +1,120 @@
 {% extends 'cosmos/header.html' %}
 {% block body %}
 {% load random_numbers %}
+{% load static %}
 
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/home/sarthika/Documents/galsquared/cosmos-search/search/templates/cosmos/style.css"/>
+ 
+</head>
+<style>
+ html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            margin-bottom: 60px;
+        }
+
+        article {
+            display: block;
+            text-align: left;
+            width: 80%;
+            padding-top: 15%;
+            padding-bottom: 15%;
+            margin: 0 auto;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            background-color: #f5f5f5;
+        }
+        #container{  
+            width:100%;  
+            height:auto;  
+            margin:0;  
+            padding:0;  
+        }  
+
+
+        /* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+
+</style>
 <article>
-    <h1 style="text-align: center">Welcome to <em>cosmos-search</em></h1>
-    <hr>
+<body>
 
-    <div style="overflow-x: scroll; text-align: center">
-        <img src="https://raw.githubusercontent.com/OpenGenus/data-store/master/search/art/{% random_int 1 10 %}.jpg" alt="Enjoy our daily code fact"/>
+    <div class="row"  id="container">
+                {% for ta,taq in tabbed_algos_shortlist %}
+                  <a class="btn float-right" href="/query/?q={{taq}}" style="font-size: 17px;">{{ta}}</a>
+                {% endfor %}
+
+            <div class="dropdown">
+              <a class="btn float-right" href="#" style="font-size: 17px;" >More</a>
+              <div class="dropdown-content">
+                {% for ta,taq in tabbed_algos %}
+                <a  href="/query/?q={{taq}}">{{ta}}</a>
+                {% endfor %}
+
+                
+              </div>
+            </div>
     </div>
-    <hr>
+</body>
 
+    <h1>Welcome to <em>cosmos-search</em></h1>
+    <hr>
+    <img src="https://raw.githubusercontent.com/OpenGenus/data-store/master/search/art/{% random_int 1 10 %}.jpg" alt="Enjoy our daily code fact" style="width:50vw; height:50vh; position: relative; left: 50%; transform: translate(-50%, 0%);"/>
+
+    <hr>
     <h2>This is the official search tool for <a href="https://github.com/OpenGenus/cosmos">cosmos</a>, </h2>
     <h4>a library of every algorithm and data structure code that you will ever encounter.</h4>
     <p>
@@ -20,3 +124,4 @@
 </article>
 
 {% endblock %}
+
