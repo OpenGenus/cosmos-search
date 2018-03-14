@@ -6,6 +6,8 @@ import random
 from random import shuffle
 import re
 
+from search.templatetags.youtube import youtube_search
+
 COSMOS_SEP = '_'
 
 
@@ -86,6 +88,16 @@ def query(request):
     ans = []
     rec = []
     amount = 0
+    if len(query.split(" ")) == 1:
+        searchKey = query + '+' + 'algorithm'
+    else:
+        searchKey = query.replace(' ', '+')
+
+    youtube_query = {
+        'q': searchKey,
+        'max_results': 50
+    }
+    youtube_result = youtube_search(youtube_query)
     for folder, file in data.items():
         filtered_v = []
         for f in file:
@@ -130,7 +142,8 @@ def query(request):
                        'result': ans,
                        'recommend': rec[:5],
                        'query': query,
-                       'algo_name': query
+                       'algo_name': query,
+                       'videos': youtube_result
                        })
 
 
