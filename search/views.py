@@ -5,6 +5,9 @@ import json
 import random
 from random import shuffle
 import re
+import requests
+import bs4
+from django.views.decorators.cache import cache_page
 
 COSMOS_SEP = '_'
 
@@ -77,7 +80,7 @@ def error500(request):
 def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
-
+@cache_page(60 * 15)
 # Search query
 def query(request):
     query = re.escape(request.GET['q']).replace('\ ', ' ')
@@ -85,7 +88,11 @@ def query(request):
     data = json.loads(open(settings.METADATA_JSON, 'r').readline())
     ans = []
     rec = []
+    links = []
+    headings = []
     amount = 0
+    links, headings= search_results_from_sites(request);
+    mylist = zip(links, headings)
     for folder, file in data.items():
         filtered_v = []
         for f in file:
@@ -130,7 +137,8 @@ def query(request):
                        'result': ans,
                        'recommend': rec[:5],
                        'query': query,
-                       'algo_name': query
+                       'algo_name': query,
+                       'mylist': mylist
                        })
 
 
@@ -146,3 +154,37 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+
+def search_results_from_sites(request):
+    keyword = request.GET['q']
+    keyword.replace(' ', '+')
+    res = requests.get('https://google.com/search?q='+keyword)
+    soup = bs4.BeautifulSoup(res.text,'html.parser')
+    links = soup.select('.r a')
+    link_list = []
+    heading_list = []
+    tab_counts = min(50, len(links))
+    count=0
+    l = ["wikipedia", "tutorialspoint"]
+    for i in range(tab_counts):
+        link = 'https://google.com' + links[i].get('href')
+        for j in l:
+            if j in link:
+                if count==0:
+                    count=count + 1
+                else:
+                    link_list.append(link)
+                    heading_list.append(links[i].text)
+    keyword = keyword + '+stackoverflow'
+    res = requests.get('https://google.com/search?q='+keyword)
+    soup = bs4.BeautifulSoup(res.text,'html.parser')
+    links = soup.select('.r a')
+    tab_counts = min(5, len(links))
+
+    for i in range(tab_counts):
+        link = 'https://google.com' + links[i].get('href')
+        if 'stackoverflow.com' in link:
+            link_list.append(link)
+            heading_list.append(links[i].text)
+    return link_list, heading_list
