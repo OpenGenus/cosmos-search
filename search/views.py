@@ -11,7 +11,14 @@ COSMOS_SEP = '_'
 
 # Create your views here
 
+def all_insert(x, e, i=0):
+    return [x[0:i]+[e]+x[i:]] + all_insert(x,e,i+1) if i<len(x)+1 else []
 
+def for_each(X, e):
+    return all_insert(X[0], e) + for_each(X[1:],e) if X else []
+
+def permute(x):
+    return [x] if len(x) < 2 else for_each( permute(x[1:]) , x[0])
 # To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
@@ -98,14 +105,17 @@ def calculator(request):
 
 def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
-
+'''
 
 # Search query
 def query(request):
     global algo_name, title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
-
+        #add
+        query = query.replace('\_', ' ')
+        #add
+        
         if '\\' in query:
             query = query.replace('\\', '')
 
@@ -118,6 +128,15 @@ def query(request):
             exprResult = None
 
         q = query.replace(' ', COSMOS_SEP)
+        #add
+        list_query=q.split(COSMOS_SEP)
+        perms = permute(list_query)
+        list1=[]
+        for p in perms:
+            for i in range(len(p)):
+                p[i]=p[i].replace('\\', '')
+            list1.append('_'.join(p))
+        #add
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
         rec = []
@@ -127,30 +146,130 @@ def query(request):
             for f in file:
                 if not is_file_extension_ignored(f):
                     filtered_v.append(f)
-            if q in folder and "test" not in folder.split("/"):
-                if filtered_v:
-                    path = folder
-                    folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
-                    amount += len(filtered_v)
-                    if len(folder_list) == 2:
-                        d = folder_list[-2] + '/'
-                    else:
-                        d = folder_list[-3] + '/'
-                    for i, j in data.items():
-                            if d in i:
-                                if q not in i:
-                                    only_contents_md = True
-                                    for f in j:
-                                        if not is_file_extension_ignored(f):
-                                            only_contents_md = False
-                                            break
-                                    if only_contents_md:
-                                        continue
-                                    p = i
-                                    p = p.split('/')
-                                    l = p[len(p) - 1]
-                                    rec.append({'recpath': i, 'recdirs': p, 'last': l})
+            #add
+            for q in list1:
+            #add
+                if q in folder and "test" not in folder.split("/"):
+                    if filtered_v:
+                        path = folder
+                        folder_list = folder.split('/')
+                        ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                        amount += len(filtered_v)
+                        if len(folder_list) == 2:
+                            d = folder_list[-2] + '/'
+                        else:
+                            d = folder_list[-3] + '/'
+                        for i, j in data.items():
+                                if d in i:
+                                    if q not in i:
+                                        only_contents_md = True
+                                        for f in j:
+                                            if not is_file_extension_ignored(f):
+                                                only_contents_md = False
+                                                break
+                                        if only_contents_md:
+                                            continue
+                                        p = i
+                                        p = p.split('/')
+                                        l = p[len(p) - 1]
+                                        rec.append({'recpath': i, 'recdirs': p, 'last': l})
+
+        if not ans and exprResult is None:
+            return render(request, 'cosmos/notfound.html', {'query': query})
+        
+        if ans:
+            algo_name = query
+            title = query
+
+        if ans and exprResult:
+            amount += 1
+
+        shuffle(rec)
+        return render(request, 'cosmos/searchresults.html',
+                      {'amount': amount,
+                       'title': title,
+                       'result': ans,
+                       'recommend': rec[:5],
+                       'query': query,
+                       'result_val': exprResult,
+                       'algo_name': algo_name
+                       })
+
+    elif request.method == 'POST':
+        calculator(request)
+
+    if request.is_ajax():
+        algo = searchSuggestion(request)
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
+'''
+
+def query(request):
+    global algo_name, title
+    if request.method == 'GET':
+        query = re.escape(request.GET['q']).replace('\ ', ' ')
+		#add
+        query = query.replace('\_', ' ')
+        #add
+        if '\\' in query:
+            query = query.replace('\\', '')
+
+        res = getResult(query)
+        if type(res) == int or type(res) == float:
+            exprResult = round(res, 3)
+            title = "Calculator"
+            algo_name = ""
+        else:
+            exprResult = None
+
+        q = query.replace(' ', COSMOS_SEP)
+        
+        
+        #add
+        list_query=q.split(COSMOS_SEP)
+        perms = permute(list_query)
+        list1=[]
+        for p in perms:
+            for i in range(len(p)):
+                p[i]=p[i].replace('\\', '')
+            list1.append('_'.join(p))
+        #add
+        data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+        ans = []
+        rec = []
+        amount = 0
+       
+        for folder, file in data.items():
+            filtered_v = []
+            for f in file:
+                if not is_file_extension_ignored(f):
+                    filtered_v.append(f)
+            for q in list1:        
+                if q in folder and "test" not in folder.split("/"):
+                    
+                    if filtered_v:
+                        path = folder
+                        folder_list = folder.split('/')
+                        ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                        amount += len(filtered_v)
+                        if len(folder_list) == 2:
+                            d = folder_list[-2] + '/'
+                        else:
+                            d = folder_list[-3] + '/'
+                        for i, j in data.items():
+                                if d in i:
+                                    if q not in i:
+                                        only_contents_md = True
+                                        for f in j:
+                                            if not is_file_extension_ignored(f):
+                                                only_contents_md = False
+                                                break
+                                        if only_contents_md:
+                                            continue
+                                        p = i
+                                        p = p.split('/')
+                                        l = p[len(p) - 1]
+                                        rec.append({'recpath': i, 'recdirs': p, 'last': l})
 
         if not ans and exprResult is None:
             return render(request, 'cosmos/notfound.html', {'query': query})
@@ -180,6 +299,8 @@ def query(request):
         algo = searchSuggestion(request)
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
+
+
 
 
 # Search strategy
