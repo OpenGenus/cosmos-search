@@ -1,5 +1,6 @@
 #calculator {
-    width: 475px;
+    width: 40% !important;
+    min-width: 320px;
     height: auto;
 
     margin: 0 auto;
@@ -38,21 +39,38 @@
     overflow: hidden;
 }
 
+.keys-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.keys-col-4 {
+    width: calc(100% / 12 * 4);
+}
+
+.keys-col-8 {
+    width: calc(100% / 12 * 8);
+}
+
+.adv-keys span {
+    width: calc(100% / 2 - .2em);
+    margin: .1em;
+}
+
+.base-keys span{
+    width: calc(100% / 4 - .2em);
+    margin: .1em;
+}
+
 /* Applying same to the keys */
 .keys span, .top span.clear {
     float: left;
     position: relative;
     top: 0;
 
-    cursor: pointer;
-
-    width: calc(100% / 6 - 1.5%);
-    height: calc(100% / 5 - 1.5%);
-
     background: white;
     box-shadow: 0px 2px rgba(0, 0, 0, 0.2);
-
-    margin: 0.75%;
 
     text-align: center;
 
