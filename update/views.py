@@ -1,36 +1,124 @@
-import json, hashlib, hmac, http.client, json, git, os
-from django.shortcuts import render
+import json
+import hashlib
+import hmac
+import http.client
+import git
+import os
+
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 
-def update_metadata(updated_at):
-    data = {'updated_at' : updated_at}
-    for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_PATH):
+
+def get_file_context(filename):
+    '''
+    :param filename: name of file
+    :type filename: str
+    :return: context of the file if file can be opened else empty string
+    '''
+
+    context = ''
+
+    try:
+        with open(filename, 'r') as f:
+            context = f.read()
+    except OSError:
+        pass
+
+    return context
+
+
+def get_json_from_file(filename, default_={}):
+    '''
+    :param filename: name of file
+    :type filename: str
+    :param default_: the default json
+    :type default_: json
+    :return: json of context of the file if file can be opened else default
+    '''
+
+    context = get_file_context(filename)
+
+    if context:
+        default_ = json.loads(context)
+
+    return default_
+
+
+def update_kv_to_json(key, value, json_):
+    '''
+    :param key: list for keys by layer or key
+    :type key: list or any type for json key
+    :param json_:
+    :type json_: json
+    :return: elem which containing the key in json_
+    '''
+
+    if isinstance(key, list) and len(key) > 1:
+        j = json_
+        # the key of int will be str in json
+        k = str(key[0])
+        if k not in json_:
+            j[k] = {}
+        j = j[k]
+        update_kv_to_json(key[1:], value, j)
+
+    elif isinstance(key, list) and len(key) == 1:
+        json_[key[0]] = value
+
+    else:
+        json_[key] = value
+
+
+def update_kv_to_file(key, value, filename):
+    '''
+    :param key: list for keys by layer or key
+    :type key: list or any type for json key
+    :param value:
+    :type value: any type for json key
+    :param filename:
+    :type filename: str
+
+    TODO: update value of list
+    '''
+
+    json_ = get_json_from_file(filename)
+
+    update_kv_to_json(key, value, json_)
+
+    with open(filename, 'w') as f:
+        json.dump(json_, f)
+
+
+def update_metadata():
+    data = {}
+    for (dirpath, dirnames, filenames) in os.walk(settings.COSMOS_ROOT + 'code/'):
         if dirnames == []:
             dirpath = '/'.join(dirpath.split('/')[2:])
             data[dirpath] = filenames
     with open(settings.METADATA_JSON, 'w') as f:
         json.dump(data, f)
 
-def update_tags(updated_at):
+
+def update_tags():
     topics = []
-    data = {'updated_at' : updated_at}
     for keys in json.load(open(settings.METADATA_JSON)):
         for topic in keys.split('/'):
-            if topic not in (topics + ['unclassified', 'updated_at', 'src', 'test']):
+            if topic not in (topics + ['unclassified', 'src', 'updated_at', 'test']):
                 topics.append(topic)
-    data['tags'] = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(),
-                            topics))
+    data = list(map(lambda v: v.replace('_', ' ').replace('-', ' ').lower(), topics))
     with open(settings.TAGS_JSON, 'w') as f:
         json.dump(data, f)
 
+
 def manage_webhook_event(event, payload):
+
     """Simple webhook handler that prints the event and payload to the console"""
+
     if event == 'push':
         updated_at = payload['repository']['pushed_at']
         try:
-            repo = git.Repo(settings.COSMOS_PATH)
+            repo = git.Repo(settings.COSMOS_ROOT)
             o = repo.remotes.origin
             print("Pulling cosmos!")
             o.pull()
@@ -39,8 +127,11 @@ def manage_webhook_event(event, payload):
             print("Cloning cosmos!")
             git.Git().clone(settings.COSMOS_LINK)
             print("Cloning done!")
-        update_metadata(updated_at)
-        update_tags(updated_at)
+        update_metadata()
+        update_kv_to_file(settings.METADATA_JSON, updated_at, settings.TIMESTAMPS_JSON)
+        update_tags()
+        update_kv_to_file(settings.TAGS_JSON, updated_at, settings.TIMESTAMPS_JSON)
+
 
 @csrf_exempt
 def github_webhook(request):

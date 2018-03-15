@@ -1,24 +1,60 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 import json
 import random
 from random import shuffle
+import re
+from search.templatetags.calculator import getResult
+
+COSMOS_SEP = '_'
 
 # Create your views here
 
+
 # To prefill the searchbar
-def searchbar():
-    jsonFile = open('tags.json', 'r')
-    data = json.load(jsonFile)
-    algo_list = data['tags']
-    r_no = random.randint(0,len(algo_list))
+def get_random_tag():
+    jsonFile = open(settings.TAGS_JSON, 'r')
+    algo_list = json.load(jsonFile)
+    r_no = random.randint(0, len(algo_list) - 1)
     algo_tag = algo_list[r_no]
     return algo_tag
 
 
+def searchSuggestion(request):
+    jsonFile = open(settings.TAGS_JSON, 'r')
+    algo_list = json.load(jsonFile)
+    filterData = []
+    results = []
+    if request.is_ajax():
+        val = request.GET.get('term', '')
+        filterData = []
+        for word in algo_list:
+            if word.startswith(val):
+                filterData.append(word)
+        i = 0
+        for tag in filterData:
+            tag_json = {}
+            tag_json['id'] = filterData.index(tag)
+            tag_json['label'] = tag
+            tag_json['value'] = tag
+            results.append(tag_json)
+            i = i + 1
+            if i >= 6:
+                break
+        searchTag = json.dumps(results)
+    else:
+        searchTag = 'fail'
+    return searchTag
+
+
 def index(request):
-    algo_tag = searchbar()
-    return render(request,'cosmos/index.html',{'algo_name':algo_tag})
+    algo_tag = get_random_tag()
+    algo = searchSuggestion(request)
+    if request.is_ajax():
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
+    return render(request, 'cosmos/index.html', {'algo_name': algo_tag})
 
 
 # Handlers for error pages
@@ -38,44 +74,115 @@ def error500(request):
     return render(request, 'cosmos/error/HTTP500.html')
 
 
+# calculator
+def calculator(request):
+    global exprResult
+    if request.method == 'POST':
+        q = request.POST.get('txt')
+        if q is not None:
+            getResult(q)
+            res = getResult(q)
+            if type(res) == int or type(res) == float:
+                exprResult = round(res, 3)
+            else:
+                exprResult = 'Error'
+    else:
+        exprResult = None
+        q = None
+    return render(request, 'cosmos/searchresults.html',
+                  {'title': 'Calculator',
+                   'query': q,
+                   'result_val': exprResult,
+                   })
+
+
+def is_file_extension_ignored(file_):
+    return file_.split('.')[-1] in ['md', 'MD']
+
+
 # Search query
 def query(request):
-    query = request.GET['q']
-    q = query.replace(' ', '_')
-    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-    ans = []
-    rec = []
-    for k, v in data.items():
-        filtered_v = []
-        try:
-            for f in v:
-                if f.split('.')[-1] != 'md':
-                    filtered_v.append(f)
-        except TypeError:
-            print('TypeError')
-        if q in k and "test" not in k.split("/"):
-            if filtered_v:
-                path = k
-                k = k.split('/')
-                ans.append({'path': path, 'dirs': k, 'files': filtered_v})
-                if len(k) == 2:
-                    d = k[len(k)-2] + '/'
-                else:
-                    d = k[len(k)-3] + '/'
-                for i, j in data.items():
-                        if d in i:
-                            if not q in i:
-                                p = i
-                                p = p.split('/')
-                                l = p[len(p)-1]
-                                rec.append({'recpath': i, 'recdirs':p, 'last': l})
-    if not ans:
-        return render(request, 'cosmos/notfound.html', {'query': query})
-    shuffle(rec)
-    return render(request, 'cosmos/searchresults.html',
-                  {'amount': len(ans), 'result': ans, 'recommend': rec[0:5], 'query': query})
+    global algo_name, title
+    if request.method == 'GET':
+        query = re.escape(request.GET['q']).replace('\ ', ' ')
 
-# search strategy
+        if '\\' in query:
+            query = query.replace('\\', '')
+
+        res = getResult(query)
+        if type(res) == int or type(res) == float:
+            exprResult = round(res, 3)
+            title = "Calculator"
+            algo_name = ""
+        else:
+            exprResult = None
+
+        q = query.replace(' ', COSMOS_SEP)
+        data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+        ans = []
+        rec = []
+        amount = 0
+        for folder, file in data.items():
+            filtered_v = []
+            for f in file:
+                if not is_file_extension_ignored(f):
+                    filtered_v.append(f)
+            if q in folder and "test" not in folder.split("/"):
+                if filtered_v:
+                    path = folder
+                    folder_list = folder.split('/')
+                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                    amount += len(filtered_v)
+                    if len(folder_list) == 2:
+                        d = folder_list[-2] + '/'
+                    else:
+                        d = folder_list[-3] + '/'
+                    for i, j in data.items():
+                            if d in i:
+                                if q not in i:
+                                    only_contents_md = True
+                                    for f in j:
+                                        if not is_file_extension_ignored(f):
+                                            only_contents_md = False
+                                            break
+                                    if only_contents_md:
+                                        continue
+                                    p = i
+                                    p = p.split('/')
+                                    l = p[len(p) - 1]
+                                    rec.append({'recpath': i, 'recdirs': p, 'last': l})
+
+        if not ans and exprResult is None:
+            return render(request, 'cosmos/notfound.html', {'query': query})
+
+        if ans:
+            algo_name = query
+            title = query
+
+        if ans and exprResult:
+            amount += 1
+
+        shuffle(rec)
+        return render(request, 'cosmos/searchresults.html',
+                      {'amount': amount,
+                       'title': title,
+                       'result': ans,
+                       'recommend': rec[:5],
+                       'query': query,
+                       'result_val': exprResult,
+                       'algo_name': algo_name
+                       })
+
+    elif request.method == 'POST':
+        calculator(request)
+
+    if request.is_ajax():
+        algo = searchSuggestion(request)
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
+
+
+# Search strategy
 def subsq(a, b, m, n):
     # Base Cases
     if m == 0:

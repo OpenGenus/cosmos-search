@@ -34,11 +34,13 @@ GITHUB_WEBHOOK_SECRET = config('GITHUB_WEBHOOK_SECRET', cast=lambda v: v.encode(
 
 COSMOS_LINK = 'https://github.com/OpenGenus/cosmos.git'
 
-COSMOS_PATH = 'cosmos/code/'
+COSMOS_ROOT = 'cosmos/'
 
 METADATA_JSON = 'metadata.json'
 
 TAGS_JSON = 'tags.json'
+
+TIMESTAMPS_JSON = 'timestamps.json'
 
 # Application definition
 
@@ -133,4 +135,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
