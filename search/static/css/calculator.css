@@ -7,7 +7,7 @@
     padding: 1em;
 
     background: #949494;
-    box-shadow: .15em .15em rgba(0, 0, 0, .2);
+    box-shadow: .15em .15em .15em rgba(0, 0, 0, .2);
     border-radius: .2em;
 }
 
