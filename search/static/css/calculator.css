@@ -7,35 +7,47 @@
     padding: 1em;
 
     background: #949494;
-    /*background: linear-gradient(#9dd2ea, #8bceec);*/
-    border-radius: 0.2em;
+    box-shadow: .15em .15em rgba(0, 0, 0, .2);
+    border-radius: .2em;
 }
+
 #calculator * {
-    border-radius: 0.2em;
+    border-radius: .2em;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
-/* Top portion */
-.top span.clear {
-    float: left;
+
+#calculator input {
+    background: white;
+    text-shadow: .1em .1em .1em rgba(0, 0, 0, .1);
 }
 
 /* Inset shadow on the screen to create indent */
-.top .screen {
+.screen {
     width: 100%;
-    float: left;
-    padding: 0.5em;
-    margin: 0.5em 0;
-    background: rgb(255, 255, 255);
-    font-size: 17px;
-    line-height: 40px;
-    color: white !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    text-align: right;
-    letter-spacing: 1px;
+    padding: .5em;
+    margin: .5em 0;
+    font-size: 1em;
+    line-height: 1.25em;
+    color: white;
+    background: white;
+    box-shadow: .15em .15em rgba(0, 0, 0, .2);
 }
 
-/* Clear floats */
-.keys, .top {
-    overflow: hidden;
+#resultText {
+    width: 100%;
+    height: 70%;
+    text-align: right;
+    font-size: 1.2em;
+    outline: none;
+}
+
+#seq {
+    width: 100%;
+    height: 30%;
+    text-align: right;
+    font-size: .75em;
 }
 
 .keys-row {
@@ -63,105 +75,39 @@
 }
 
 /* Applying same to the keys */
-.keys span, .top span.clear {
+.keys * {
     float: left;
-    position: relative;
-    top: 0;
-
-    background: white;
-    box-shadow: 0px 2px rgba(0, 0, 0, 0.2);
-
+    width: 100%;
+    box-shadow: .1em .1em rgba(0, 0, 0, .2);
     text-align: center;
 
     /* prevent selection of text inside keys */
     user-select: none;
 
     /* Smoothing out hover and active states using css3 transitions */
-    transition: all 0.2s ease;
+    transition: all .2s ease;
 }
 
 /* Remove right margins from operator keys */
 /* style different type of keys (operators/evaluate/clear) differently */
-.keys span.operator {
-    background: #FFF0F5;
-    margin-right: 0;
+.keys .operator input {
+    background: #FFF0F5 !important;
 }
 
-.keys span.eval {
-    background: #a6e3e4;
+.keys .eval input {
+    background: #a6e3e4 !important;
 }
 
-.top span.clear {
-    background: #ff9fa8;
-    box-shadow: 0px 4px #ff7c87;
-    color: white;
+.keys .clear input {
+    background: #dcbd5e !important;
 }
 
 /* Some hover effects */
 .keys span:hover {
-    background: #d9d5ec;
-    color: white;
+    opacity: .75;
+    top: .1em;
 }
 
-.keys span.eval:hover {
-    background: #96cfd0;
-    color: #ffffff;
-}
-input#seq:focus {
-    outline: none;
-    background: transparent;
-}
-.top span.clear:hover {
-    background: #f68991;
-    box-shadow: 0px 4px #d3545d;
-    color: white;
-}
-
-.keys span:active {
-    top: 4px;
-}
-
-.keys span.eval:active {
-    box-shadow: 0px 0px #717a33;
-    top: 4px;
-}
-
-.top span.clear:active {
-    top: 4px;
-    box-shadow: 0px 0px #d3545d;
-}
-
-input {
-    border: none;
-    background: none;
-}
-
-.clear {
-    background: #dcbd5e !important;
-    color: #fff;
-}
-
-input.num {
-    width: 100% !important;
-}
-input.num:focus {
-    outline: none;
-}
-input#resultText {
-    width: 100%;
-    height: 70%;
-    text-align: right;
-    font-size: 1.1em;
-    outline: none;
-}
-input#seq {
-    width: 100%;
-    height: 30%;
-    text-align: right;
-    font-size: 0.75em;
-}
-input[type="text"], textarea {
-    background-color: rgb(255, 255, 255);
-    background-image: none;
-    color: rgb(0, 0, 0);
+.keys *:active {
+    top: .1em;
 }
