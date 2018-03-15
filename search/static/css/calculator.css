@@ -32,7 +32,7 @@
     line-height: 1.25em;
     color: white;
     background: white;
-    box-shadow: .15em .15em rgba(0, 0, 0, .2);
+    box-shadow: .15em .15em .15em rgba(0, 0, 0, .2);
 }
 
 #resultText {
@@ -78,7 +78,7 @@
 .keys * {
     float: left;
     width: 100%;
-    box-shadow: .1em .1em rgba(0, 0, 0, .2);
+    box-shadow: .1em .1em .1em rgba(0, 0, 0, .2);
     text-align: center;
 
     /* prevent selection of text inside keys */
