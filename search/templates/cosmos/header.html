@@ -65,9 +65,9 @@
             {# align search bar and middle of vw #}
             <div class="col"></div>
             <div class="col-md-8">
-                <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
+                <form class="form-inline justify-content-center" id="search_form" action="{% url 'query' %}" onsubmit="return trim()" method="GET">
                     <div class="input-group">
-                        <input class="form-control text-center" id = "search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
+                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
                     </div>
                 </form>
             </div>
@@ -96,11 +96,15 @@
             source: "/",
             minLength: 1,
             select: function (e, ui) {
-                $("#formq").submit()
+                $("#search_form").submit()
             }
         });
     });
 
+    function trim() {
+      document.getElementById('search').value = document.getElementById('search').value.replace(/\s+/g, ' ').trim()
+      document.getElementById('search_form').submit()
+    };
 </script>
 </body>
 
