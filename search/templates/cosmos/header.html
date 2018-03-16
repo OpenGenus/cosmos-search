@@ -101,10 +101,10 @@
         });
     });
     $("#formq").submit(function () {
-        if ($('input').val().replace(/\s/g, '').length === 0) {
+        if ($('input').val().replace(/[\s,\/#!$%\^&\*;:{}=\-_`~().]/g, '').length === 0) {
                 return false;
             }
-        });
+         });
 
 </script>
 </body>
