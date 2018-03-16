@@ -50,6 +50,11 @@
                                 aria-haspopup="true" aria-expanded="false">
                             Solutions
                         </button>
+                        <div id="hd">
+                            {% for x in res_stack %}
+                                <p><a href="{{ x.url }}" target="blank"/>{{ x.title }}</p>
+                            {% endfor %}
+                        </div>
                         <div class="dropdown-menu" aria-labelledby="soln">
                             {% for file in entry.files %}
                                 <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"

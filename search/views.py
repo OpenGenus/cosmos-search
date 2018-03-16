@@ -5,6 +5,9 @@ import json
 import random
 from random import shuffle
 import re
+
+from stackapi import StackAPI
+
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -100,6 +103,34 @@ def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
+def stackoverflow(query):
+    if query.find(" ")==-1:
+        query += ' algorithm'
+
+    site = StackAPI('stackoverflow')
+
+    data = site.fetch('similar',  order='desc',sort='relevance', title=query)
+    # print(data)
+    list = data['items']
+    # print(list)
+    j = 0
+    result = []
+    for x in list:
+        res = {
+            'title': x['title'],
+            'url': x['link'],
+            'qid': x['question_id'],
+            'view': x['view_count'],
+            'score': x['score']
+        }
+        result.append(res)
+        j += 1
+        if j > 5:
+            break
+    return result
+
+
+
 # Search query
 def query(request):
     global algo_name, title
@@ -108,8 +139,8 @@ def query(request):
 
         if '\\' in query:
             query = query.replace('\\', '')
-
         res = getResult(query)
+        stk_res = stackoverflow(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
@@ -170,7 +201,8 @@ def query(request):
                        'recommend': rec[:5],
                        'query': query,
                        'result_val': exprResult,
-                       'algo_name': algo_name
+                       'algo_name': algo_name,
+                       'res_stack': stk_res
                        })
 
     elif request.method == 'POST':
