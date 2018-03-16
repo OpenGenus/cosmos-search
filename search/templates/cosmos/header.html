@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
     <style>
         html {
@@ -20,6 +23,7 @@
         body {
             font-family: 'Roboto Mono', monospace;
             margin-bottom: 5em;
+            font-size: 16px;
         }
 
         article {
@@ -42,6 +46,20 @@
             font-size: 16px !important;
             line-height: 1.2 !important;
         }
+        .stylish-input-group .input-group-addon{
+            background: white !important;
+          }
+        .stylish-input-group button{
+            border:0;
+            background:transparent;
+
+        }
+        .border{
+          margin: 0;
+          padding: 0;
+          padding-bottom: 0;
+        }
+        .bootstrap-iso .form-control{border-width: 2px; border-color: grey;}
     </style>
 
 </head>
@@ -61,18 +79,23 @@
         <div class="row">
             {# align search bar and middle of vw #}
             <div class="col"></div>
-            <div class="col-md-8">
+            <div class="col-8 nopadding border">
                 <form class="form-inline justify-content-center" id="formq" action="/query/" method="GET">
-                    <div class="input-group">
-                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
+                    <div class="input-group stylish-input-group">
+                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q">
+                        <span class="input-group-addon">
+                        <button type="submit" style="outline: none;">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
                     </div>
                 </form>
             </div>
-            <script>
-             (function() {
-                 document.getElementById("search").select();
-                }());
-             </script>
+            <div class="col-0.5 border">
+                <button onclick="document.getElementById('search').value=''" class="btn btn-default btn-md">
+                  <i class="fa fa-remove" style="color:#A4A2A2;"></i>
+                </button>
+            </div>
             {# align search bar and middle of vw #}
             <div class="col float-right"></div>
         </div><br>
