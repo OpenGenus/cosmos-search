@@ -102,7 +102,7 @@
     });
 
     function trim() {
-      document.getElementById('search').value = document.getElementById('search').value.trim()
+      document.getElementById('search').value = document.getElementById('search').value.replace(/\s+/g, ' ').trim()
       document.getElementById('search_form').submit()
     };
 </script>
