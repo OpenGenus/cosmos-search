@@ -126,7 +126,7 @@ def query(request):
                             l = p[-1]
                             rec.append({'recpath': i, 'recdirs': p, 'last': l})
     if not ans:
-        return render(request, 'cosmos/notfound.html', {'query': query})
+        return render(request, 'cosmos/notfound.html', {'query': query, 'mylist': mylist })
     shuffle(rec)
     if request.is_ajax():
         algo = searchSuggestion(request)

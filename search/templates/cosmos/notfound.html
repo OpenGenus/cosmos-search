@@ -7,6 +7,18 @@
     <h1> Sorry! </h1>
     <h2>It seems like there are no results for <span style="color: #5D337F;">{{ query }}</span> !</h2>
     <h6>Try searching something else or request the algorithm you searched for <a href="https://github.com/OpenGenus/cosmos/issues/new">here</a>.</h6><br>
+    <h5>Search results from other sites</h5>
+    <hr> {% for j,k in mylist %}
+    <div class="card">
+        <div class="card-body">
+            <form method="get">
+                <div>
+                    <a class="btn-link" href="{{j}}">{{k}}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br> {% endfor %}
     <h6>&mdash; <a href="http://opengenus.org">OpenGenus, The Open Group to help the needy</a></h6>
 </article>
 {% endblock %}
