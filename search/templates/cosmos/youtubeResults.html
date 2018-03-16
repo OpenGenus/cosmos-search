@@ -1,15 +1,18 @@
-{% block body %}
-
+{% extends 'cosmos/searchresults.html' %}
+{% block videos %}
+    <br>
     <div class="row">
         {% for video in videos %}
             <div class="col-6 col-md-3">
-            <hr>
+
                 <h6>
                     <span style="color: #5D337F;">{{ video.title|truncatechars:25 }}</span>
                 </h6>
                 <iframe width="250" height="200" src="{{ video.embed }}" frameborder="0"
                         allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <hr>
             </div>
+
         {% endfor %}
     </div>
 {% endblock %}

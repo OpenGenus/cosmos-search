@@ -1,19 +1,28 @@
 {% extends 'cosmos/header.html' %}
+{% load staticfiles %}
 {% block head %}
-    <title>"{{ query }}" | cosmos-search</title>
+    <title>"{{ title }}" | cosmos-search</title>
+
 {% endblock %}
+
 {% block body %}
+    <h6>
+        <div class="row">
+            <div class="col-md-8">
+                {% if amount > 1 %}
+                    Showing
+                    <span style="color: #5D337F;">{{ amount }}</span> results for:
+                    <span style="color: #5D337F;">{{ query }}</span>
 
-    {% if amount > 1 %}
-        <h6>Showing
-        <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>
+                {% elif result_val and not result %}
+                    Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
-    {% else %}
-        <h6>Showing
-        <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>
-
-    {% endif %}
-<span>
+                {% elif amount is 1 %}
+                    Showing
+                    <span style="color: #5D337F;">{{ amount }}</span> result for:
+                    <span style="color: #5D337F;">{{ query }}</span>
+                {% endif %}
+                <span>
         <a href="#" style="color: #1b1e21"><div data-network="twitter"
                                                 class="st-custom-button fa fa-twitter-square"></div></a>
         <a href="#" style="color: #1b1e21"><div data-network="facebook"
@@ -23,46 +32,72 @@
         <a href="#" style="color: #1b1e21"><div data-network="googleplus"
                                                 class="st-custom-button fa fa-google-plus-square"></div></a>
     </span>
-</h6>
-    <hr> {% for entry in result %}
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">
-                {% for i in entry.dirs %}
-                    {{ i }} /
-                {% endfor %}
-            </h4>
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    Solutions
-                </button>
-                <div class="dropdown-menu" aria-labelledby="soln">
-                    {% for file in entry.files %}
-                        <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
-                           target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+
+            </div>
+            <div class="col-md-4">
+                <div class="vid">
+                    <form action="{% url 'video' %}" id="videoform" name="vf">
+                        <input class="btn float-right" hidden type="text" value="{{ query }}" name="videos"/>
+                        <input type="submit" class="btn float-right"
+                               style="color: #5D337F; background-color: white; margin-top: -0.5em" value="Videos">
+
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <br> {% endfor %}
-    <h5>Recommended results</h5>
-    <hr> {% for j in recommend %}
-    <div class="card">
-        <div class="card-body">
+    </h6>
 
-            <form method="get">
-                <div>
-                    <h6 class="card-title">
-                        {% for k in j.recdirs %}
-                            {{ k }} /
+    <hr>
+    {% if result_val or not result and not videos %}
+        {% include 'cosmos/calculator.html' %}
+    {% endif %}
+
+    {% if result %}
+        {% for entry in result %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {% for i in entry.dirs %}
+                            {{ i }} /
                         {% endfor %}
-                    </h6>
-                    <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                    </h4>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            Solutions
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="soln">
+                            {% for file in entry.files %}
+                                <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
+                                   target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+            <br> {% endfor %}
+    {% endif %}
+    {% if recommend %}
+        <h5>Recommended results</h5>
+        <hr> {% for j in recommend %}
+        <div class="card">
+            <div class="card-body">
+
+                <form method="get">
+                    <div>
+                        <h6 class="card-title">
+                            {% for k in j.recdirs %}
+                                {{ k }} /
+                            {% endfor %}
+                        </h6>
+                        <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-    <br> {% endfor %}
-    {% include 'cosmos/youtubeResults.html' %}
+        <br>
+    {% endfor %}
+    {% endif %}
+
+    {% block videos %}
+    {% endblock %}
 {% endblock %}
