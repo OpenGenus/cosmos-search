@@ -199,8 +199,8 @@ def video_search(request):
         'videos': youtube_result,
         'title': 'Videos'
     })
-
-
+  
+  
 # Search strategy
 def subsq(a, b, m, n):
     # Base Cases
