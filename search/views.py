@@ -110,9 +110,8 @@ def query(request):
     global algo_name, title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
-		#add
         query = query.replace('\_', ' ')
-        #add
+        
         if '\\' in query:
             query = query.replace('\\', '')
 
@@ -127,7 +126,7 @@ def query(request):
         q = query.replace(' ', COSMOS_SEP)
         
         
-        #add
+        
         list_query=q.split(COSMOS_SEP)
         perms = permute(list_query)
         list1=[]
@@ -135,7 +134,7 @@ def query(request):
             for i in range(len(p)):
                 p[i]=p[i].replace('\\', '')
             list1.append('_'.join(p))
-        #add
+        
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
         rec = []
