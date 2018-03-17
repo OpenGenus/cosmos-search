@@ -5,7 +5,7 @@ import json
 import random
 from random import shuffle
 import re
-
+from wikiapi import WikiApi
 from stackapi import StackAPI
 
 from search.templatetags.calculator import getResult
@@ -112,7 +112,6 @@ def stackoverflow(query):
     data = site.fetch('similar',  order='desc',sort='relevance', title=query)
     # print(data)
     list = data['items']
-    # print(list)
     j = 0
     result = []
     for x in list:
@@ -130,6 +129,20 @@ def stackoverflow(query):
     return result
 
 
+def wiki(query):
+    wiki = WikiApi()
+    wiki_temp=wiki.find(query)
+    if(len(wiki_temp)!=0):
+        wiki_res1 = wiki.get_article(wiki_temp[0])
+        return wiki_res1
+    else:
+        wiki_te = wiki.find('Barack Obama')
+        wiki_res1 = wiki.get_article(wiki_te[0])
+        wiki_res1.heading = '404_NOT_FOUND'
+        wiki_res1.url = '#'
+        return wiki_res1
+
+
 
 # Search query
 def query(request):
@@ -140,7 +153,10 @@ def query(request):
         if '\\' in query:
             query = query.replace('\\', '')
         res = getResult(query)
+
         stk_res = stackoverflow(query)
+        wiki_res = wiki(query)
+
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
@@ -202,7 +218,8 @@ def query(request):
                        'query': query,
                        'result_val': exprResult,
                        'algo_name': algo_name,
-                       'res_stack': stk_res
+                       'res_stack': stk_res,
+                       'res_wiki': wiki_res
                        })
 
     elif request.method == 'POST':
