@@ -109,7 +109,7 @@ def stackoverflow(query):
 
     site = StackAPI('stackoverflow')
 
-    data = site.fetch('similar',  order = 'desc', sort = 'relevance', title = query)
+    data = site.fetch('similar',  order='desc', sort='relevance', title=query)
     list = data['items']
     j = 0
     result = []
@@ -140,6 +140,7 @@ def wiki(query):
         wiki_res1.heading = '404_NOT_FOUND'
         wiki_res1.url = '#'
         return wiki_res1
+
 
 def query(request):
     global algo_name, title
