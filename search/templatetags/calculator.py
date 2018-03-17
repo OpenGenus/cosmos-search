@@ -28,7 +28,7 @@ def isMathExpression(expr, op_math):
     while i < len(expr):
         if expr[i] == ' ':
             i += 1
-        if expr[i] == '+' and ((len(token) > 0 and token[-1] == '(') or i == 0):
+        elif expr[i] == '+' and ((len(token) > 0 and token[-1] == '(') or i == 0):
             token.append('u+')
             i += 1
         elif expr[i] == '-' and ((len(token) > 0 and token[-1] == '(') or i == 0):
