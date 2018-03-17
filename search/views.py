@@ -109,7 +109,7 @@ def stackoverflow(query):
 
     site = StackAPI('stackoverflow')
 
-    data = site.fetch('similar',  order='desc', sort='relevance', title=query)
+    data = site.fetch('similar', order='desc' , sort='relevance', title=query)
     list = data['items']
     j = 0
     result = []
