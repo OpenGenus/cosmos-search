@@ -215,7 +215,6 @@ def search_results_from_sites(request):
         res = requests.get('https://google.com/search?q=' + keyword1)
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         links = soup.select('.r a')
-        tab_counts = min(10, len(links))
         for k in range(j):
             link = 'https://google.com' + links[k].get('href')
             link_list.append(link)
