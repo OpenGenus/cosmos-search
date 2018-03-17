@@ -104,13 +104,12 @@ def is_file_extension_ignored(file_):
 
 
 def stackoverflow(query):
-    if query.find(" ")==-1:
+    if query.find(" ") == -1:
         query += ' algorithm'
 
     site = StackAPI('stackoverflow')
 
-    data = site.fetch('similar',  order='desc',sort='relevance', title=query)
-    # print(data)
+    data = site.fetch('similar',  order = 'desc', sort = 'relevance', title = query)
     list = data['items']
     j = 0
     result = []
@@ -131,8 +130,8 @@ def stackoverflow(query):
 
 def wiki(query):
     wiki = WikiApi()
-    wiki_temp=wiki.find(query)
-    if(len(wiki_temp)!=0):
+    wiki_temp = wiki.find(query)
+    if(len(wiki_temp) != 0):
         wiki_res1 = wiki.get_article(wiki_temp[0])
         return wiki_res1
     else:
@@ -142,28 +141,22 @@ def wiki(query):
         wiki_res1.url = '#'
         return wiki_res1
 
-
-
-# Search query
 def query(request):
     global algo_name, title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
-
         if '\\' in query:
             query = query.replace('\\', '')
         res = getResult(query)
 
         stk_res = stackoverflow(query)
         wiki_res = wiki(query)
-
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
             algo_name = ""
         else:
             exprResult = None
-
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
