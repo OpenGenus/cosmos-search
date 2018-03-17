@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
@@ -41,6 +41,8 @@ METADATA_JSON = 'metadata.json'
 TAGS_JSON = 'tags.json'
 
 TIMESTAMPS_JSON = 'timestamps.json'
+
+TRUSTED_SITES = [("wikipedia", 1), ("tutorialspoint", 2), ("stackoverflow", 4)]
 
 # Application definition
 

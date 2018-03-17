@@ -208,32 +208,16 @@ def subsq(a, b, m, n):
 def search_results_from_sites(request):
     keyword = request.GET['q']
     keyword.replace(' ', '+')
-    res = requests.get('https://google.com/search?q=' + keyword)
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    links = soup.select('.r a')
     link_list = []
     heading_list = []
-    tab_counts = min(50, len(links))
-    count = 0
-    l = ["wikipedia", "tutorialspoint"]
-    for i in range(tab_counts):
-        link = 'https://google.com' + links[i].get('href')
-        for j in l:
-            if j in link:
-                if count == 0:
-                    count = count + 1
-                else:
-                    link_list.append(link)
-                    heading_list.append(links[i].text)
-    keyword = keyword + '+stackoverflow'
-    res = requests.get('https://google.com/search?q=' + keyword)
-    soup = bs4.BeautifulSoup(res.text, 'html.parser')
-    links = soup.select('.r a')
-    tab_counts = min(5, len(links))
-
-    for i in range(tab_counts):
-        link = 'https://google.com' + links[i].get('href')
-        if 'stackoverflow.com' in link:
+    for i, j in settings.TRUSTED_SITES:
+        keyword1 = keyword + ':' + i
+        res = requests.get('https://google.com/search?q=' + keyword1)
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
+        links = soup.select('.r a')
+        tab_counts = min(10, len(links))
+        for k in range(j):
+            link = 'https://google.com' + links[k].get('href')
             link_list.append(link)
-            heading_list.append(links[i].text)
+            heading_list.append(links[j].text)
     return link_list, heading_list
