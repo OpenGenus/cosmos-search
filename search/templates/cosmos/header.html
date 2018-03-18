@@ -52,34 +52,37 @@
 </head>
 
 <body style="overflow-x: hidden;">
-    <div class="container">
-        <br>
-        <div class="row">
-            <div class="col-4">
-                <a class="navbar-brand" href="/">cosmos-search</a>
-            </div>
-            <div class="col-8">
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
-                <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
-            </div>
-        </div></br>
-        <div class="row">
-            {# align search bar and middle of vw #}
-            <div class="col"></div>
-            <div class="col-md-8">
-                <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
-                    <div class="input-group">
-                        <input class="form-control text-center" id = "search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
-                    </div>
-                </form>
-            </div>
-            {# align search bar and middle of vw #}
-            <div class="col float-right"></div>
-        </div><br>
-        {% block body %} {% endblock %}
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-4">
+            <a class="navbar-brand" href="/">cosmos-search</a>
         </div>
-      <footer class="footer">
+        <div class="col-8">
+            <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
+            <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
+            <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
+        </div>
+    </div>
+    </br>
+    <div class="row">
+        {# align search bar and middle of vw #}
+        <div class="col"></div>
+        <div class="col-md-8">
+            <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
+                <div class="input-group">
+                    <input class="form-control text-center" id="search" type="search" size="128"
+                           placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
+                </div>
+            </form>
+        </div>
+        {# align search bar and middle of vw #}
+        <div class="col float-right"></div>
+    </div>
+    <br>
+    {% block body %} {% endblock %}
+</div>
+<footer class="footer">
     <div class="text-muted" style="text-align: center">
         <div>Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></div>
         <div>Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></div>
@@ -100,27 +103,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 {% block javascript %}
 {% endblock %}
-
 <script>
-        $(function () {
-            $("#search").autocomplete({
-                source: "/",
-                minLength: 1,
-                select: function (e, ui) {
-                    $("#formq").submit()
-                }
-            });
-        });
-
-        function empty() {
-            var x;
-            x = $("#search").value;
-            if (x === "") {
-                return false;
+    $(function () {
+        $("#search").autocomplete({
+            source: "/",
+            minLength: 1,
+            select: function (e, ui) {
+                $("#formq").submit()
             }
+        });
+    });
+    $("#formq").submit(function () {
+        if ($('input').val().replace(/[\s,\/#!$%\^&\*;:{}=\-_`~().]/g, '').length === 0) {
+            return false;
         }
+    });
 
-    </script>
+</script>
+
+
 </body>
 
 </html>

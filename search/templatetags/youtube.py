@@ -4,7 +4,8 @@ from oauth2client.tools import argparser
 
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # Please ensure that you have enabled the YouTube Data API for your project.
-DEVELOPER_KEY = ["Insert your API key here"]
+# DEVELOPER_KEY = ["Insert your API key here"]
+DEVELOPER_KEY = "AIzaSyDjQaMGfbDITJJ3YRgXFuS5AZ1N84C854k"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
@@ -19,16 +20,19 @@ def youtube_search(options):
         part="id, snippet",
         maxResults=options['max_results']
     ).execute()
+    i = 0
     for search_result in search_response.get("items", []):
         if search_result['id']['kind'] == 'youtube#video':
             res = {
+                'id': i,
                 'title': search_result['snippet']['title'],
                 'videoId': search_result['id']['videoId'],
                 'description': search_result['snippet']['description'],
-                'image': search_result['snippet']['thumbnails']['medium']['url'],
+                'image': search_result['snippet']['thumbnails']['high']['url'],
                 'embed': "https://www.youtube.com/embed/" + search_result['id']['videoId']
             }
             videos_Results.append(res)
+            i += 1
         if len(videos_Results) >= 50:
             break
     return videos_Results
