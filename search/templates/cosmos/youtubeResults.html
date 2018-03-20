@@ -1,44 +1,81 @@
 {% extends 'cosmos/searchresults.html' %}
+{% load random_numbers %}
 {% block videos %}
-    <br>
-    <div class="row">
-        {% for video in videos %}
+    <script>
+        function stopVideo(x) {
+            var vid1 = "vid" + x;
+            var id = document.getElementById(vid1);
+            $(id).attr('src', $(id).attr('src'));
+        }
+    </script>
 
-            <div class="col-md-3">
-                <img src="{{ video.image }}" width="250" height="200" data-toggle="modal" data-target="#{{ video.id }}">
-                <p>
-                    <span style="color: #5D337F; font-size: 0.8em">{{ video.title }}</span>
-                </p>
-            </div>
+    <style>
+        .image:hover {
+            color: #afc2d3;
+        }
 
-            <!-- Modal -->
-            <div class="modal fade" id="{{ video.id }}" role="dialog">
-                <div class="modal-dialog">
+        .modal-content {
+            background-color: #f5f5f7;
+        }
+    </style>
 
-                    <!-- Modal content-->
-                    <div class="modal-content"  style="width: 100%">
-                        <div class="modal-header">
-                            <h3 class="modal-title" style="text-align: center">{{ video.title }}</h3>
-                        </div>
-                        <div class="modal-body">
-                            <iframe src="{{ video.embed }}" width="100%" height="318px" allowfullscreen onload="start()">
-                            </iframe>
-                        </div>
-                        <div class="modal-footer">
-                            <p style="text-align: center">
-                                {{ video.description }}
+    {% for video in videos %}
+        {% if video.id|modulo:4 == 0 %}
+            <div class="row">
+        {% endif %}
+
+    <div class="col-md-3 col-xs-3 col-sm-3">
+
+        <img src="{{ video.image }}" class="img-responsive image" data-toggle="modal" data-target="#{{ video.id }}"
+             style="width: auto; height: 200px; border: solid">
+        <p style=" margin: 0 !important; padding: 0 !important;">
+            <span style="color: #5D337F; font-size: 0.8em">{{ video.title }}</span>
+        </p>
+        <div class="modal fade" id="{{ video.id }}" role="dialog" onclick="stopVideo(this.id)">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="font-weight: bold;font-family: -webkit-body;">{{ video.title }}</h4>
+
+                        <button type="button" class="close" data-dismiss="modal" onclick="stopVideo({{ video.id }})"><i
+                                class="fa fa-times-circle"></i>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <iframe src="{{ video.embed }}?enablejsapi=1" id="vid{{ video.id }}" class="youtube-iframe"
+                                width="100%" height="530px"
+                                style="padding: 10px;"
+                                allowfullscreen>
+                        </iframe>
+                        <br>
+                        <div class="content" style="flex-direction: column;">
+                            <br>
+                            <p style="font-family: arial;font-size: 15px;">
+
+                                -{{ video.description }}
+
                             </p>
+                            <p style="font-size: 15px;font-family: initial;"><span
+                                    style="color: blue"> Published At:</span> {{ video.date }}
+                            </p>
+                            <p style="font-size: 15px;font-family: initial;"><span
+                                    style="color: blue"> Time: </span>{{ video.time }} </p>
                         </div>
+
                     </div>
 
                 </div>
+
             </div>
-
-            <br>
-            <br>
-            <hr>
-        {% endfor %}
+        </div>
     </div>
+    {% if video.id|modulo:4 == 3 %}
+        </div>
+        <hr>
+    {% endif %}
+    {% endfor %}
+
 {% endblock %}
-
-

@@ -21,29 +21,23 @@ def youtube_search(options):
         maxResults=options['max_results']
     ).execute()
     i = 0
+
     for search_result in search_response.get("items", []):
         if search_result['id']['kind'] == 'youtube#video':
+            pdate = search_result['snippet']['publishedAt'].split("T")[0]
+            ptime = search_result['snippet']['publishedAt'].split("T")[1].split(".")[0]
             res = {
                 'id': i,
                 'title': search_result['snippet']['title'],
                 'videoId': search_result['id']['videoId'],
                 'description': search_result['snippet']['description'],
                 'image': search_result['snippet']['thumbnails']['high']['url'],
-                'embed': "https://www.youtube.com/embed/" + search_result['id']['videoId']
+                'embed': "https://www.youtube.com/embed/" + search_result['id']['videoId'],
+                'date': pdate,
+                'time': ptime
             }
             videos_Results.append(res)
             i += 1
         if len(videos_Results) >= 50:
             break
     return videos_Results
-
-
-if __name__ == "__main__":
-    argparser.add_argument("--q", help="Search term", default="Google")
-    argparser.add_argument("--max-results", help="Max results", default=25)
-    args = argparser.parse_args()
-
-    try:
-        youtube_search(args)
-    except HttpError as e:
-        print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
