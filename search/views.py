@@ -198,6 +198,11 @@ def subsq(a, b, m, n):
 
 
 def display(request):
-    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + request.GET['path']
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
     r = requests.get(display)
-    return render(request, 'cosmos/data.html', {'code': r.text})
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l: l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})

@@ -1,14 +1,60 @@
 {% extends 'cosmos/header.html' %}
 {% block head %}
   <title>"cosmos-search</title>
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/atelier-seaside-dark.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/sunburst.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <style>
+      td.hljs-ln-numbers {
+        text-align: center;
+        color: #ccc;
+        border-right: 20px solid #000000;
+        border-spacing: 10px;
+        vertical-align: top;
+        padding: 100px;
+        margin: 100px;
+      }
+      td.hljs-ln-code {
+        padding: 100px;
+        margin: 100px;
+      }
+  </style>
 {% endblock %}
 {% block body %}
-<pre>
-  <code>
-    {{code}}
-  </code>
+<div class="row">
+<div class="col-xl-8 ">
+  <h5>
+  {% for items in path%}
+    {{ items }}/
+  {% endfor %}
+</h5>
+</div>
+<div class="col-xl-3">
+  <a href="https://discourse.opengenus.org"><button type="button" class="btn btn-info">Ask any questions</button></a>
+</div>
+<div class="col-xl-1">
+<button type="button" id="btn" name="button" class="btn btn-light" data-toggle="tooltip" data-placement="bottom" title="Copy to clipboard" onclick="getValue()"><i class="fa fa-clipboard"></i></button>
+</div>
+</div>
+<div style="display: none;" id="select">{{code}}</div>
+<pre class="language">
+      <code>
+        {{code}}
+      </code>
 </pre>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+function getValue(){
+  var select = document.getElementById("select");
+  var copy = select.innerHTML;
+  var createtag = $('<textarea>').val(copy).appendTo('body').select();
+  document.execCommand('copy');
+  createtag.remove();
+}
+</script>
 {% endblock %}
