@@ -10,6 +10,7 @@ def random_int(a, b=None):
         a, b = 0, a
     return random.randint(a, b)
 
+
 @register.filter
 def modulo(num, val):
     return num % val

@@ -1,11 +1,8 @@
 from apiclient.discovery import build
-from apiclient.errors import HttpError
-from oauth2client.tools import argparser
 
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # Please ensure that you have enabled the YouTube Data API for your project.
-# DEVELOPER_KEY = ["Insert your API key here"]
-DEVELOPER_KEY = "AIzaSyDjQaMGfbDITJJ3YRgXFuS5AZ1N84C854k"
+DEVELOPER_KEY = ["Insert your API key here"]
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
