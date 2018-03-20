@@ -204,5 +204,6 @@ def display(request):
     path = path.replace('_', ' ')
     path = path.replace('.', ' in ')
     l = path.split('/')
-    if 'src' in l: l.remove('src')
+    if 'src' in l:
+        l.remove('src')
     return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
