@@ -1,12 +1,27 @@
 {% extends 'cosmos/searchresults.html' %}
 {% load random_numbers %}
+
 {% block videos %}
     <script>
-        function stopVideo(x) {
-            var vid1 = "vid" + x;
-            var id = document.getElementById(vid1);
-            $(id).attr('src', $(id).attr('src'));
+
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var video = [];
+
+
+        function ready(id) {
+            video[id] = new YT.Player($('iframe').get(id));
         }
+
+        function pause(id) {
+            video[id].pauseVideo();
+        }
+
+
     </script>
 
     <style>
@@ -24,14 +39,17 @@
             <div class="row">
         {% endif %}
 
-    <div class="col-md-3 col-xs-3 col-sm-3">
+    <div class="col-md-3 col-xs-3 col-sm-3" id="a{{ video.id }}">
 
         <img src="{{ video.image }}" class="img-responsive image" data-toggle="modal" data-target="#{{ video.id }}"
              style="width: auto; height: 200px; border: solid">
         <p style=" margin: 0 !important; padding: 0 !important;">
             <span style="color: #5D337F; font-size: 0.8em">{{ video.title }}</span>
         </p>
-        <div class="modal fade" id="{{ video.id }}" role="dialog" onclick="stopVideo(this.id)">
+        <p style="font-size: 15px;font-family: initial;"><span
+                style="color: blue">Duration: </span> {{ video.duration }}
+        </p>
+        <div class="modal fade" id="{{ video.id }}" role="dialog" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-lg">
 
                 <!-- Modal content-->
@@ -39,8 +57,8 @@
                     <div class="modal-header">
                         <h4 style="font-weight: bold;font-family: -webkit-body;">{{ video.title }}</h4>
 
-                        <button type="button" class="close" data-dismiss="modal" onclick="stopVideo({{ video.id }})"><i
-                                class="fa fa-times-circle"></i>
+                        <button type="button" class="close" data-dismiss="modal"><i
+                                class="fa fa-times-circle" onclick="pause({{ video.id }})"></i>
                         </button>
 
                     </div>
@@ -48,7 +66,7 @@
                         <iframe src="{{ video.embed }}?enablejsapi=1" id="vid{{ video.id }}" class="youtube-iframe"
                                 width="100%" height="530px"
                                 style="padding: 10px;"
-                                allowfullscreen>
+                                allowfullscreen onload="ready({{ video.id }})">
                         </iframe>
                         <br>
                         <div class="content" style="flex-direction: column;">
@@ -77,5 +95,13 @@
         <hr>
     {% endif %}
     {% endfor %}
+    <script>
+        $(document).ready(function () {
+
+            $("#a0").click(function () {
+                $("#0").modal({backdrop: "static"});
+            });
+        });
+    </script>
 
 {% endblock %}
