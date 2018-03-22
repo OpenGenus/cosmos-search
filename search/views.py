@@ -116,7 +116,7 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
-
+        query = ' '.join(query.split())
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
