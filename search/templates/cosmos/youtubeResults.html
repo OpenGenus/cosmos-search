@@ -39,7 +39,7 @@
             <div class="row">
         {% endif %}
 
-    <div class="col-md-3 col-xs-3 col-sm-3" id="a{{ video.id }}">
+    <div class="col-md-3 col-xs-3 col-sm-3">
 
         <img src="{{ video.image }}" class="img-responsive image" data-toggle="modal" data-target="#{{ video.id }}"
              style="width: auto; height: 200px; border: solid">
@@ -77,10 +77,8 @@
 
                             </p>
                             <p style="font-size: 15px;font-family: initial;"><span
-                                    style="color: blue"> Published At:</span> {{ video.date }}
-                            </p>
-                            <p style="font-size: 15px;font-family: initial;"><span
-                                    style="color: blue"> Time: </span>{{ video.time }} </p>
+                                    style="color: blue"> Published At:</span> {{ video.date }} <span style="font-size: 15px;margin-left:10px;font-family: initial;"><span
+                                    style="color: blue"> Time: </span>{{ video.time }}</span> </p>
                         </div>
 
                     </div>
@@ -95,13 +93,4 @@
         <hr>
     {% endif %}
     {% endfor %}
-    <script>
-        $(document).ready(function () {
-
-            $("#a0").click(function () {
-                $("#0").modal({backdrop: "static"});
-            });
-        });
-    </script>
-
 {% endblock %}

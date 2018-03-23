@@ -5,6 +5,7 @@
 
 {% endblock %}
 
+
 {% block body %}
     <h6>
         <div class="row">
@@ -38,9 +39,13 @@
                 <div class="vid">
                     <form action="{% url 'video' %}" id="videoform" name="vf">
                         <input class="btn float-right" hidden type="text" value="{{ query }}" name="videos"/>
-                        <input type="submit" class="btn float-right"
-                               style="color: #5D337F; background-color: white; margin-top: -0.5em" value="Videos">
-
+                        <button type="submit" hidden class="btn float-right" id="vid_icon"
+                                style=" background-color: black; margin-top: -0.5em; border-radius: 50%;height: 40px;width: 40px">
+                            <i class="fa fa-video-camera "
+                               style="color:white; font-size: 20px; margin-top: 0; margin-left: -2px" id="vid_icon"></i>
+                            <span class="badge"
+                                  style="border-radius:30px; background-color: #adb8c9 ; margin-top: -10px; position: absolute;">50</span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -101,4 +106,12 @@
 
     {% block videos %}
     {% endblock %}
+    <script>
+        $(document).ready(function () {
+            if ({{ result|length }}) {
+                $("#vid_icon").removeAttr('hidden');
+            }
+        });
+
+    </script>
 {% endblock %}

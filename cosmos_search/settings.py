@@ -42,6 +42,8 @@ TAGS_JSON = 'tags.json'
 
 TIMESTAMPS_JSON = 'timestamps.json'
 
+DEVELOPER_KEY = config('DEVELOPER_KEY')
+
 # Application definition
 
 INSTALLED_APPS = [
