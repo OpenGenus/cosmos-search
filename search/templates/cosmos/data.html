@@ -2,10 +2,7 @@
 {% block head %}
   <title>"cosmos-search</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/sunburst.min.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <style>
       td.hljs-ln-numbers {
         text-align: center;
@@ -20,6 +17,44 @@
         padding: 100px;
         margin: 100px;
       }
+      .tool{
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tool .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tool .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tool:focus .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
   </style>
 {% endblock %}
 {% block body %}
@@ -32,10 +67,10 @@
 </h5>
 </div>
 <div class="col-xl-3">
-  <a href="https://discourse.opengenus.org"><button type="button" class="btn btn-info">Ask any questions</button></a>
+  <a href="https://discourse.opengenus.org" target="_blank"><button type="button" class="btn btn-info">Ask any questions</button></a>
 </div>
 <div class="col-xl-1">
-<button type="button" id="btn" name="button" class="btn btn-light" data-toggle="tooltip" data-placement="bottom" title="Copy to clipboard" onclick="getValue()"><i class="fa fa-clipboard"></i></button>
+  <button type="button" name="button" class="btn btn-light tool" onclick="getValue()"><i class="fa fa-clipboard"></i><span class="tooltiptext">Copied</span></button>
 </div>
 </div>
 <div style="display: none;" id="select">{{code}}</div>
