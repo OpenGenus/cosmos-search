@@ -33,7 +33,6 @@
         <a href="#" style="color: #1b1e21"><div data-network="googleplus"
                                                 class="st-custom-button fa fa-google-plus-square"></div></a>
     </span>
-
             </div>
             <div class="col-md-4">
                 <div class="vid">
@@ -67,14 +66,17 @@
                         {% endfor %}
                     </h4>
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            Solutions
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Solutions
                         </button>
                         <div class="dropdown-menu" aria-labelledby="soln">
-                            {% for file in entry.files %}
-                                <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
-                                   target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+                          {% for file in entry.files %}
+                              <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
+                                  <div class="input-group">
+                                      <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
+                                  </div>
+                              </form>
+                          {% endfor %}
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import json
 import random
 from random import shuffle
 import re
+import requests
 from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
 
@@ -116,7 +117,7 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
-
+        query = ' '.join(query.split())
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
@@ -213,3 +214,15 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
