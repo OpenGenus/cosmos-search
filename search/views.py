@@ -1,11 +1,13 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 import json
 import random
 from random import shuffle
 import re
+from search.models import Votes
 from search.templatetags.calculator import getResult
+from search.form import VotesForm
 
 COSMOS_SEP = '_'
 
@@ -103,6 +105,10 @@ def is_file_extension_ignored(file_):
 # Search query
 def query(request):
     global algo_name, title
+    ans = []
+    rec = []
+    amount = 0
+    query = request.GET['q']
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
 
@@ -119,9 +125,6 @@ def query(request):
 
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-        ans = []
-        rec = []
-        amount = 0
         for folder, file in data.items():
             filtered_v = []
             for f in file:
@@ -130,8 +133,9 @@ def query(request):
             if q in folder and "test" not in folder.split("/"):
                 if filtered_v:
                     path = folder
+                    avg_vote = fetch(request, path)
                     folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v, 'avg_vote': avg_vote})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -161,8 +165,9 @@ def query(request):
 
         if ans and exprResult:
             amount += 1
-
         shuffle(rec)
+
+        vote_form = VotesForm()
         return render(request, 'cosmos/searchresults.html',
                       {'amount': amount,
                        'title': title,
@@ -170,7 +175,8 @@ def query(request):
                        'recommend': rec[:5],
                        'query': query,
                        'result_val': exprResult,
-                       'algo_name': algo_name
+                       'algo_name': algo_name,
+                       'vote_form': vote_form
                        })
 
     elif request.method == 'POST':
@@ -194,3 +200,28 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+
+def check(request):
+    if request.method == 'POST':
+        vote_form = VotesForm(request.POST)
+        if vote_form.is_valid():
+            vote_form.save()
+            return redirect('search:index')
+    else:
+        vote_form = VotesForm()
+    return render(request, 'cosmos/index.html', {'vote_form': vote_form})
+
+
+def fetch(request, query):
+    data = []
+    count = 0
+    data = Votes.objects.filter(project_name=query)
+    z = len(data)
+    if(z == 0):
+        avg_vote = 4.9
+    else:
+        for vote in data:
+            count = count + int(vote.vote_value)
+        avg_vote = round(count / z, 1)
+    return avg_vote

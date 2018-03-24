@@ -32,7 +32,7 @@
     </span>
     </h6>
     <hr>
-    {% if result_val or not result%}
+    {% if result_val or not result %}
         {% include 'cosmos/calculator.html' %}
     {% endif %}
 
@@ -45,6 +45,23 @@
                             {{ i }} /
                         {% endfor %}
                     </h4>
+                    <div>
+                        <form id="vote" method="post" action="{% url 'search:check' %}">
+                            {{ entry.avg_vote }}
+                            {% if entry.avg_vote < 3 %}
+                                <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
+                            {% elif entry.avg_vote >= 4%}
+                                <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
+                            {% else %}
+                                <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
+                            {% endif %}
+                            {% csrf_token %}
+                            <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
+                                   value="{{ entry.path }}">
+                            <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
+                            {{ vote_form.vote_value }}
+                        </form>
+                    </div>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
