@@ -5,6 +5,9 @@ import json
 import random
 from random import shuffle
 import re
+from wikiapi import WikiApi
+from stackapi import StackAPI
+
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -100,23 +103,61 @@ def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
-# Search query
+def stackoverflow(query):
+    if query.find(" ") == -1:
+        query += ' algorithm'
+
+    site = StackAPI('stackoverflow')
+
+    data = site.fetch('similar', order='desc', sort='relevance', title=query)
+    list = data['items']
+    j = 0
+    result = []
+    for x in list:
+        res = {
+            'title': x['title'],
+            'url': x['link'],
+            'qid': x['question_id'],
+            'view': x['view_count'],
+            'score': x['score']
+        }
+        result.append(res)
+        j += 1
+        if j > 5:
+            break
+    return result
+
+
+def wiki(query):
+    wiki = WikiApi()
+    wiki_temp = wiki.find(query)
+    if(len(wiki_temp) != 0):
+        wiki_res1 = wiki.get_article(wiki_temp[0])
+        return wiki_res1
+    else:
+        wiki_te = wiki.find('Barack Obama')
+        wiki_res1 = wiki.get_article(wiki_te[0])
+        wiki_res1.heading = '404_NOT_FOUND'
+        wiki_res1.url = '#'
+        return wiki_res1
+
+
 def query(request):
     global algo_name, title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
-
         if '\\' in query:
             query = query.replace('\\', '')
-
         res = getResult(query)
+
+        stk_res = stackoverflow(query)
+        wiki_res = wiki(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
             algo_name = ""
         else:
             exprResult = None
-
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
@@ -170,7 +211,9 @@ def query(request):
                        'recommend': rec[:5],
                        'query': query,
                        'result_val': exprResult,
-                       'algo_name': algo_name
+                       'algo_name': algo_name,
+                       'res_stack': stk_res,
+                       'res_wiki': wiki_res
                        })
 
     elif request.method == 'POST':

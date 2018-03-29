@@ -42,7 +42,30 @@
             font-size: 16px !important;
             line-height: 1.2 !important;
         }
+        #myDIV {
+            width: 100%;
+            padding: 50px 0;
+            text-align: center;
+            background-color: floralwhite;
+            margin-top: 20px;
+            display: none !important;
+        }
+        .ff {
+            display: block !important;
+        }
+        .hd{
+        display: none !important;
+        }
     </style>
+   <script>
+        jQuery(function(){
+            jQuery('class of view button').click(function(){
+             jQuery('#myDIV').removeClass(' hd ');
+              jQuery('#myDIV').addClass(' ff ');
+
+
+        });
+        </script>
     {% block style %}
     {% endblock %}
 
