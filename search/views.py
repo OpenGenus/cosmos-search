@@ -6,6 +6,7 @@ import random
 from random import shuffle
 import re
 from search.models import Votes
+import requests
 from search.templatetags.calculator import getResult
 from search.form import VotesForm
 
@@ -225,3 +226,15 @@ def fetch(request, query):
             count = count + int(vote.vote_value)
         avg_vote = round(count / z, 1)
     return avg_vote
+
+  
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
