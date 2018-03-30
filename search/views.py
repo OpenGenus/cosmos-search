@@ -101,9 +101,26 @@ def is_file_extension_ignored(file_):
 
 
 # Search query
+ans = []
+rec = []
+
+
 def query(request):
-    global algo_name, title
+    global ans, rec
+    title = ''
+    algo_name = ''
+    amount = 0
+    video_res = {}
+    exprResult = None
+
+    if request.is_ajax():
+        algo = searchSuggestion(request)
+        mimetype = 'application/json'
+        return HttpResponse(algo, mimetype)
+
     if request.method == 'GET':
+        ans = []
+        rec = []
         query = re.escape(request.GET['q']).replace('\ ', ' ')
 
         if '\\' in query:
@@ -119,9 +136,6 @@ def query(request):
 
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-        ans = []
-        rec = []
-        amount = 0
         for folder, file in data.items():
             filtered_v = []
             for f in file:
@@ -153,52 +167,93 @@ def query(request):
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
 
         if not ans and exprResult is None:
-            return render(request, 'cosmos/notfound.html', {'query': query})
-
-        if ans:
+            video_res = video_search(request, query)
+            title = query
+        elif ans:
+            video_res = video_search(request, query)
             algo_name = query
             title = query
+        else:
+            video_res = {
+                'videos': None,
+                'next_page': None,
+                'amount': 0
+            }
 
         if ans and exprResult:
             amount += 1
 
         shuffle(rec)
-        return render(request, 'cosmos/searchresults.html',
-                      {'amount': amount,
-                       'title': title,
-                       'result': ans,
-                       'recommend': rec[:5],
-                       'query': query,
-                       'result_val': exprResult,
-                       'algo_name': algo_name
-                       })
 
     elif request.method == 'POST':
-        calculator(request)
+        try:
+            calculator(request)
+        except ValueError:
+            video_res = video_search(request)
+            amount = len(ans)
+            exprResult = None
+            query = video_res['query']
+            title = query
 
-    if request.is_ajax():
-        algo = searchSuggestion(request)
-        mimetype = 'application/json'
-        return HttpResponse(algo, mimetype)
+    if not ans and not exprResult and not video_res:
+        return render(request, 'cosmos/error/HTTP400.html')
+
+    return render(request, 'cosmos/searchresults.html',
+                  {'amount': amount,
+                   'title': title,
+                   'result': ans,
+                   'recommend': rec[:5],
+                   'query': query,
+                   'result_val': exprResult,
+                   'algo_name': algo_name,
+                   'videos': video_res['videos'],
+                   'next_page': video_res['next_page'],
+                   'vid_amount': video_res['amount']
+                   })
 
 
-def video_search(request):
-    query = re.escape(request.GET['videos']).replace('\ ', ' ')
-    if len(query.split(" ")) == 1:
-        searchKey = query + '+' + 'algorithm'
-    else:
-        searchKey = query.replace(' ', '+')
-    youtube_query = {
-        'q': searchKey,
-        'max_results': 50
-    }
-    youtube_result = youtube_search(youtube_query)
-    return render(request, 'cosmos/youtubeResults.html', {
-        'amount': len(youtube_result),
+def video_search(request, term=None):
+    youtube_result = {}
+    query = ''
+    if request.method == 'GET':
+        query = term
+        if len(query.split(" ")) == 1:
+            searchKey = query + '+' + 'algorithm'
+        else:
+            searchKey = query.replace(' ', '+')
+
+        youtube_query = {
+            'q': searchKey,
+            'max_results': 25,
+            'next_page': '',
+            'id': 0
+        }
+        youtube_result = youtube_search(youtube_query)
+
+    if request.method == 'POST':
+        query = request.POST.get('token')
+        q = query.split('&')
+        if len(q[0].split(" ")) == 1:
+            searchKey = q[0] + '+' + 'algorithm'
+        else:
+            searchKey = q[0].replace(' ', '+')
+        youtube_query = {
+            'q': searchKey,
+            'max_results': 25,
+            'next_page': q[1],
+            'id': q[-1]
+        }
+        query = q[0]
+        youtube_result = youtube_search(youtube_query)
+
+    res = {
+        'amount': len(youtube_result['videos_Results']),
+        'videos': youtube_result['videos_Results'],
+        'title': 'Videos',
         'query': query,
-        'videos': youtube_result,
-        'title': 'Videos'
-    })
+        'next_page': youtube_result['nextpage'],
+    }
+    return res
 
 
 # Search strategy

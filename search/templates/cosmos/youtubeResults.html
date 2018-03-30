@@ -1,4 +1,3 @@
-{% extends 'cosmos/searchresults.html' %}
 {% load random_numbers %}
 
 {% block videos %}
@@ -77,8 +76,9 @@
 
                             </p>
                             <p style="font-size: 15px;font-family: initial;"><span
-                                    style="color: blue"> Published At:</span> {{ video.date }} <span style="font-size: 15px;margin-left:10px;font-family: initial;"><span
-                                    style="color: blue"> Time: </span>{{ video.time }}</span> </p>
+                                    style="color: blue"> Published At:</span> {{ video.date }} <span
+                                    style="font-size: 15px;margin-left:10px;font-family: initial;"><span
+                                    style="color: blue"> Time: </span>{{ video.time }}</span></p>
                         </div>
 
                     </div>
@@ -88,9 +88,15 @@
             </div>
         </div>
     </div>
-    {% if video.id|modulo:4 == 3 %}
+    {% if video.id|modulo:4 == 3 or video.id|add:'+1' == videos|length %}
         </div>
         <hr>
     {% endif %}
     {% endfor %}
+    <div>
+    <form id='formv' action="{% url 'query' %}" method="POST">{% csrf_token %}
+        <input hidden name="token" value="{{ query }}&{{ next_page }}&{{ videos|length }}">
+        <input type="submit" style="background-color: #00897b; margin-right: 0px; font-size: 17px; color:  white; height: 38px; width: 80px; border-radius: 15px;" value="More..">
+    </form>
+    </div>
 {% endblock %}
