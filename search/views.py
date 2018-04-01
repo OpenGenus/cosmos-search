@@ -45,6 +45,8 @@ def searchSuggestion(request):
             i = i + 1
             if i >= 6:
                 break
+        stk_res = stackoverflow(query)
+        wiki_res = wiki(query)
         searchTag = json.dumps(results)
     else:
         searchTag = 'fail'
