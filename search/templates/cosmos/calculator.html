@@ -67,15 +67,15 @@
     $(document).ready(function() {
       window.onload = function () {
 
-        $("#resultText").focus()
+        $("#resultText").focus();
         frm.got_result = true
-      }
+      };
     });
 
     function focusOn(x) {
-      var temp_value = x
-      frm.txt.value = ""
-      frm.txt.value = temp_value
+      var temp_value = x;
+      frm.txt.value = "";
+      frm.txt.value = temp_value;
     }
 
     function displ(x, end) {
@@ -86,7 +86,7 @@
         else {
           frm.seq.value = frm.txt.value
         }
-        frm.txt.value = "0"
+        frm.txt.value = "0";
         frm.got_result = false
       }
 

@@ -78,6 +78,7 @@ def error500(request):
 # calculator
 def calculator(request):
     global exprResult
+    exprResult = 'ds'
     if request.method == 'POST':
         q = request.POST.get('txt')
         if q is not None:
@@ -87,6 +88,8 @@ def calculator(request):
                 exprResult = round(res, 3)
             else:
                 exprResult = 'Error'
+        else:
+            return 'not expression'
     else:
         exprResult = None
         q = None
@@ -113,6 +116,7 @@ def query(request):
     amount = 0
     video_res = {}
     exprResult = None
+    query = ''
 
     if request.is_ajax():
         algo = searchSuggestion(request)
@@ -134,6 +138,7 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
+
         query = ' '.join(query.split())
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
@@ -170,6 +175,7 @@ def query(request):
         if not ans and exprResult is None:
             video_res = video_search(request, query)
             title = query
+
         elif ans:
             video_res = video_search(request, query)
             algo_name = query
@@ -187,17 +193,16 @@ def query(request):
         shuffle(rec)
 
     elif request.method == 'POST':
-        try:
-            calculator(request)
-        except ValueError:
-            video_res = video_search(request)
+        exp = calculator(request)
+        video_res = video_search(request)
+        if exp == 'not expression':
             amount = len(ans)
             exprResult = None
             query = video_res['query']
             title = query
 
     if not ans and not exprResult and not video_res:
-        return render(request, 'cosmos/error/HTTP400.html')
+        return render(request, 'cosmos/error/HTTP404.html')
 
     return render(request, 'cosmos/searchresults.html',
                   {'amount': amount,

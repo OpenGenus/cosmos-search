@@ -40,26 +40,24 @@
                 <div class="col-md-2">
                     <div class="vid">
                         <button class="btn float-right" hidden id="query_icon"
-                                style="background-color: black; margin-right: -18em;margin-top: -0.5em; border-radius: 50%;height: 40px;width: 40px"
+                                style= "margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
                                 onclick="openTab('query',this.button)">
-                            <i class="fa fa-file-code-o "
-                               style="color:white; font-size: 20px; margin-top: 0; margin-left: -2px"></i>
+                            <a style="color: blue;  margin-top: 0; margin-left: -2px">Code</a>
                             <span class="badge"
-                                  style="border-radius:30px; background-color: #adb8c9 ; margin-top: -10px; position: absolute;">{{ amount }}</span>
+                                  style="border-radius:30px; color: white;background-color: #00897b ; margin-top: -7px; position: absolute;">{{ amount }}
+                            </span>
                         </button>
                     </div>
-
                 </div>
                 <div class="col-md-2">
                     <div class="vid">
                         <button type="submit" hidden class="btn float-right" id="vid_icon"
-                                style=" background-color: black; margin-right:-22em;margin-top: -0.5em; border-radius: 50%;height: 40px;width: 40px"
+                                style="background-color: white; margin-right:-22em;margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
                                 onclick="openTab('video')">
-                            <i class="fa fa-video-camera "
-                               style="color:white; font-size: 20px; margin-top: 0; margin-left: -2px"
-                               id="vid_icon"></i>
+                            <a style="color: blue;  margin-top: 0; margin-left: -2px">Video</a>
                             <span class="badge"
-                                  style="border-radius:30px; background-color: #adb8c9 ; margin-top: -10px; position: absolute;">{{ vid_amount }}</span>
+                                  style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -69,8 +67,8 @@
 
     <hr>
 
-    <div id="query" class="w3-container city" style="display:block;">
-        {% if result_val %}
+    <div id="query" class="w3-container tabs" style="display:block;">
+        {% if result_val is not None or title == 'Calculator' %}
             {% include 'cosmos/calculator.html' %}
         {% endif %}
 
@@ -124,10 +122,9 @@
 
     </div>
 
-    <div id="video" class="w3-container city" style="display:none">
+    <div id="video" class="w3-container tabs" style="display:none">
         {% include 'cosmos/youtubeResults.html' %}
     </div>
-
 
 
     <script>
@@ -135,8 +132,9 @@
             if ({{ result|length }}) {
                 $("#vid_icon").removeAttr('hidden');
                 $("#query_icon").removeAttr('hidden');
-            } else {
-
+            } else if ('{{  result_val }}' != 'None' || '{{ title }}' == "Calculator") {
+                $("#query").show();
+            } else if ({{ vid_amount }}) {
                 $("#video").show();
                 $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
 
@@ -145,7 +143,7 @@
 
         function openTab(tabId) {
             var i;
-            var x = document.getElementsByClassName("city");
+            var x = document.getElementsByClassName("tabs");
             for (i = 0; i < x.length; i++) {
                 x[i].style.display = "none";
             }
@@ -161,9 +159,7 @@
                     $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>\n')
 
                 }
-
             }
-
         }
     </script>
 {% endblock %}
