@@ -16,3 +16,12 @@ class Votes(models.Model):
 
     def __str__(self):
         return self.vote_value
+
+
+class Comment (models.Model):
+    project_name = models.CharField(max_length=500, null=True, blank=True)
+    comment = models.CharField(max_length=500, null=True, blank=True)
+    ip_address = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.comment

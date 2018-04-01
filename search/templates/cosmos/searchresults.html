@@ -50,7 +50,7 @@
                             {{ entry.avg_vote }}
                             {% if entry.avg_vote < 3 %}
                                 <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
-                            {% elif entry.avg_vote >= 4%}
+                            {% elif entry.avg_vote >= 4 %}
                                 <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
                             {% else %}
                                 <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
@@ -60,6 +60,20 @@
                                    value="{{ entry.path }}">
                             <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
                             {{ vote_form.vote_value }}
+                        </form>
+                        <h1>ebwjwe</h1>
+                        <form id="comment" method="post" action="{% url 'search:comment' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
+                                   value="{{ entry.path }}">
+
+                            <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
+
+                            <input type="text" name="comment" maxlength="500" value="">
+
+                            <input type="submit" value="submit" hidden>
+
+
                         </form>
                     </div>
                     <div class="dropdown">

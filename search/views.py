@@ -6,8 +6,10 @@ import random
 from random import shuffle
 import re
 from search.models import Votes
+from search.models import Comment
 from search.templatetags.calculator import getResult
 from search.form import VotesForm
+from search.form import CommentForm
 
 COSMOS_SEP = '_'
 
@@ -225,3 +227,22 @@ def fetch(request, query):
             count = count + int(vote.vote_value)
         avg_vote = round(count / z, 1)
     return avg_vote
+
+
+def comment(request):
+    print("ajwnw")
+    if request.method == 'POST':
+        print("POST Success")
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+            print("Valid")
+            return redirect('search:index')
+        else:
+            for i in comment_form.errors:
+                print(i)
+    else:
+        print("hello1")
+        comment_form = CommentForm()
+    return render(request, 'cosmos/index.html', {'comment_form': comment_form})
+
