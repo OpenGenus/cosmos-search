@@ -7,6 +7,7 @@ from random import shuffle
 import re
 from search.models import Votes
 from search.models import Comment
+import requests
 from search.templatetags.calculator import getResult
 from search.form import VotesForm
 from search.form import CommentForm
@@ -124,7 +125,7 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
-
+        query = ' '.join(query.split())
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         for folder, file in data.items():
@@ -250,3 +251,15 @@ def comment(request):
     else:
         comment_form = CommentForm()
     return render(request, 'cosmos/index.html', {'comment_form': comment_form})
+
+
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
