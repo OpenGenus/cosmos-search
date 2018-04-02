@@ -11,10 +11,10 @@
                 <div class="screen">
                     {% if result_val is not None %}
                         <input type="text" value="{{ query }}" name="seq" id="seq" disabled/>
-                        <input type="text" id="resultText" name="txt" value="{{ result_val }}" autocomplete="off" onfocus="focusOn(this.value)"/>
+                        <input type="text" id="resultText" name="txt" value="{{ result_val }}" onclick="textD(this.value)" autocomplete="off" onfocus="focusOn(this.value)"/>
                     {% else %}
                         <input type="text" value="" name="seq" id="seq" disabled/>
-                        <input type="text" id="resultText" name="txt" value="0" autocomplete="off" onfocus="focusOn(this.value)"/>
+                        <input type="text" id="resultText" name="txt" value="0" onclick="textD(this.value)" autocomplete="off" onfocus="focusOn(this.value)"/>
                     {% endif %}
                     <input type="submit" hidden>
                 </div>
@@ -66,31 +66,26 @@
 <script>
     $(document).ready(function() {
       window.onload = function () {
-        $("#resultText").focus()
-        frm.got_result = true
+        $("#resultText").focus();
+
       }
     });
 
     function focusOn(x) {
-      var temp_value = x
-      frm.txt.value = ""
-      frm.txt.value = temp_value
+      var temp_value = x;
+      frm.txt.value = "";
+      frm.txt.value = temp_value;
     }
 
     function displ(x, end) {
-      if (frm.got_result) {
-        if (frm.seq.value != "") {
-          frm.seq.value += " = " + frm.txt.value
-        }
-        else {
-          frm.seq.value = frm.txt.value
-        }
-        frm.txt.value = "0"
-        frm.got_result = false
-      }
 
       if (frm.txt.value == "0" && x != ".") {
-        frm.txt.value = ""
+        frm.txt.value = "";
+      }
+
+      if (frm.txt.value == "Error"){
+          frm.txt.value = "";
+          frm.seq.value = "";
       }
 
       if (end === "(") {
@@ -103,12 +98,19 @@
 
     function cleartext(x) {
       if (frm.got_result) {
-        displ("")
+        displ("");
       }
-      frm.txt.value = ""
+      frm.txt.value = "";
     }
 
     function equals(x) {
       $("#cl").submit()
+    }
+
+    function textD(x) {
+        if(x == "Error"){
+            frm.txt.value = "";
+            frm.seq.value = "";
+        }
     }
 </script>
