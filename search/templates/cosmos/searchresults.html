@@ -45,31 +45,56 @@
                             {{ i }} /
                         {% endfor %}
                     </h4>
+                    <h5>  {{ entry.avg_vote }}
+                        {% if entry.avg_vote < 3 %}
+                            <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
+                        {% elif entry.avg_vote >= 4 %}
+                            <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
+                        {% else %}
+                            <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
+                        {% endif %}</h5>
                     <div>
-                        <form id="vote" method="post" action="{% url 'search:check' %}">
-                            {{ entry.avg_vote }}
-                            {% if entry.avg_vote < 3 %}
-                                <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
-                            {% elif entry.avg_vote >= 4 %}
-                                <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
-                            {% else %}
-                                <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
-                            {% endif %}
+                        <form id="vote{{ forloop.counter }}" method="post" action="{% url 'search:check' %}"
+                              style="display: none;">
+
                             {% csrf_token %}
                             <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
                                    value="{{ entry.path }}">
                             <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
                             {{ vote_form.vote_value }}
+
                         </form>
-                        <h1>ebwjwe</h1>
-                        <form id="comment" method="post" action="{% url 'search:comment' %}">
+
+                        <div style="width: 20%; ">
+                            <i class="fa fa-thumbs-o-up"
+                               style="font-size: 24px;cursor:pointer; padding: 5%;padding-top: 0%;"
+                               onclick="vote_event('vote{{ forloop.counter }}');"></i>
+                            <i class="fa fa-comments"
+                               style="font-size: 24px;cursor: pointer; padding: 5%;padding-top: 0%;"
+                               onclick="comment_event('comment{{ forloop.counter }}');"></i>
+                        </div>
+
+                        <form id="comment{{ forloop.counter }}" method="post"
+                              style="padding-bottom: 2%; display: none;/*! background: #9f9f9f; */padding: 2%;border: 1px dotted #cec4b8;margin-bottom: 2%;"
+                              action="{% url 'search:comment' %}">
                             {% csrf_token %}
                             <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
                                    value="{{ entry.path }}">
+                            <div>
 
+                                    {% for cmnt in entry.comment %}
+                                         <p style="color: #726b6b;">
+                                    <i class="fa fa-quote-left" style="padding-right: 2%;"></i>{{cmnt }}
+                                         </p>
+                                    {% endfor %}
+
+
+                            </div>
                             <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
 
-                            <input type="text" name="comment" maxlength="500" value="">
+                            <input placeholder="Write a comment..." name="comment"
+                                   style="background: #fff !important;border: 1px solid #dcdcdc;padding: 0.6%;border-radius: 24px;width: 35%;padding-left: 2%;"
+                                   type="text">
 
                             <input type="submit" value="submit" hidden>
 
@@ -110,5 +135,24 @@
         <br>
     {% endfor %}
     {% endif %}
+    <script type="text/javascript">
+        <!--
+        function comment_event(comment{{ forloop.counter}}) {
+            var e = document.getElementById(comment{{ forloop.counter}});
+            if (e.style.display == 'block')
+                e.style.display = 'none';
+            else
+                e.style.display = 'block';
+        }
 
+        function vote_event(vote{{ forloop.counter}}) {
+            var e = document.getElementById(vote{{ forloop.counter}});
+            if (e.style.display == 'block')
+                e.style.display = 'none';
+            else
+                e.style.display = 'block';
+        }
+
+        //-->
+    </script>
 {% endblock %}

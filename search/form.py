@@ -29,6 +29,7 @@ class VotesForm(forms.Form):
         u.save()
         return u
 
+
 class CommentForm(forms.Form):
     project_name = forms.CharField(max_length=500, required=False)
     ip_address = forms.CharField(max_length=50, required=False)

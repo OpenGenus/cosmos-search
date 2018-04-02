@@ -136,8 +136,12 @@ def query(request):
                 if filtered_v:
                     path = folder
                     avg_vote = fetch(request, path)
+                    comment = comment_fetch(request, path)
                     folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v, 'avg_vote': avg_vote})
+                    ans.append({'path': path, 'dirs': folder_list,
+                                'files': filtered_v,
+                                'avg_vote': avg_vote,
+                                'comment': comment, })
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -229,20 +233,20 @@ def fetch(request, query):
     return avg_vote
 
 
+def comment_fetch(request, query):
+    c = []
+    data = Comment.objects.filter(project_name=query)
+    for comment in data:
+        c.append(comment.comment)
+    return c
+
+
 def comment(request):
-    print("ajwnw")
     if request.method == 'POST':
-        print("POST Success")
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             comment_form.save()
-            print("Valid")
             return redirect('search:index')
-        else:
-            for i in comment_form.errors:
-                print(i)
     else:
-        print("hello1")
         comment_form = CommentForm()
     return render(request, 'cosmos/index.html', {'comment_form': comment_form})
-
