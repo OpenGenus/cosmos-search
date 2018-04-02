@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
     <style>
+
+
         html {
             position: relative;
             min-height: 100%;
@@ -57,6 +59,58 @@
           padding-bottom: 0;
         }
         .bootstrap-iso .form-control{border-width: 2px; border-color: grey;}
+/*--------------------------*/
+        body {
+          font: 16px Arial;
+        }
+        .autocomplete {
+          /*the container must be positioned relative:*/
+          position: relative;
+          display: inline-block;
+        }
+
+        input {
+          border: 1px solid transparent;
+          background-color: #f1f1f1;
+          padding: 10px;
+          font-size: 16px;
+        }
+        input[type=text] {
+          background-color: #f1f1f1;
+          width: 100%;
+        }
+        input[type=submit] {
+          background-color: DodgerBlue;
+          color: #fff;
+          cursor: pointer;
+        }
+        .autocomplete-items {
+          position: absolute;
+          border: 1px solid #d4d4d4;
+          border-bottom: none;
+          border-top: none;
+          z-index: 99;
+          /*position the autocomplete items to be the same width as the container:*/
+          top: 100%;
+          left: 0;
+          right: 0;
+        }
+        .autocomplete-items div {
+          padding: 10px;
+          cursor: pointer;
+          background-color: #fff;
+          border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+          /*when hovering an item:*/
+          background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+          /*when navigating through the items using the arrow keys:*/
+          background-color: DodgerBlue !important;
+          color: #ffffff;
+        }
+
     </style>
     {% block style %}
     {% endblock %}
@@ -114,18 +168,114 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <script>
     {% block javascript %}
     {% endblock %}
-    $(function () {
-        $("#search").autocomplete({
-            source: "/",
-            minLength: 1,
-            select: function (e, ui) {
-                $("#formq").submit()
+    function autocomplete(inp, arr) {
+      /*the autocomplete function takes two arguments,
+      the text field element and an array of possible autocompleted values:*/
+      var currentFocus;
+      /*execute a function when someone writes in the text field:*/
+      inp.addEventListener("input", function(e) {
+          var a, b, i, val = this.value;
+          /*close any already open lists of autocompleted values*/
+          closeAllLists();
+          if (!val) { return false;}
+          currentFocus = -1;
+          /*create a DIV element that will contain the items (values):*/
+          a = document.createElement("DIV");
+          a.setAttribute("id", this.id + "autocomplete-list");
+          a.setAttribute("class", "autocomplete-items");
+          /*append the DIV element as a child of the autocomplete container:*/
+          this.parentNode.appendChild(a);
+          /*for each item in the array...*/
+          for (i = 0; i < arr.length; i++) {
+            /*check if the item starts with the same letters as the text field value:*/
+            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+              /*create a DIV element for each matching element:*/
+              b = document.createElement("DIV");
+              /*make the matching letters bold:*/
+              b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+              b.innerHTML += arr[i].substr(val.length);
+              /*insert a input field that will hold the current array item's value:*/
+              b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+              /*execute a function when someone clicks on the item value (DIV element):*/
+              b.addEventListener("click", function(e) {
+                  /*insert the value for the autocomplete text field:*/
+                  inp.value = this.getElementsByTagName("input")[0].value;
+                  /*close the list of autocompleted values,
+                  (or any other open lists of autocompleted values:*/
+                  closeAllLists();
+              });
+              a.appendChild(b);
             }
-        });
-    });
+          }
+      });
+      /*execute a function presses a key on the keyboard:*/
+      inp.addEventListener("keydown", function(e) {
+          var x = document.getElementById(this.id + "autocomplete-list");
+          if (x) x = x.getElementsByTagName("div");
+          if (e.keyCode == 40) {
+            /*If the arrow DOWN key is pressed,
+            increase the currentFocus variable:*/
+            currentFocus++;
+            /*and and make the current item more visible:*/
+            addActive(x);
+          } else if (e.keyCode == 38) { //up
+            /*If the arrow UP key is pressed,
+            decrease the currentFocus variable:*/
+            currentFocus--;
+            /*and and make the current item more visible:*/
+            addActive(x);
+          } else if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            if (currentFocus > -1) {
+              /*and simulate a click on the "active" item:*/
+              if (x) x[currentFocus].click();
+            }
+          }
+      });
+      function addActive(x) {
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
+      }
+      function removeActive(x) {
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+          x[i].classList.remove("autocomplete-active");
+        }
+      }
+      function closeAllLists(elmnt) {
+        /*close all autocomplete lists in the document,
+        except the one passed as an argument:*/
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+          if (elmnt != x[i] && elmnt != inp) {
+            x[i].parentNode.removeChild(x[i]);
+          }
+        }
+      }
+      /*execute a function when someone clicks in the document:*/
+      document.addEventListener("click", function (e) {
+          closeAllLists(e.target);
+          });
+    }
+
+    /*An array containing all the algorithms in the world:*/
+    /* increase count when you change: v1 */
+    var codes = ["string algorithms", "kmp algorithm", "lipogram checker", "pangram checker", "password strength checker", "anagram search", "morse code", "boyer moore algorithm", "remove dups", "manachar algorithm", "finite automata", "palindrome checker", "levenshtein distance", "arithmetic on large numbers", "rabin karp algorithm", "naive pattern search", "trie pattern search", "aho corasick algorithm", "kasai algorithm", "suffix array", "z algorithm", "computational geometry", "jarvis march", "2d line intersection", "distance between points", "cohen sutherland lineclip", "halfplane intersection", "area of polygon", "2d separating axis test", "axis aligned bounding box collision", "graham scan", "area of triangle", "sutherland hodgeman clipping", "bresenham line", "quickhull", "numerical analysis", "runge kutt", "integral", "monte carlo", "selection algorithms", "median of medians", "divide conquer", "karatsuba multiplication", "warnock algorithm", "x power y", "quick sort", "merge sort using divide and conquer", "tournament method to find min max", "closest pair of points", "inversion count", "search", "interpolation search", "fuzzy search", "ternary search", "linear search", "binary search", "exponential search", "jump search", "fibonacci search", "cellular automaton", "von neumann cellular automata", "conways game of life", "langtons ant", "genetic algorithm", "elementary cellular automata", "nobili cellular automata", "brians brain", "greedy algorithms", "kruskal minimum spanning tree", "huffman coding", "activity selection", "dijkstra shortest path", "job sequencing", "k centers", "fractional knapsack", "prim minimum spanning tree", "hillclimber", "egyptian fraction", "warshall", "minimum coins", "dynamic programming", "longest palindromic substring", "shortest common supersequence", "maximum weight independent set of path graph", "weighted job scheduling", "no consec ones", "optimal binary search tree", "coin change", "longest common substring", "knapsack", "edit distance", "boolean parenthesization", "maximum sum sub matrix", "maximum sum increasing subsequence", "factorial", "binomial coefficient", "longest common increasing subsequence", "palindrome partition", "longest palindromic sequence", "egg dropping puzzle", "matrix chain multiplication", "box stacking", "longest independent set", "minimum insertion palindrome", "longest increasing subsequence", "array median", "tiling problem", "largest sum contiguous subarray", "minimum cost polygon triangulation", "min cost path", "subset sum", "longest common subsequence", "rod cutting", "numeric keypad problem", "longest bitonic sequence", "online challenges", "project euler", "problem 002", "problem 036", "problem 016", "problem 003", "problem 025", "problem 007", "problem 008", "problem 004", "problem 028", "problem 006", "problem 010", "problem 102", "problem 001", "problem 005", "problem 009", "problem 014", "rosalind", "complement dna strand", "operating system", "scheduling", "shortest seek time first", "multi level feedback queue scheduling", "smallest remaining time first", "round robin scheduling", "round robin c", "first come first serve", "memory management", "least recently used", "shell", "c", "deadlocks", "bankers algorithm", "concurrency", "readers writers", "dining philosophers", "monitors", "monitors system v", "peterson algorithm for mutual exclusion", "peterson algorithm in c", "producer consumer", "networking", "validate ip", "determine endianess", "data structures", "list", "singly linked list", "operations", "find", "detect cycle", "sort", "delete", "merge sorted", "reverse", "print reverse", "push", "n th node linked list", "rotate", "xor linked list", "skip list", "doubly linked list", "circular linked list", "tree", "b tree", "b tree c", "two three tree", "binary tree", "treap", "aa tree", "convert to doubly linked list", "diameter", "minimum height", "is binary tree", "is balance", "node", "serializer", "bottom view binary tree", "make binary tree", "from inorder and preorder", "maximum height", "make mirror tree", "is same", "traversal", "inorder", "right threaded", "zigzag", "preorder", "right view", "left view", "path sum", "sum left", "rope", "avl tree", "trie", "heap", "min heap", "soft heap", "max heap", "priority queue", "leftist tree", "binomial heap", "pairing heap", "segment tree", "space partitioning tree", "quad tree", "kd tree", "interval tree", "multiway tree", "splay tree", "fenwick tree", "van emde boas tree", "union find", "red black tree", "hashs", "hash table", "bloom filter", "bag", "stack", "postfix evaluation", "balanced expression", "sort stack", "infix to postfix", "reverse stack", "abstract stack", "cpp", "arraystack", "prefix to postfix", "queue", "queue stream", "queue using stack", "circular buffer", "reverse queue", "queue using linked list", "other", "randomized algorithms", "reservoir sampling", "karger minimum cut algorithm", "random node linkedlist", "randomized quick sort", "random from stream", "shuffle an array", "kth smallest element algorithm", "mathematical algorithms", "convolution", "fast fourier transform", "add polynomials", "2sum", "replace 0 with 5", "armstrong numbers", "sieve of eratosthenes", "euler totient", "fibonacci number", "horner polynomial evaluation", "russian peasant multiplication", "babylonian method", "fast inverse sqrt", "sieve of atkin", "permutation lexicographic order", "segmented sieve of eratosthenes", "std", "gcd and lcm", "amicable numbers", "lucas theorem", "sum of digits", "pandigital number", "next larger number", "tridiagonal matrix", "gaussian elimination", "shuffle array", "newton polynomial", "average stream numbers", "delannoy number", "magic square", "check is square", "largrange polynomial", "poisson sample", "divided differences", "decoding of string", "lucky number", "integer conversion", "pythagorean triplet", "reverse number", "steepest descent", "primality tests", "fermat primality test", "solovay strassen primality test", "miller rabin primality test", "catalan number", "newton raphson method", "integer to roman", "reverse factorial", "derangements", "automorphic numbers", "tower of hanoi", "greatest digit in number", "count digits", "prime numbers of n", "lexicographic string rank", "taxicab numbers", "multiply polynomial", "count trailing zeroes", "log of factorial", "diophantine", "coprime numbers", "hill climbing", "fermats little theorem", "exponentiation power", "exponentiation by squaring", "smallest digit in number", "tribonacci numbers", "simpsons rule", "perfect number", "prime factors", "fractals", "modular inverse", "jacobi method", "pascal triangle", "dfa division", "sorting", "bucket sort", "median sort", "counting sort", "selection sort", "radix sort", "bubble sort", "insertion sort", "tree sort", "shell sort", "sleep sort", "bead sort", "stooge sort", "shaker sort", "flash sort", "comb sort", "topological sort", "gnome sort", "heap sort", "intro sort", "pigeonhole sort", "merge sort", "bogo sort", "cycle sort", "circle sort", "backtracking", "m coloring problem", "number of ways in maze", "n queen", "powerset", "algorithm x", "partitions of set", "partitions of number", "crossword puzzle", "rat in a maze", "sudoku solve", "permutations of string", "knight tour", "jaccard similarity", "biggest of n numbers", "paint fill", "minimum subarray size with degree", "average", "majority element", "leap year", "utilities", "spiral printing", "josephus problem", "tokenizer", "biggest suffix", "lapindrom checker", "split list", "fifteen puzzle", "design pattern", "singleton pattern", "observer pattern", "artificial intelligence", "sat", "random forests", "t distributed stochastic neighbor embedding", "nearest sequence memory", "nsm matlab", "factorization machines", "principal component analysis", "naive bayes", "dbscan clustering", "tsp", "hierachical clustering", "decision tree", "k nearest neighbours", "isodata clustering", "q learning", "neural network", "logistic regression", "gradient boosting trees", "support vector machine", "k means", "gaussian mixture model", "restricted boltzmann machine", "linear regression", "utility", "palindrome", "palindrome check", "graph algorithms", "biconnected components", "fleury algorithm euler path", "bridges in graph", "eulerian path", "boruvka minimum spanning tree", "adjacency lists graph representation", "adjacency lists in c", "hamiltonian cycle", "connected components", "bron kerbosch algorithm", "channel assignment", "floyd warshall algorithm", "astar algorithm", "graph coloring", "hamiltonian path", "kuhn maximum matching", "breadth first search", "cut vertices", "longest path directed acyclic graph", "bridge tree", "travelling salesman mst", "cycle directed graph", "adjacency matrix c", "strongly connected components", "bipartite check", "tarjan algorithm strongly connected components", "maximum bipartite matching", "vertex cover", "cycle undirected graph", "postorder from inorder and preorder", "hopcroft karp algorithm", "minimum s t cut", "dinic maximum flow", "shortest path k edges", "karger minimum cut", "ford fulkerson maximum flow", "left view binary tree", "bipartite checking", "count of ways n", "depth first search", "johnson algorithm shortest path", "centroid decomposition", "steiner tree", "transitive closure graph", "bellman ford algorithm", "maximum edge disjoint paths", "compression", "lossless compression", "lempel ziv welch", "huffman", "lossy compression", "square root decomposition", "mos algorithm", "cryptography", "runningkey cipher", "columnar transposition cipher", "affine cipher", "aes 128", "aes csharp", "example", "autokey cipher", "rail fence cipher", "caesar cipher", "vigenere cipher", "rot13 cipher", "polybius cipher", "porta cipher", "atbash cipher", "morse cipher", "rsa digital signature", "baconian cipher", "rsa", "huffman encoding", "bit manipulation", "lonely integer", "sum binary numbers", "byte swapper", "flip bits", "sum equals xor", "thrice unique number", "power of 2", "twice unique number", "maximum xor value", "bit division", "count set bits", "invert bit", "magic number", "hamming distance", "xor swap", "subset generation", "convert number binary"];
+
+    autocomplete(document.getElementById("search"), codes);
+
+
     $("#formq").submit(function () {
         if ($('input').val().replace(/[\s,\/#!$%\^&\*;:{}=\-_`~().]/g, '').length === 0) {
                 return false;
