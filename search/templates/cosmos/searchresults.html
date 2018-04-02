@@ -45,6 +45,7 @@
                         {{ i }} /
                     {% endfor %}
                 </h4>
+
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -54,24 +55,25 @@
                         <div>
                             <ul class="sol_tab nav nav-tabs">
                                 <li class="active">
-                                    <a href="#tab1default" style="color: #1b1e21" data-toggle="tab">
+                                    <a href="#{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab">
                                         <img src="../static/images/wikipedia.png"/>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#tab2default" style="color: #1b1e21" data-toggle="tab"><img
+                                    <a href="#a{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab"><img
                                             src="../static/images/stack-overflow.png"/></a>
                                 </li>
                             </ul>
 
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane fade in active" id="tab1default">
-                                <p><a href="{{ res_wiki.url }}" target="blank"/>{{ res_wiki.heading }}</p>
+                            <div class="tab-pane fade in active" id="{{ forloop.counter }}">
+                                <p><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
                             </div>
-                            <div class="tab-pane fade" id="tab2default">
-                                {% for x in res_stack %}
-                                    <p><a href="{{ x.url }}" target="blank"/>{{ x.title }}</p>
+                            <div class="tab-pane fade" id="a{{forloop.counter   }}">
+                                {% for j in entry.stack %}
+                                    <p><a href="{{ j.url }}" target="blank"/>{{ j.title }}</p>
+
                                 {% endfor %}
                             </div>
 
@@ -79,7 +81,8 @@
                         <div class="dropdown-menu" aria-labelledby="soln">
                             {% for file in entry.files %}
                                 <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
-                                   target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+                                   target="_blank" class="dropdown-item">{{ file }}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
