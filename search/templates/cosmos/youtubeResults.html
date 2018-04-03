@@ -96,7 +96,14 @@
     <div>
     <form id='formv' action="{% url 'query' %}" method="POST">{% csrf_token %}
         <input hidden name="token" value="{{ query }}&{{ next_page }}&{{ videos|length }}">
-        <input type="submit" style="background-color: #00897b; margin-right: 0px; font-size: 17px; color:  white; height: 38px; width: 80px; border-radius: 15px;" value="More..">
+        <input type="submit" id="more" style="background-color: #00897b; margin-right: 0px; font-size: 17px; color:  white; height: 38px; width: 80px; border-radius: 15px;" value="More..">
     </form>
     </div>
+    <script>
+    $(document).ready(function () {
+        if(!{{ vid_amount }} || '{{ next_page }}' == 'None'){
+            $("#more").hide();
+        }
+    })
+    </script>
 {% endblock %}
