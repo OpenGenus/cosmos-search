@@ -67,7 +67,7 @@
 
     <hr>
 
-    <div id="query" class="w3-container tabs" style="display:block;">
+    <div id="query" class="w3-container tabs" style="display:none;">
         {% if result_val is not None or title == 'Calculator' %}
             {% include 'cosmos/calculator.html' %}
         {% endif %}
@@ -122,18 +122,24 @@
 
     </div>
 
-    <div id="video" class="w3-container tabs" style="display:none">
+    <div id="video" class="w3-container tabs" style="display:none;">
         {% include 'cosmos/youtubeResults.html' %}
     </div>
 
 
     <script>
         $(document).ready(function () {
+            if ('{{ active_tab }}' == 'query'){
+                $("#query").show();
+            } else if('{{ active_tab }}' == 'video'){
+                $("#video").show();
+            }
             if ({{ result|length }}) {
                 $("#vid_icon").removeAttr('hidden');
                 $("#query_icon").removeAttr('hidden');
-            } else if ('{{  result_val }}' != 'None' || '{{ title }}' == "Calculator") {
+            } else if ('{{  result_val }}' != 'None' || '{{ title }}' == 'Calculator') {
                 $("#query").show();
+                console.log("gj");
             } else if ({{ vid_amount }}) {
                 $("#video").show();
                 $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')

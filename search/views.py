@@ -97,6 +97,9 @@ def calculator(request):
                   {'title': 'Calculator',
                    'query': q,
                    'result_val': exprResult,
+                   'active_tab': 'query',
+                   'vid_amount': 0,
+                   'amount': 0,
                    })
 
 
@@ -171,6 +174,7 @@ def query(request):
                                     p = p.split('/')
                                     l = p[len(p) - 1]
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
+        active = 'query'
 
         if not ans and exprResult is None:
             video_res = video_search(request, query)
@@ -194,15 +198,17 @@ def query(request):
 
     elif request.method == 'POST':
         exp = calculator(request)
+        active = 'query'
         video_res = video_search(request)
         if exp == 'not expression':
             amount = len(ans)
             exprResult = None
             query = video_res['query']
             title = query
+            active = 'video'
 
     if not ans and not exprResult and not video_res:
-        return render(request, 'cosmos/error/HTTP404.html')
+        return render(request, 'cosmos/notfound.html')
 
     return render(request, 'cosmos/searchresults.html',
                   {'amount': amount,
@@ -214,7 +220,8 @@ def query(request):
                    'algo_name': algo_name,
                    'videos': video_res['videos'],
                    'next_page': video_res['next_page'],
-                   'vid_amount': video_res['amount']
+                   'vid_amount': video_res['amount'],
+                   'active_tab': active
                    })
 
 
