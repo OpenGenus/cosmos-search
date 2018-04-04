@@ -217,8 +217,17 @@ def search_results_from_sites(request):
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         links = soup.select('.r a')
         descriptions = soup.find_all('span', {'class': 'st'})
-
         for k in range(j):
+            description = descriptions[k].text
+            link = 'https://google.com' + links[k].get('href')
+            link_list.append(link)
+            heading_list.append(links[k].text)
+            description_list.append(description)
+    if not link_list:
+        res = requests.get('https://google.com/search?q=' + keyword)
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
+        links = soup.select('.r a')
+        for k in range(3):
             description = descriptions[k].text
             link = 'https://google.com' + links[k].get('href')
             link_list.append(link)
