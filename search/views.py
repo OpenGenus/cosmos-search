@@ -6,7 +6,6 @@ import json
 import random
 from random import shuffle
 import re
-import requests
 from wikiapi import WikiApi
 from stackapi import StackAPI
 from search.templatetags.calculator import getResult
@@ -176,7 +175,10 @@ def query(request):
                     folder_list = folder.split('/')
                     print(folder_list[-1])
                     wiki_res = wiki(folder_list[-1])
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v, 'wiki': wiki_res, 'stack': stk_res})
+                    ans.append({'path': path, 'dirs': folder_list,
+                                'files': filtered_v, 
+                                'wiki': wiki_res, 
+                                'stack': stk_res})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
