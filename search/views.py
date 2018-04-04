@@ -6,11 +6,8 @@ import random
 from random import shuffle
 import re
 import requests
-<<<<<<< HEAD
 import bs4
 from django.views.decorators.cache import cache_page
-=======
->>>>>>> 843ede0af893d4aca5f92d6dc4a0b989f091d6fe
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
