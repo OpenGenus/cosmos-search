@@ -1,3 +1,4 @@
+from django.contrib.sites import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -5,9 +6,10 @@ import json
 import random
 from random import shuffle
 import re
+import requests
 from wikiapi import WikiApi
 from stackapi import StackAPI
-
+import bs4
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -149,9 +151,7 @@ def query(request):
         if '\\' in query:
             query = query.replace('\\', '')
         res = getResult(query)
-
         stk_res = stackoverflow(query)
-        wiki_res = wiki(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
