@@ -1,4 +1,3 @@
-from django.contrib.sites import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -6,10 +5,8 @@ import json
 import random
 from random import shuffle
 import re
-import requests
 from wikiapi import WikiApi
 from stackapi import StackAPI
-import bs4
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -175,7 +172,9 @@ def query(request):
                     folder_list = folder.split('/')
                     print(folder_list[-1])
                     wiki_res = wiki(folder_list[-1])
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v, 'wiki': wiki_res, 'stack': stk_res})
+                    ans.append({'path': path, 'dirs': folder_list,
+                                'files': filtered_v, 'wiki': wiki_res,
+                                'stack': stk_res})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
