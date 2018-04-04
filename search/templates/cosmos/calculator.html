@@ -4,121 +4,110 @@
     <link rel="stylesheet" href="{% static 'css/calculator.css' %}">
 {% endblock %}
 
-<div class="cal-top">
+<div>
     <form name="frm" id="cl" action="{% url 'calculator' %}" method="POST">{% csrf_token %}
         <div id="calculator">
             <div class="top">
                 <div class="screen">
                     {% if result_val is not None %}
                         <input type="text" value="{{ query }}" name="seq" id="seq" disabled/>
-                        <input type="text" id="resultText" name="txt" value="{{ result_val }}"
-                                onclick="textD(resultText.value)"  autocomplete="off" onfocus="focusOn(this.value)">
-                        <br>
+                        <input type="text" id="resultText" name="txt" value="{{ result_val }}" onclick="textD(this.value)" autocomplete="off" onfocus="focusOn(this.value)"/>
                     {% else %}
                         <input type="text" value="" name="seq" id="seq" disabled/>
-                        <input type="text" id="resultText" name="txt" value="0" onclick="textD(resultText.value)" autocomplete="off" onfocus="focusOn(this.value)"><br>
+                        <input type="text" id="resultText" name="txt" value="0" onclick="textD(this.value)" autocomplete="off" onfocus="focusOn(this.value)"/>
                     {% endif %}
-                     <input type="submit">
-
+                    <input type="submit" hidden>
                 </div>
             </div>
-            <div class="keys">
-                <span><input type="button" class="num" name=btn7 value="7" Onclick="displ(btn7.value)"></span>
-                <span><input type="button" class="num" name=btn8 value="8" Onclick="displ(btn8.value)"></span>
-                <span><input type="button" class="num" name=btn9 value="9" Onclick="displ(btn9.value)"></span>
-                <span class="eval"><input type="button" class="num" name=btn_pow value="^"
-                                          Onclick="displ(btn_pow.value)"></span>
-                <span class="clear"><input type="button" class="num" name=btnc value="C"
-                                           Onclick="cleartext(btnc.value)"></span>
-                <span><input type="button" class="num" name=btn_sqrt value="sqrt"
-                             Onclick="displ(btn_sqrt.value,'(')"></span>
-                <span><input type="button" class="num" name=btn4 value="4" Onclick="displ(btn4.value)"></span>
-                <span><input type="button" class="num" name=btn5 value="5" Onclick="displ(btn5.value)"></span>
-                <span class="img-responsive"><input type="button" class="num" name=btn6 value="6"
-                                                    Onclick="displ(btn6.value)"></span>
-                <span class="eval"><input type="button" class="num" name=btn_p value="+"
-                                          Onclick="displ(btn_p.value)"></span>
-                <span><input type="button" class="num" name=btn_sin value="sin"
-                             Onclick="displ(btn_sin.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_cos value="cos"
-                             Onclick="displ(btn_cos.value,'(')"></span>
-                <span class="img-responsive"><input type="button" class="num" name=btn1 value="1"
-                                                    Onclick="displ(btn1.value)"></span>
-                <span><input type="button" class="num" name=btn2 value="2" Onclick="displ(btn2.value)"></span>
-                <span><input type="button" class="num" name=btn3 value="3" Onclick="displ(btn3.value)"></span>
-                <span class="eval"><input type="button" class="num" name=btn_m value="-"
-                                          Onclick="displ(btn_m.value)"></span><br>
-                <span class="img-responsive"><input type="button" class="num" name=btn_tan value="tan"
-                                                    Onclick="displ(btn_tan.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_cot value="cot"
-                             Onclick="displ(btn_cot.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_dec value="." Onclick="displ(btn_dec.value)"></span>
-                <span><input type="button" class="num" name=btn0 value="0" Onclick="displ(btn0.value)"></span>
-                <span class="img-responsive">
-                                <input type="button" class="num" name=btn_eq value="=" Onclick="equals(btn_eq.value)">
-                            </span>
-                <span class="eval"><input type="button" class="num" name=btn_div value="/"
-                                          Onclick="displ(btn_div.value)"></span>
-                <span><input type="button" class="num" name=btn_cosec value="cosec"
-                             Onclick="displ(btn_cosec.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_sec value="sec"
-                             Onclick="displ(btn_sec.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_mod value="%" Onclick="displ(btn_mod.value)"></span>
-                <span><input type="button" class="num" name=btn_cb value="(" Onclick="displ(btn_cb.value)"></span>
-                <span class="img-responsive"><input type="button" class="num" name=btn_ob value=")"
-                                                    Onclick="displ(btn_ob.value)"></span>
-                <span class="eval"><input type="button" class="num" name=btn_mul value="*"
-                                          Onclick="displ(btn_mul.value)"></span>
-                <span><input type="button" class="num" name=btn_exp value="exp"
-                             Onclick="displ(btn_exp.value,'(')"></span>
-                <span><input type="button" class="num" name=btn_log value="log"
-                             Onclick="displ(btn_log.value,'(')"></span>
+            <div class="keys-row">
+              <div class="keys-col-4">
+                <div class="keys adv-keys">
+                  <span><input type="button" class="num" name=btn_pow value="^" Onclick="displ(btn_pow.value)"></span>
+                  <span><input type="button" class="num" name=btn_sqrt value="√" Onclick="displ('sqrt','(')"></span>
+                  <span><input type="button" class="num" name=btn_exp value="exp" Onclick="displ(btn_exp.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_log value="log" Onclick="displ(btn_log.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_sin value="sin" Onclick="displ(btn_sin.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_cos value="cos" Onclick="displ(btn_cos.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_tan value="tan" Onclick="displ(btn_tan.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_cot value="cot" Onclick="displ(btn_cot.value,'(')"></span>
+                  <span><input type="button" class="num" name=btn_csc value="csc" Onclick="displ('cosec','(')"></span>
+                  <span><input type="button" class="num" name=btn_sec value="sec" Onclick="displ(btn_sec.value,'(')"></span>
+                </div>
+              </div>
+              <div class="keys-col-8">
+                <div class="keys base-keys">
+                  <span class="eval"><input type="button" class="num" name=btn_mod value="%" Onclick="displ(btn_mod.value)"></span>
+                  <span><input type="button" class="num" name=btn_cb value="(" Onclick="displ(btn_cb.value)"></span>
+                  <span><input type="button" class="num" name=btn_ob value=")" Onclick="displ(btn_ob.value)"></span>
+                  <span class="clear"><input type="button" class="num" name=btnc value="C" Onclick="cleartext(btnc.value)"></span>
+                  <span class="eval"><input type="button" class="num" name=btn_p value="+" Onclick="displ(btn_p.value)"></span>
+                  <span><input type="button" class="num" name=btn7 value="7" Onclick="displ(btn7.value)"></span>
+                  <span><input type="button" class="num" name=btn8 value="8" Onclick="displ(btn8.value)"></span>
+                  <span><input type="button" class="num" name=btn9 value="9" Onclick="displ(btn9.value)"></span>
+                  <span class="eval"><input type="button" class="num" name=btn_m value="-" Onclick="displ(btn_m.value)"></span><br>
+                  <span><input type="button" class="num" name=btn4 value="4" Onclick="displ(btn4.value)"></span>
+                  <span><input type="button" class="num" name=btn5 value="5" Onclick="displ(btn5.value)"></span>
+                  <span><input type="button" class="num" name=btn6 value="6" Onclick="displ(btn6.value)"></span>
+                  <span class="eval"><input type="button" class="num" name=btn_mul value="*" Onclick="displ(btn_mul.value)"></span>
+                  <span><input type="button" class="num" name=btn1 value="1" Onclick="displ(btn1.value)"></span>
+                  <span><input type="button" class="num" name=btn2 value="2" Onclick="displ(btn2.value)"></span>
+                  <span><input type="button" class="num" name=btn3 value="3" Onclick="displ(btn3.value)"></span>
+                  <span class="eval"><input type="button" class="num" name=btn_div value="/" Onclick="displ(btn_div.value)"></span>
+                  <span><input type="button" class="num" name=btn0 value="0" Onclick="displ(btn0.value)"></span>
+                  <span><input type="button" class="num" name=btn_dec value="." Onclick="displ(btn_dec.value)"></span>
+                  <span><input type="button" class="num" name=btn_eq value="=" Onclick="equals(btn_eq.value)"></span>
+                </div>
+              </div>
             </div>
         </div>
     </form>
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-     $(document).ready(function() {
-         window.onload = function () {
-             $("#resultText").focus();
+    $(document).ready(function() {
+      window.onload = function () {
+        $("#resultText").focus();
 
-         }
-     });
+      }
+    });
 
-     function focusOn(x) {
-         var temp_value=x;
-         frm.txt.value='';
-         frm.txt.value = temp_value;
-     }
+    function focusOn(x) {
+      var temp_value = x;
+      frm.txt.value = "";
+      frm.txt.value = temp_value;
+    }
+
     function displ(x, end) {
-        if (frm.txt.value === 'Error') {
-            frm.txt.value = "";
-            frm.seq.value = "";
-        }
-        if (end === '(') {
-            frm.txt.value = frm.txt.value + x + end;
-        }
-        else {
-            frm.txt.value = frm.txt.value + x;
-        }
 
+      if (frm.txt.value == "0" && x != ".") {
+        frm.txt.value = "";
+      }
+
+      if (frm.txt.value == "Error"){
+          frm.txt.value = "";
+          frm.seq.value = "";
+      }
+
+      if (end === "(") {
+        frm.txt.value = frm.txt.value + x + end;
+      }
+      else {
+        frm.txt.value = frm.txt.value + x;
+      }
     }
 
     function cleartext(x) {
-        frm.txt.value = "";
+      frm.txt.value = "";
     }
 
     function equals(x) {
-        $("#cl").submit();
+      $("#cl").submit()
     }
 
     function textD(x) {
-        if (x === 'Error') {
+        if(x == "Error"){
             frm.txt.value = "";
             frm.seq.value = "";
         }
-     }
-
+    }
 </script>

@@ -20,6 +20,7 @@
         body {
             font-family: 'Roboto Mono', monospace;
             margin-bottom: 5em;
+            font-size: 16px;
         }
 
         article {
@@ -42,6 +43,20 @@
             font-size: 16px !important;
             line-height: 1.2 !important;
         }
+        .stylish-input-group .input-group-addon{
+            background: white !important;
+          }
+        .stylish-input-group button{
+            border:0;
+            background:transparent;
+
+        }
+        .border{
+          margin: 0;
+          padding: 0;
+          padding-bottom: 0;
+        }
+        .bootstrap-iso .form-control{border-width: 2px; border-color: grey;}
     </style>
     {% block style %}
     {% endblock %}
@@ -64,14 +79,23 @@
         <div class="row">
             {# align search bar and middle of vw #}
             <div class="col"></div>
-            <div class="col-md-8">
+            <div class="col-8 nopadding border">
                 <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
-                    <div class="input-group">
-                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" autofocus>
+                    <div class="input-group stylish-input-group">
+                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q">
+                        <span class="input-group-addon">
+                        <button type="submit" style="outline: none;">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
                     </div>
                 </form>
             </div>
-            
+            <div class="col-0.5 border">
+                <button onclick="document.getElementById('search').value=''" class="btn btn-default btn-md">
+                  <i class="fa fa-remove" style="color:#A4A2A2;"></i>
+                </button>
+            </div>
             {# align search bar and middle of vw #}
             <div class="col float-right"></div>
         </div><br>
@@ -89,6 +113,7 @@
     <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a8129cbe45fbb001342fed3&product=custom-share-buttons"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
     {% block javascript %}
     {% endblock %}
@@ -101,6 +126,11 @@
             }
         });
     });
+    $("#formq").submit(function () {
+        if ($('input').val().replace(/[\s,\/#!$%\^&\*;:{}=\-_`~().]/g, '').length === 0) {
+                return false;
+            }
+         });
 
 </script>
 </body>

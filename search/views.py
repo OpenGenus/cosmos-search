@@ -6,8 +6,11 @@ import random
 from random import shuffle
 import re
 import requests
+<<<<<<< HEAD
 import bs4
 from django.views.decorators.cache import cache_page
+=======
+>>>>>>> 843ede0af893d4aca5f92d6dc4a0b989f091d6fe
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -120,7 +123,7 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
-
+        query = ' '.join(query.split())
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
@@ -205,7 +208,6 @@ def subsq(a, b, m, n):
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
 
-
 def search_results_from_sites(request):
     keyword = request.GET['q']
     keyword.replace(' ', '+')
@@ -226,3 +228,14 @@ def search_results_from_sites(request):
             heading_list.append(links[k].text)
             description_list.append(description)
     return link_list, heading_list, description_list
+
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
