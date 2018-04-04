@@ -176,9 +176,7 @@ def query(request):
                     print(folder_list[-1])
                     wiki_res = wiki(folder_list[-1])
                     ans.append({'path': path, 'dirs': folder_list,
-                                'files': filtered_v, 
-                                'wiki': wiki_res, 
-                                'stack': stk_res})
+                                'files': filtered_v, 'wiki': wiki_res, 'stack': stk_res})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
