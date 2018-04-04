@@ -60,13 +60,19 @@
             </div>
             <br> {% endfor %}
             <h5>Search results from other sites</h5>
-            <hr> {% for j,k in mylist %}
+            <hr> {% for j,k,l in mylist %}
             <div class="card">
                 <div class="card-body">
 
                     <form method="get">
                         <div>
-                            <a class="btn-link" href="{{j}}">{{k}}</a>
+                          <h6 class="card-title">
+                          {{k}}
+                        </h6>
+                        <p style="font-size: 12px">
+                          {{l}}
+                        </p>
+                          <a class="btn-link" target="_blank" href="{{j}}">solution</a>
                         </div>
                     </form>
                 </div>

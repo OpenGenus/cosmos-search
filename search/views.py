@@ -127,8 +127,9 @@ def query(request):
         rec = []
         links = []
         headings = []
-        links, headings = search_results_from_sites(request)
-        mylist = zip(links, headings)
+        descriptions = []
+        links, headings, descriptions = search_results_from_sites(request)
+        mylist = zip(links, headings, descriptions)
         amount = 0
         for folder, file in data.items():
             filtered_v = []
@@ -210,13 +211,18 @@ def search_results_from_sites(request):
     keyword.replace(' ', '+')
     link_list = []
     heading_list = []
+    description_list = []
     for i, j in settings.TRUSTED_SITES:
         keyword1 = keyword + ':' + i
         res = requests.get('https://google.com/search?q=' + keyword1)
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         links = soup.select('.r a')
+        descriptions = soup.find_all('span', {'class': 'st'})
+
         for k in range(j):
+            description = descriptions[k].text
             link = 'https://google.com' + links[k].get('href')
             link_list.append(link)
-            heading_list.append(links[j].text)
-    return link_list, heading_list
+            heading_list.append(links[k].text)
+            description_list.append(description)
+    return link_list, heading_list, description_list
