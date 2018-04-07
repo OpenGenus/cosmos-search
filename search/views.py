@@ -162,7 +162,7 @@ def query(request):
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
 
         if not ans and exprResult is None:
-            return render(request, 'cosmos/notfound.html', {'query': query, 'mylist': mylist})
+            return render(request, 'cosmos/notfound.html', {'query': query, 'recommend': rec[:5], 'mylist': mylist})
 
         if ans:
             algo_name = query
@@ -212,14 +212,14 @@ def search_results_from_sites(request):
     heading_list = []
     description_list = []
     for i, j in settings.TRUSTED_SITES:
-        keyword1 = keyword + ':' + i
+        keyword1 = keyword + ' algorithm site: ' + i
         res = requests.get('https://google.com/search?q=' + keyword1)
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
         links = soup.select('.r a')
         descriptions = soup.find_all('span', {'class': 'st'})
         for k in range(j):
-            description = descriptions[k].text
             link = 'https://google.com' + links[k].get('href')
+            description = descriptions[k].text
             link_list.append(link)
             heading_list.append(links[k].text)
             description_list.append(description)
