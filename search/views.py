@@ -205,6 +205,7 @@ def subsq(a, b, m, n):
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
 
+
 def search_results_from_sites(request):
     keyword = request.GET['q']
     keyword.replace(' ', '+')
@@ -234,6 +235,7 @@ def search_results_from_sites(request):
             heading_list.append(links[k].text)
             description_list.append(description)
     return link_list, heading_list, description_list
+
 
 def display(request):
     path = request.GET['path']
