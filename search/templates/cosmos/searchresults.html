@@ -2,7 +2,38 @@
 {% load staticfiles %}
 {% block head %}
     <title>"{{ title }}" | cosmos-search</title>
+    <style>
+        body {font-family: Arial;}
 
+        span {
+            display: inline-block;
+          }
+        /* Style the tab */
+        .tab {
+            margin-top: 20px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border-top: none;
+        }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -31,57 +62,173 @@
                                                 class="st-custom-button fa fa-google-plus-square"></div></a>
     </span>
 
+    <div class="tab">
+      <button class="tablinks" onclick="display(event, 'All')">All</button>
+      <button class="tablinks" onclick="display(event, 'Code')">Code</button>
+      <button class="tablinks" onclick="display(event, 'External')">External</button>
+    </div>
+
+    <script>
+      function display(evt, Name) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(Name).style.display = "block";
+          evt.currentTarget.className += " active";
+      }
+</script>
     </h6>
-    <hr>
     {% if result_val or not result%}
         {% include 'cosmos/calculator.html' %}
     {% endif %}
+    <div id="All" class="tabcontent">
+          {% if result %}
+              {% for entry in result %}
+                  <div class="card">
+                      <div class="card-body">
+                          <h4 class="card-title">
+                              {% for i in entry.dirs %}
+                                  {{ i }} /
+                              {% endfor %}
+                          </h4>
+                          <div class="dropdown">
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Solutions
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="soln">
+                                {% for file in entry.files %}
+                                    <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
+                                        <div class="input-group">
+                                            <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
+                                        </div>
+                                    </form>
+                                {% endfor %}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <br> {% endfor %}
+                  <h5>Recommended results</h5>
+                  <hr> {% for j in recommend %}
+                  <div class="card">
+                      <div class="card-body">
 
-    {% if result %}
-        {% for entry in result %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">
-                        {% for i in entry.dirs %}
-                            {{ i }} /
-                        {% endfor %}
-                    </h4>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Solutions
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="soln">
-                          {% for file in entry.files %}
-                              <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
-                                  <div class="input-group">
-                                      <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
-                                  </div>
-                              </form>
-                          {% endfor %}
+                          <form method="get">
+                              <div>
+                                  <h6 class="card-title">
+                                      {% for k in j.recdirs %}
+                                          {{ k }} /
+                                      {% endfor %}
+                                  </h6>
+                                  <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <br>
+              {% endfor %}
+                  <h5>Search results from other sites</h5>
+                  <hr> {% for j,k,l in mylist %}
+                  <div class="card">
+                      <div class="card-body">
+
+                          <form method="get">
+                              <div>
+                                <h6 class="card-title">
+                                {{k}}
+                              </h6>
+                              <p style="font-size: 12px">
+                                {{l}}
+                              </p>
+                                <a class="btn-link" target="_blank" href="{{j}}">see more</a>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  <br> {% endfor %}
+
+          {% endif %}
+    </div>
+
+  <div id="Code" class="tabcontent">
+        {% if result %}
+            {% for entry in result %}
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {% for i in entry.dirs %}
+                                {{ i }} /
+                            {% endfor %}
+                        </h4>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Solutions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="soln">
+                              {% for file in entry.files %}
+                                  <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
+                                      <div class="input-group">
+                                          <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
+                                      </div>
+                                  </form>
+                              {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <br> {% endfor %}
-        <h5>Recommended results</h5>
-        <hr> {% for j in recommend %}
-        <div class="card">
-            <div class="card-body">
+                <br> {% endfor %}
+            <h5>Recommended results</h5>
+            <hr> {% for j in recommend %}
+            <div class="card">
+                <div class="card-body">
 
-                <form method="get">
-                    <div>
-                        <h6 class="card-title">
-                            {% for k in j.recdirs %}
-                                {{ k }} /
-                            {% endfor %}
-                        </h6>
-                        <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
-                    </div>
-                </form>
+                    <form method="get">
+                        <div>
+                            <h6 class="card-title">
+                                {% for k in j.recdirs %}
+                                    {{ k }} /
+                                {% endfor %}
+                            </h6>
+                            <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <br>
-    {% endfor %}
-    {% endif %}
+            <br>
+        {% endfor %}
+        {% endif %}
+  </div>
+
+  <div id="External" class="tabcontent">
+
+        {% if result %}
+                <h5>Search results from other sites</h5>
+                <hr> {% for j,k,l in mylist %}
+                <div class="card">
+                    <div class="card-body">
+
+                        <form method="get">
+                            <div>
+                              <h6 class="card-title">
+                              {{k}}
+                            </h6>
+                            <p style="font-size: 12px">
+                              {{l}}
+                            </p>
+                              <a class="btn-link" target="_blank" href="{{j}}">see more</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br> {% endfor %}
+        {% endif %}
+  </div>
+    <hr>
 
 {% endblock %}

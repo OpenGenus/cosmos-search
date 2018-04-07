@@ -6,6 +6,8 @@ import random
 from random import shuffle
 import re
 import requests
+import bs4
+from django.views.decorators.cache import cache_page
 from search.templatetags.calculator import getResult
 
 COSMOS_SEP = '_'
@@ -101,6 +103,7 @@ def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
+@cache_page(60 * 15)
 # Search query
 def query(request):
     global algo_name, title
@@ -122,6 +125,11 @@ def query(request):
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
         rec = []
+        links = []
+        headings = []
+        descriptions = []
+        links, headings, descriptions = search_results_from_sites(request)
+        mylist = zip(links, headings, descriptions)
         amount = 0
         for folder, file in data.items():
             filtered_v = []
@@ -154,7 +162,7 @@ def query(request):
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
 
         if not ans and exprResult is None:
-            return render(request, 'cosmos/notfound.html', {'query': query})
+            return render(request, 'cosmos/notfound.html', {'query': query, 'recommend': rec[:5], 'mylist': mylist})
 
         if ans:
             algo_name = query
@@ -171,7 +179,8 @@ def query(request):
                        'recommend': rec[:5],
                        'query': query,
                        'result_val': exprResult,
-                       'algo_name': algo_name
+                       'algo_name': algo_name,
+                       'mylist': mylist
                        })
 
     elif request.method == 'POST':
@@ -195,6 +204,37 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+
+def search_results_from_sites(request):
+    keyword = request.GET['q']
+    keyword.replace(' ', '+')
+    link_list = []
+    heading_list = []
+    description_list = []
+    for i, j in settings.TRUSTED_SITES:
+        keyword1 = keyword + ' algorithm site: ' + i
+        res = requests.get('https://google.com/search?q=' + keyword1)
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
+        links = soup.select('.r a')
+        descriptions = soup.find_all('span', {'class': 'st'})
+        for k in range(j):
+            link = 'https://google.com' + links[k].get('href')
+            description = descriptions[k].text
+            link_list.append(link)
+            heading_list.append(links[k].text)
+            description_list.append(description)
+    if not link_list:
+        res = requests.get('https://google.com/search?q=' + keyword)
+        soup = bs4.BeautifulSoup(res.text, 'html.parser')
+        links = soup.select('.r a')
+        for k in range(3):
+            description = descriptions[k].text
+            link = 'https://google.com' + links[k].get('href')
+            link_list.append(link)
+            heading_list.append(links[k].text)
+            description_list.append(description)
+    return link_list, heading_list, description_list
 
 
 def display(request):

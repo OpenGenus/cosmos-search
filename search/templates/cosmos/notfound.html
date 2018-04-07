@@ -1,12 +1,147 @@
 {% extends 'cosmos/header.html' %}
 {% block head %}
     <title>Not Found | cosmos-search</title>
+    <style>
+        body {font-family: Arial;}
+
+        span {
+            display: inline-block;
+          }
+        /* Style the tab */
+        .tab {
+            margin-top: 20px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border-top: none;
+        }
+</style>
 {% endblock %}
 {% block body %}
 <article style="padding-top: 150px">
     <h1> Sorry! </h1>
     <h2>It seems like there are no results for <span style="color: #5D337F;">{{ query }}</span> !</h2>
     <h6>Try searching something else or request the algorithm you searched for <a href="https://github.com/OpenGenus/cosmos/issues/new">here</a>.</h6><br>
+    <div class="tab">
+      <button class="tablinks" onclick="display(event, 'All')">All</button>
+      <button class="tablinks" onclick="display(event, 'Code')">Code</button>
+      <button class="tablinks" onclick="display(event, 'External')">External</button>
+    </div>
+    <script>
+      function display(evt, Name) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(Name).style.display = "block";
+          evt.currentTarget.className += " active";
+      }
+</script>
+        <div id="All" class="tabcontent">
+          <h5>Recommended results</h5>
+          <hr> {% for j in recommend %}
+          <div class="card">
+              <div class="card-body">
+
+                  <form method="get">
+                      <div>
+                          <h6 class="card-title">
+                              {% for k in j.recdirs %}
+                                  {{ k }} /
+                              {% endfor %}
+                          </h6>
+                          <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                      </div>
+                  </form>
+              </div>
+          </div>
+          <br>
+          {% endfor %}
+      <h5>Search results from other sites</h5>
+      <hr> {% for j,k,l in mylist %}
+      <div class="card">
+          <div class="card-body">
+              <form method="get">
+                  <div>
+                    <h6 class="card-title">
+                            {{k}}
+                          </h6>
+                          <p style="font-size: 12px">
+                            {{l}}
+                          </p>
+                            <a class="btn-link" target="_blank" href="{{j}}">solution</a>
+                  </div>
+              </form>
+          </div>
+      </div>
+      <br> {% endfor %}
+        </div>
+
+        <div id="Code" class="tabcontent">
+          <h5>Recommended results</h5>
+          <hr> {% for j in recommend %}
+          <div class="card">
+              <div class="card-body">
+
+                  <form method="get">
+                      <div>
+                          <h6 class="card-title">
+                              {% for k in j.recdirs %}
+                                  {{ k }} /
+                              {% endfor %}
+                          </h6>
+                          <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                      </div>
+                  </form>
+              </div>
+          </div>
+          <br>
+          {% endfor %}
+        </div>
+
+        <div id="External" class="tabcontent">
+      <h5>Search results from other sites</h5>
+      <hr> {% for j,k,l in mylist %}
+      <div class="card">
+          <div class="card-body">
+              <form method="get">
+                  <div>
+                    <h6 class="card-title">
+                            {{k}}
+                          </h6>
+                          <p style="font-size: 12px">
+                            {{l}}
+                          </p>
+                            <a class="btn-link" target="_blank" href="{{j}}">solution</a>
+                  </div>
+              </form>
+          </div>
+      </div>
+      <br> {% endfor %}
+        </div>
+
     <h6>&mdash; <a href="http://opengenus.org">OpenGenus, The Open Group to help the needy</a></h6>
 </article>
 {% endblock %}
