@@ -16,11 +16,9 @@ def fetchJson(url):
         return cached
 
 
-videos_Results = []
-
-
 def youtube_search(options):
     global videos_Results
+    videos_Results = []
     if not options['next_page']:
         videos_Results = []
     content_details = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&"
@@ -45,7 +43,6 @@ def youtube_search(options):
         ).execute()
         if search_response:
             cache.set(url, search_response)
-
     next_page = search_response.get('nextPageToken')
     for search_result in search_response.get("items", []):
         if search_result['id']['kind'] == 'youtube#video':

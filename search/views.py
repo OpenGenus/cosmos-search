@@ -122,9 +122,21 @@ def query(request):
     query = ''
 
     if request.is_ajax():
-        algo = searchSuggestion(request)
-        mimetype = 'application/json'
-        return HttpResponse(algo, mimetype)
+        data = request.GET.get('name', None)
+        if data:
+            video_res = video_search(request, data)
+            res = {
+                'videos': video_res['videos'],
+                'next_page': video_res['next_page'],
+                'vid_amount': video_res['amount']
+            }
+            video = json.dumps(res)
+            mimetype = 'application/json'
+            return HttpResponse(video, mimetype)
+        else:
+            algo = searchSuggestion(request)
+            mimetype = 'application/json'
+            return HttpResponse(algo, mimetype)
 
     if request.method == 'GET':
         ans = []
@@ -197,15 +209,8 @@ def query(request):
         shuffle(rec)
 
     elif request.method == 'POST':
-        exp = calculator(request)
+        calculator(request)
         active = 'query'
-        video_res = video_search(request)
-        if exp == 'not expression':
-            amount = len(ans)
-            exprResult = None
-            query = video_res['query']
-            title = query
-            active = 'video'
 
     if not ans and not exprResult and not video_res:
         return render(request, 'cosmos/notfound.html')
@@ -228,23 +233,9 @@ def query(request):
 def video_search(request, term=None):
     youtube_result = {}
     query = ''
-    if request.method == 'GET':
+
+    if request.is_ajax():
         query = term
-        if len(query.split(" ")) == 1:
-            searchKey = query + '+' + 'algorithm'
-        else:
-            searchKey = query.replace(' ', '+')
-
-        youtube_query = {
-            'q': searchKey,
-            'max_results': 25,
-            'next_page': '',
-            'id': 0
-        }
-        youtube_result = youtube_search(youtube_query)
-
-    if request.method == 'POST':
-        query = request.POST.get('token')
         q = query.split('&')
         if len(q[0].split(" ")) == 1:
             searchKey = q[0] + '+' + 'algorithm'
@@ -257,6 +248,20 @@ def video_search(request, term=None):
             'id': q[-1]
         }
         query = q[0]
+        youtube_result = youtube_search(youtube_query)
+    elif request.method == 'GET':
+        query = term
+        if len(query.split(" ")) == 1:
+            searchKey = query + '+' + 'algorithm'
+        else:
+            searchKey = query.replace(' ', '+')
+
+        youtube_query = {
+            'q': searchKey,
+            'max_results': 25,
+            'next_page': '',
+            'id': 0
+        }
         youtube_result = youtube_search(youtube_query)
 
     res = {

@@ -40,7 +40,7 @@
                 <div class="col-md-2">
                     <div class="vid">
                         <button class="btn float-right" hidden id="query_icon"
-                                style= "margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
+                                style="margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
                                 onclick="openTab('query',this.button)">
                             <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Code</a>
                             <span class="badge"
@@ -51,11 +51,11 @@
                 </div>
                 <div class="col-md-2">
                     <div class="vid">
-                        <button type="submit" hidden  class="btn float-right" id="vid_icon"
+                        <button type="submit" hidden class="btn float-right" id="vid_icon"
                                 style="background-color: white; margin-right:-22em;margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
                                 onclick="openTab('video')">
                             <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Video</a>
-                            <span class="badge"
+                            <span class="badge" id="notify"
                                   style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
                             </span>
                         </button>
@@ -129,9 +129,9 @@
 
     <script>
         $(document).ready(function () {
-            if ('{{ active_tab }}' == 'query'){
+            if ('{{ active_tab }}' == 'query') {
                 $("#query").show();
-            } else if('{{ active_tab }}' == 'video'){
+            } else if ('{{ active_tab }}' == 'video') {
                 $("#video").show();
             }
             if ({{ result|length }}) {
@@ -139,7 +139,6 @@
                 $("#query_icon").removeAttr('hidden');
             } else if ('{{  result_val }}' != 'None' || '{{ title }}' == 'Calculator') {
                 $("#query").show();
-                console.log("gj");
             } else if ({{ vid_amount }}) {
                 $("#video").show();
                 $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
@@ -156,7 +155,7 @@
             var d = document.getElementById(tabId);
             d.style.display = "block";
             if (tabId == 'video') {
-                $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
+                $("#res_info").html('Showing <span style="color: #5D337F;">' + vid_length + '</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
             } else {
                 var l = {{ amount }};
                 if (l > 1) {
@@ -167,5 +166,6 @@
                 }
             }
         }
+
     </script>
 {% endblock %}
