@@ -75,8 +75,8 @@
             </div>
             <div class="col-8">
                     {% if user.is_authenticated %}
-                    <div class="dropdown"><a class="btn float-right" href=""><i class="fa fa-user-circle" style="color:lightblue;font-size:25px" margin-right:"10px;"></i>{{ user.socialaccount_set.all.0.extra_data.name }}</a></div>
-                    <div class="dropdown-content"><a id="logout" href="/accounts/logout" class="btn float-right btn-info">Logout</a></div>
+                    <div><a id="logout" href="/accounts/logout" class="btn float-right btn-info">Logout</a></div>
+                    <div><a class="btn float-right " href="#"><i class="fa fa-user-circle" style="color:lightblue;font-size:25px" margin-right:"10px;"></i>{{ user.socialaccount_set.all.0.extra_data.name }}</a></div>
                     {% else %}
                     <a id="google_login" href="/accounts/google/login" class="btn float-right btn-danger" style="margin-left:10px;">
                        <i class="fa fa-google-plus">  Sign in</i></a>
