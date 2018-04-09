@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 from decouple import config, Csv
-
+#from django.contrib.sites.models import Site
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -53,7 +53,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    #'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    #'allauth.socialaccount.providers.twitter', 
 ]
+
+SITE_ID = 2
+
+SOCIALACCOUNT_PROVIDERS = {'facebook': {}, 'google': 
+                              
+                             { 'SCOPE': ['email',
+                               'https://www.googleapis.com/auth/userinfo.email',
+     'https://www.googleapis.com/auth/userinfo.profile',
+     'https://www.googleapis.com/auth/plus.login',
+     'https://www.googleapis.com/auth/plus.me',],
+  
+                               'AUTH_PARAMS': { 'access_type': 'online' }
+                             }, 'twitter':{}}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,7 +90,8 @@ ROOT_URLCONF = 'cosmos_search.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
+       # 'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,10 +99,22 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                 'django.template.context_processors.i18n',
+                # Required by allauth template tags
+               # "django.core.context_processors.request",
+                # 'allauth.account.context_processors.account',
+                # 'allauth.socialaccount.context_processors.socialaccount'
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    # Default backend -- used to login by username in Django admin
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
 
 WSGI_APPLICATION = 'cosmos_search.wsgi.application'
 
@@ -129,6 +162,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_QUERY_EMAIL = True
+LOGIN_REDIRECT_URL = "/"
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
