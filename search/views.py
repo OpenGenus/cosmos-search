@@ -110,7 +110,7 @@ def query(request):
         if '\\' in query:
             query = query.replace('\\', '')
 
-        query=query.lower()
+        query = query.lower()
         res = getResult(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
