@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^', include('search.urls')),
     url(r'^update/', include('update.urls')),
     url(r'^admin/', admin.site.urls),
+   # url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
@@ -42,3 +44,4 @@ handler400 = views.error400  # noqa
 handler403 = views.error403  # noqa
 handler404 = views.error404  # noqa
 handler500 = views.error500  # noqa
+

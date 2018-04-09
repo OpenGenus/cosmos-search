@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         html {
             position: relative;
@@ -57,6 +58,8 @@
           padding-bottom: 0;
         }
         .bootstrap-iso .form-control{border-width: 2px; border-color: grey;}
+        
+        
     </style>
     {% block style %}
     {% endblock %}
@@ -71,9 +74,58 @@
                 <a class="navbar-brand" href="/">cosmos-search</a>
             </div>
             <div class="col-8">
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
-                <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
+                    {% if user.is_authenticated %}
+                    <div class="dropdown"><a class="btn float-right" href=""><i class="fa fa-user-circle" style="color:lightblue;font-size:25px" margin-right:"10px;"></i>{{ user.socialaccount_set.all.0.extra_data.name }}</a></div>
+                    <div class="dropdown-content"><a id="logout" href="/accounts/logout" class="btn float-right btn-info">Logout</a></div>
+                    {% else %}
+                    <a id="google_login" href="/accounts/google/login" class="btn float-right btn-danger" style="margin-left:10px;">
+                       <i class="fa fa-google-plus">  Sign in</i></a>
+                     <a id="google_login" href="/accounts/google/login" class="btn float-right btn-info" style="margin-left:10px;">
+                                <i class="fa fa-google-plus">  Sign up </i></a>
+    
+                    {% endif %}
+                    <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
+                    <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
+                    <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
+                
+<!-- 
+                <div><a id="google_login" href="/accounts/google/login" class="btn btn-success">
+                    Sign in with Google
+                  </a></div>
+                <div> <a id="logout" href="/accounts/logout" class="btn btn-success">Logout</a>
+                </div> -->
+
+
+<!-- 
+                <div>
+                    {% if user.is_authenticated %}
+                    <a id="logout" href="/accounts/logout" class="btn btn-success">Logout</a> 
+                     <p>as {{ user}} </p>
+                    <p>{{ user.socialaccount_set.all.0.extra_data.name }} </p>
+                    
+                    {% else %}
+                     <a id="google_login" href="/accounts/google/login" class="btn btn-success">
+                        Sign in with Google</a> 
+
+                  {% endif %}
+                  </div>
+                
+                <div class="navbar-collapse collapse">
+                    <div class="navbar-form navbar-right">
+                      {% if user.is_authenticated %}
+                        <a id="logout" href="/accounts/logout" class="btn btn-success">Logout</a>
+                      {% else %} 
+                        <a id="google_login" href="/accounts/google/login" class="btn btn-success">
+                          Sign in with Google
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div> -->
+                  
+                  
+
+
+
             </div>
         </div></br>
         <div class="row">
