@@ -82,7 +82,7 @@
             <div class="col-8 nopadding border">
                 <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
                     <div class="input-group stylish-input-group">
-                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q">
+                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" onfocus="document.getElementById('search').value=''">
                         <span class="input-group-addon">
                         <button type="submit" style="outline: none;">
                             <i class="fa fa-search"></i>
