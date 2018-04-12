@@ -8,6 +8,10 @@ import re
 from wikiapi import WikiApi
 from stackapi import StackAPI
 from search.templatetags.calculator import getResult
+import bs4
+import requests
+
+
 
 COSMOS_SEP = '_'
 
@@ -103,27 +107,22 @@ def is_file_extension_ignored(file_):
 
 
 def stackoverflow(query):
-    if query.find(" ") == -1:
-        query += ' algorithm'
-
-    site = StackAPI('stackoverflow')
-
-    data = site.fetch('similar', order='desc', sort='relevance', title=query)
-    list = data['items']
-    j = 0
     result = []
-    for x in list:
-        res = {
-            'title': x['title'],
-            'url': x['link'],
-            'qid': x['question_id'],
-            'view': x['view_count'],
-            'score': x['score']
-        }
-        result.append(res)
-        j += 1
-        if j > 5:
-            break
+    p=[]
+    t=[]
+    query = query.replace(" ", "+")
+    query += "algorithm+Google+site:stackoverflow.com"
+    data = requests.get('https://www.google.co.in/search?q=' + query)
+    k=0
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    for x in soup.find_all('a'):
+        k = k +1
+        str1 = x.get('href')
+        p = list(str1)
+        if str1.startswith("/url?q=https://stackoverflow.com/"):
+            result.append(str1.split("/url?q=")[1])
+            if len(result) > 4:
+                break
     return result
 
 
@@ -141,14 +140,53 @@ def wiki(query):
         return wiki_res1
 
 
+def tutorialpoint(query):
+    query = query.replace(" ", "+")
+    query += "tutorial+point"
+    data = requests.get('https://www.google.co.in/search?q='+query)
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    final = None
+    k = 0
+    for x in soup.find_all('a',{'href': re.compile('https://www.tutorialspoint.com/')}):
+        k += 1
+        s2=-1;
+        s3=-1;
+        str1 = x.get('href')
+        str1=str1.split("htm")[0];
+        str1=str1+'htm'
+        p = []
+        p = list(str1)
+        str2 = "http"
+        str3 = ".htm"
+        str4 = ".asp"
+        s1 = str1.find(str2)
+        s2 = str1.find(str3)
+        s3 = str1.find(str4)
+        t = []
+        if (s2 != -1):
+            for i in range(s1, s2 + 4):
+                t.append(p[i])
+            final = ''.join(t)
+
+        else:
+            for i in range(s1,s3+4):
+                t.append(p[i])
+            final = ''.join(t)
+        if final:
+           break
+
+    return final
+
+
+
 def query(request):
-    global algo_name, title
+    global algo_name\
+        , title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
         if '\\' in query:
             query = query.replace('\\', '')
         res = getResult(query)
-        stk_res = stackoverflow(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
             title = "Calculator"
@@ -168,13 +206,18 @@ def query(request):
                     filtered_v.append(f)
             if q in folder and "test" not in folder.split("/"):
                 if filtered_v:
+                    stk_res=[]
                     path = folder
                     folder_list = folder.split('/')
-                    print(folder_list[-1])
+                    # print(folder_list[-1])
                     wiki_res = wiki(folder_list[-1])
+                    tut_res = tutorialpoint(folder_list[-1])
+                    stk_res = stackoverflow(folder_list[-1])
                     ans.append({'path': path, 'dirs': folder_list,
-                                'files': filtered_v, 'wiki': wiki_res,
-                                'stack': stk_res})
+                                'files': filtered_v,
+                                'wiki': wiki_res,
+                                'stack': stk_res,
+                                'tut' : tut_res})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -215,7 +258,8 @@ def query(request):
                        'result_val': exprResult,
                        'algo_name': algo_name,
                        'res_stack': stk_res,
-                       'res_wiki': wiki_res
+                       'res_wiki': wiki_res,
+                       'res_tut': tut_res
                        })
 
     elif request.method == 'POST':
