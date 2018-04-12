@@ -30,6 +30,7 @@
         <a href="#" style="color: #1b1e21"><div data-network="googleplus"
                                                 class="st-custom-button fa fa-google-plus-square"></div></a>
     </span>
+
     </h6>
     <hr>
     {% if result_val or not result %}
@@ -39,6 +40,7 @@
     {% if result %}
         {% for entry in result %}
             <div class="card">
+
             <div class="card-body">
                 <h4 class="card-title">
                     {% for i in entry.dirs %}
@@ -81,7 +83,7 @@
                             <div class="tab-pane fade" id="a{{ forloop.counter }}"
                                  onclick="stack_event(a{{ forloop.counter }});">
                                 {% for stk_url in entry.stack %}
-                                    <a href="{{ stk_url }}" target="blank">{{ entry.dirs.2 }}{{ forloop.counter }}</a>
+                                    <a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a>
                                     <br>
                                 {% endfor %}
 
@@ -96,6 +98,26 @@
                                 <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
                                    target="_blank" class="dropdown-item">{{ file }}</a>
                             {% endfor %}
+
+                <div class="card-body">
+                    <h4 class="card-title">
+                        {% for i in entry.dirs %}
+                            {{ i }} /
+                        {% endfor %}
+                    </h4>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Solutions
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="soln">
+                          {% for file in entry.files %}
+                              <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
+                                  <div class="input-group">
+                                      <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
+                                  </div>
+                              </form>
+                          {% endfor %}
+
                         </div>
                     </div>
                 </div>

@@ -6,19 +6,14 @@ import random
 from random import shuffle
 import re
 from wikiapi import WikiApi
-from stackapi import StackAPI
 from search.templatetags.calculator import getResult
 import bs4
 import requests
 
 
-
 COSMOS_SEP = '_'
 
-# Create your views here
 
-
-# To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
@@ -108,19 +103,19 @@ def is_file_extension_ignored(file_):
 
 def stackoverflow(query):
     result = []
-    p=[]
-    t=[]
     query = query.replace(" ", "+")
     query += "algorithm+Google+site:stackoverflow.com"
     data = requests.get('https://www.google.co.in/search?q=' + query)
-    k=0
+    k = 0
     soup = bs4.BeautifulSoup(data.text, 'html.parser')
     for x in soup.find_all('a'):
-        k = k +1
+        k = k + 1
         str1 = x.get('href')
-        p = list(str1)
         if str1.startswith("/url?q=https://stackoverflow.com/"):
-            result.append(str1.split("/url?q=")[1])
+            res = {"title": ''.join(x.findAll(text=True)),
+                   "url": str1.split("/url?q=")[1]
+                   }
+            result.append(res)
             if len(result) > 4:
                 break
     return result
@@ -143,25 +138,19 @@ def wiki(query):
 def tutorialpoint(query):
     query = query.replace(" ", "+")
     query += "tutorial+point"
-    data = requests.get('https://www.google.co.in/search?q='+query)
+    data = requests.get('https://www.google.co.in/search?q=' + query)
     soup = bs4.BeautifulSoup(data.text, 'html.parser')
     final = None
     k = 0
-    for x in soup.find_all('a',{'href': re.compile('https://www.tutorialspoint.com/')}):
+    for x in soup.find_all('a', {'href': re.compile('https://www.tutorialspoint.com/')}):
         k += 1
-        s2=-1;
-        s3=-1;
         str1 = x.get('href')
-        str1=str1.split("htm")[0];
-        str1=str1+'htm'
-        p = []
+        str1 = str1.split("htm")[0]
+        str1 = str1 + 'htm'
         p = list(str1)
-        str2 = "http"
-        str3 = ".htm"
-        str4 = ".asp"
-        s1 = str1.find(str2)
-        s2 = str1.find(str3)
-        s3 = str1.find(str4)
+        s1 = str1.find("http")
+        s2 = str1.find(".htm")
+        s3 = str1.find(".asp")
         t = []
         if (s2 != -1):
             for i in range(s1, s2 + 4):
@@ -169,19 +158,16 @@ def tutorialpoint(query):
             final = ''.join(t)
 
         else:
-            for i in range(s1,s3+4):
+            for i in range(s1, s3 + 4):
                 t.append(p[i])
             final = ''.join(t)
         if final:
-           break
-
+            break
     return final
 
 
-
 def query(request):
-    global algo_name\
-        , title
+    global algo_name, title
     if request.method == 'GET':
         query = re.escape(request.GET['q']).replace('\ ', ' ')
         if '\\' in query:
@@ -193,6 +179,8 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
+        query = ' '.join(query.split())
+
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         ans = []
@@ -200,13 +188,12 @@ def query(request):
         amount = 0
         for folder, file in data.items():
             filtered_v = []
-            # print(folder, file)
             for f in file:
                 if not is_file_extension_ignored(f):
                     filtered_v.append(f)
             if q in folder and "test" not in folder.split("/"):
                 if filtered_v:
-                    stk_res=[]
+                    stk_res = []
                     path = folder
                     folder_list = folder.split('/')
                     # print(folder_list[-1])
@@ -217,7 +204,7 @@ def query(request):
                                 'files': filtered_v,
                                 'wiki': wiki_res,
                                 'stack': stk_res,
-                                'tut' : tut_res})
+                                'tut': tut_res})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -283,3 +270,15 @@ def subsq(a, b, m, n):
         return subsq(a, b, m - 1, n - 1)
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
+
+
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
