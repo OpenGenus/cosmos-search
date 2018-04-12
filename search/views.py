@@ -9,6 +9,8 @@ from wikiapi import WikiApi
 from search.templatetags.calculator import getResult
 import bs4
 import requests
+from search.templatetags.youtube import youtube_search
+
 
 
 COSMOS_SEP = '_'
@@ -25,7 +27,6 @@ def get_random_tag():
 def searchSuggestion(request):
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
-    filterData = []
     results = []
     if request.is_ajax():
         val = request.GET.get('term', '')
@@ -78,6 +79,7 @@ def error500(request):
 # calculator
 def calculator(request):
     global exprResult
+    exprResult = 'ds'
     if request.method == 'POST':
         q = request.POST.get('txt')
         if q is not None:
@@ -87,6 +89,8 @@ def calculator(request):
                 exprResult = round(res, 3)
             else:
                 exprResult = 'Error'
+        else:
+            return 'not expression'
     else:
         exprResult = None
         q = None
@@ -94,11 +98,15 @@ def calculator(request):
                   {'title': 'Calculator',
                    'query': q,
                    'result_val': exprResult,
+                   'active_tab': 'query',
+                   'vid_amount': 0,
+                   'amount': 0,
                    })
 
 
 def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
+
 
 
 def stackoverflow(query):
@@ -165,10 +173,40 @@ def tutorialpoint(query):
             break
     return final
 
+# Search query
+ans = []
+rec = []
+
 
 def query(request):
-    global algo_name, title
+    global ans, rec
+    title = ''
+    algo_name = ''
+    amount = 0
+    video_res = {}
+    exprResult = None
+    query = ''
+
+    if request.is_ajax():
+        data = request.GET.get('name', None)
+        if data:
+            video_res = video_search(request, data)
+            res = {
+                'videos': video_res['videos'],
+                'next_page': video_res['next_page'],
+                'vid_amount': video_res['amount']
+            }
+            video = json.dumps(res)
+            mimetype = 'application/json'
+            return HttpResponse(video, mimetype)
+        else:
+            algo = searchSuggestion(request)
+            mimetype = 'application/json'
+            return HttpResponse(algo, mimetype)
+
     if request.method == 'GET':
+        ans = []
+        rec = []
         query = re.escape(request.GET['q']).replace('\ ', ' ')
         if '\\' in query:
             query = query.replace('\\', '')
@@ -179,13 +217,11 @@ def query(request):
             algo_name = ""
         else:
             exprResult = None
+
         query = ' '.join(query.split())
 
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-        ans = []
-        rec = []
-        amount = 0
         for folder, file in data.items():
             filtered_v = []
             for f in file:
@@ -224,13 +260,22 @@ def query(request):
                                     p = p.split('/')
                                     l = p[len(p) - 1]
                                     rec.append({'recpath': i, 'recdirs': p, 'last': l})
+        active = 'query'
 
         if not ans and exprResult is None:
-            return render(request, 'cosmos/notfound.html', {'query': query})
+            video_res = video_search(request, query)
+            title = query
 
-        if ans:
+        elif ans:
+            video_res = video_search(request, query)
             algo_name = query
             title = query
+        else:
+            video_res = {
+                'videos': None,
+                'next_page': None,
+                'amount': 0
+            }
 
         if ans and exprResult:
             amount += 1
@@ -249,13 +294,71 @@ def query(request):
                        'res_tut': tut_res
                        })
 
+
     elif request.method == 'POST':
         calculator(request)
+        active = 'query'
+
+    if not ans and not exprResult and not video_res:
+        return render(request, 'cosmos/notfound.html')
+
+    return render(request, 'cosmos/searchresults.html',
+                  {'amount': amount,
+                   'title': title,
+                   'result': ans,
+                   'recommend': rec[:5],
+                   'query': query,
+                   'result_val': exprResult,
+                   'algo_name': algo_name,
+                   'videos': video_res['videos'],
+                   'next_page': video_res['next_page'],
+                   'vid_amount': video_res['amount'],
+                   'active_tab': active
+                   })
+
+
+def video_search(request, term=None):
+    youtube_result = {}
+    query = ''
 
     if request.is_ajax():
-        algo = searchSuggestion(request)
-        mimetype = 'application/json'
-        return HttpResponse(algo, mimetype)
+        query = term
+        q = query.split('&')
+        if len(q[0].split(" ")) == 1:
+            searchKey = q[0] + '+' + 'algorithm'
+        else:
+            searchKey = q[0].replace(' ', '+')
+        youtube_query = {
+            'q': searchKey,
+            'max_results': 25,
+            'next_page': q[1],
+            'id': q[-1]
+        }
+        query = q[0]
+        youtube_result = youtube_search(youtube_query)
+    elif request.method == 'GET':
+        query = term
+        if len(query.split(" ")) == 1:
+            searchKey = query + '+' + 'algorithm'
+        else:
+            searchKey = query.replace(' ', '+')
+
+        youtube_query = {
+            'q': searchKey,
+            'max_results': 25,
+            'next_page': '',
+            'id': 0
+        }
+        youtube_result = youtube_search(youtube_query)
+
+    res = {
+        'amount': len(youtube_result['videos_Results']),
+        'videos': youtube_result['videos_Results'],
+        'title': 'Videos',
+        'query': query,
+        'next_page': youtube_result['nextpage'],
+    }
+    return res
 
 
 # Search strategy
