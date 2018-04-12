@@ -1,16 +1,23 @@
-<!doctype html>
+    <!doctype html>
 {% load static %}
 <html lang="en">
 
 <head>
     {% block head %}
-    <title>cosmos-search</title>{% endblock %}
+        <title>cosmos-search</title>{% endblock %}
     <meta charset="utf-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css"
+          media="all"/>
+
     <style>
         html {
             position: relative;
@@ -39,24 +46,32 @@
             padding: 1em;
             background-color: #f5f5f5;
         }
-        .ui-menu .ui-menu-item a{
+
+        .ui-menu .ui-menu-item a {
             font-size: 16px !important;
             line-height: 1.2 !important;
         }
-        .stylish-input-group .input-group-addon{
+
+        .stylish-input-group .input-group-addon {
             background: white !important;
-          }
-        .stylish-input-group button{
-            border:0;
-            background:transparent;
+        }
+
+        .stylish-input-group button {
+            border: 0;
+            background: transparent;
 
         }
-        .border{
-          margin: 0;
-          padding: 0;
-          padding-bottom: 0;
+
+        .border {
+            margin: 0;
+            padding: 0;
+            padding-bottom: 0;
         }
-        .bootstrap-iso .form-control{border-width: 2px; border-color: grey;}
+
+        .bootstrap-iso .form-control {
+            border-width: 2px;
+            border-color: grey;
+        }
     </style>
     {% block style %}
     {% endblock %}
@@ -64,57 +79,68 @@
 </head>
 
 <body style="overflow-x: hidden;">
-    <div class="container">
-        <br>
-        <div class="row">
-            <div class="col-4">
-                <a class="navbar-brand" href="/">cosmos-search</a>
-            </div>
-            <div class="col-8">
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
-                <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
-                <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
-            </div>
-        </div></br>
-        <div class="row">
-            {# align search bar and middle of vw #}
-            <div class="col"></div>
-            <div class="col-8 nopadding border">
-                <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
-                    <div class="input-group stylish-input-group">
-                        <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" onfocus= "document.getElementById('search').value=''">
-                        <span class="input-group-addon">
-                        <button type="submit" style="outline: none;">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </span>
-                    </div>
-                </form>
-            </div>
-            <div class="col-0.5 border">
-                <button onclick="document.getElementById('search').value=''" class="btn btn-default btn-md">
-                  <i class="fa fa-remove" style="color:#A4A2A2;"></i>
-                </button>
-            </div>
-            {# align search bar and middle of vw #}
-            <div class="col float-right"></div>
-        </div><br>
-        {% block body %} {% endblock %}
-    </div>
-    <footer class="footer">
-        <div class="text-muted" style="text-align: center">
-            <div>Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></div>
-            <div>Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></div>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col-4">
+            <a class="navbar-brand" href="/">cosmos-search</a>
         </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a8129cbe45fbb001342fed3&product=custom-share-buttons"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script>
+        <div class="col-8">
+            <a class="btn float-right" href="https://github.com/OpenGenus/cosmos-search">GitHub</a>
+            <a class="btn float-right" href="https://github.com/OpenGenus/cosmos">cosmos</a>
+            <a class="btn float-right" href="{% url 'calculator' %}">calculator</a>
+        </div>
+    </div>
+    </br>
+    <div class="row">
+        {# align search bar and middle of vw #}
+        <div class="col"></div>
+        <div class="col-8 nopadding border">
+            <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
+                <div class="input-group stylish-input-group">
+                    <input class="form-control text-center" id="search" type="search" size="128"
+                           placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q" onfocus= "document.getElementById('search').value=''" >
+                    <span class="input-group-addon">
+                            <button type="submit" style="outline: none;">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                </div>
+            </form>
+        </div>
+        <div class="col-0.5 border">
+            <button onclick="document.getElementById('search').value=''" class="btn btn-default btn-md">
+                <i class="fa fa-remove" style="color:#A4A2A2;"></i>
+            </button>
+        </div>
+        {# align search bar and middle of vw #}
+        <div class="col float-right"></div>
+    </div>
+    <br>
+    {% block body %} {% endblock %}
+
+</div>
+<footer class="footer">
+    <div class="text-muted" style="text-align: center">
+        <div>Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></div>
+        <div>Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></div>
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+<script type="text/javascript"
+        src="//platform-api.sharethis.com/js/sharethis.js#property=5a8129cbe45fbb001342fed3&product=custom-share-buttons"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
     {% block javascript %}
     {% endblock %}
     $(function () {
@@ -128,11 +154,13 @@
     });
     $("#formq").submit(function () {
         if ($('input').val().replace(/[\s,\/#!$%\^&\*;:{}=\-_`~().]/g, '').length === 0) {
-                return false;
-            }
-         });
+            return false;
+        }
+    });
 
 </script>
-</body>
 
+
+</body>
+    
 </html>
