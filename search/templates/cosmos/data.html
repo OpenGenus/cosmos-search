@@ -2,6 +2,7 @@
 {% block head %}
   <title>"cosmos-search</title>
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/sunburst.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
       td.hljs-ln-numbers {
@@ -18,67 +19,75 @@
         margin: 100px;
       }
       .tool{
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+      .white{
+        background-color: #edeff2;
+        border-right: 20px solid #f8f9fa;
+        color:#1b1e21; 
+      }
+      .tool .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
 
-.tool .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
+      .tool .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+      }
 
-.tool .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-
-.tool:focus .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
+      .tool:focus .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
   </style>
 {% endblock %}
 {% block body %}
 <div class="row">
-<div class="col-xl-8 ">
+<div class="col-xl-7 ">
   <h5>
   {% for items in path%}
     {{ items }}/
   {% endfor %}
 </h5>
 </div>
-<div class="col-xl-3">
+<div class="col-xl-4">
   <a href="https://discourse.opengenus.org" target="_blank"><button type="button" class="btn btn-info">Ask any questions</button></a>
+  <button type="button" id='theme_button' class="btn btn-success">Editor theme</button>
 </div>
-<div class="col-xl-1">
-  <button type="button" name="button" class="btn btn-light tool" onclick="getValue()"><i class="fa fa-clipboard"></i><span class="tooltiptext">Copied</span></button>
+<div class="col-xl-1">  
+  <button type="button" name="button" class="btn btn-light tool" onclick="getValue()">
+    <i class="fa fa-clipboard"></i>
+    <span class="tooltiptext">Copied</span>
+  </button>
 </div>
 </div>
-<div style="display: none;" id="select">{{code}}</div>
 <pre class="language">
-      <code>
+      <code id='black'>
         {{code}}
       </code>
 </pre>
+
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
@@ -91,5 +100,10 @@ function getValue(){
   document.execCommand('copy');
   createtag.remove();
 }
+</script>
+<script>
+    $('#theme_button').click(function(){
+        $('#black').toggleClass('white');
+    });
 </script>
 {% endblock %}
