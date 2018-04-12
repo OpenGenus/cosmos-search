@@ -7,140 +7,222 @@
 
 {% block body %}
     <h6>
-        {% if amount > 1 %}
-            Showing
-            <span style="color: #5D337F;">{{ amount }}</span> results for:
-            <span style="color: #5D337F;">{{ query }}</span>
+        <div class="row">
+            <div class="col-md-8">
+            <span id="res_info">
+                {% if amount > 1 %}
+                    Showing
+                    <span style="color: #5D337F;">{{ amount }}</span> results for:
+                    <span style="color: #5D337F;">{{ query }}</span>
 
-        {% elif result_val and not result %}
-            Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
+                {% elif result_val and not result %}
+                    Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
-        {% elif amount is 1 %}
-            Showing
-            <span style="color: #5D337F;">{{ amount }}</span> result for:
-            <span style="color: #5D337F;">{{ query }}</span>
-        {% endif %}
-        <span>
-        <a href="#" style="color: #1b1e21"><div data-network="twitter"
-                                                class="st-custom-button fa fa-twitter-square"></div></a>
-        <a href="#" style="color: #1b1e21"><div data-network="facebook"
-                                                class="st-custom-button fa fa-facebook-square"></div></a>
-        <a href="#" style="color: #1b1e21"><div data-network="linkedin"
-                                                class="st-custom-button fa fa-linkedin-square"></div></a>
-        <a href="#" style="color: #1b1e21"><div data-network="googleplus"
-                                                class="st-custom-button fa fa-google-plus-square"></div></a>
-    </span>
+                {% elif amount is 1 %}
+                    Showing
+                    <span style="color: #5D337F;">{{ amount }}</span> result for:
+                    <span style="color: #5D337F;">{{ query }}</span>
+                {% endif %}
+                </span>
+                <span>
+                        <a href="#" style="color: #1b1e21"><div data-network="twitter"
+                                                                class="st-custom-button fa fa-twitter-square"></div></a>
+                        <a href="#" style="color: #1b1e21"><div data-network="facebook"
+                                                                class="st-custom-button fa fa-facebook-square"></div></a>
+                        <a href="#" style="color: #1b1e21"><div data-network="linkedin"
+                                                                class="st-custom-button fa fa-linkedin-square"></div></a>
+                        <a href="#" style="color: #1b1e21"><div data-network="googleplus"
+                                                                class="st-custom-button fa fa-google-plus-square"></div></a>
+                    </span>
+            </div>
 
-    </h6>
-    <hr>
-    {% if result_val or not result %}
-        {% include 'cosmos/calculator.html' %}
-    {% endif %}
-
-    {% if result %}
-        {% for entry in result %}
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">
-                        {% for i in entry.dirs %}
-                            {{ i }} /
-                        {% endfor %}
-                    </h4>
-                    <h5>  {{ entry.avg_vote }}
-                        {% if entry.avg_vote < 3 %}
-                            <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
-                        {% elif entry.avg_vote >= 4 %}
-                            <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
-                        {% else %}
-                            <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
-                        {% endif %}</h5>
-                    <div>
-                        <form id="vote{{ forloop.counter }}" method="post" action="{% url 'search:check' %}"
-                              style="display: none;">
-
-                            {% csrf_token %}
-                            <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
-                                   value="{{ entry.path }}">
-                            <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
-                            {{ vote_form.vote_value }}
-
-                        </form>
-
-                        <div style="width: 20%; ">
-                            <i class="fa fa-thumbs-o-up"
-                               style="font-size: 24px;cursor:pointer; padding: 5%;padding-top: 0%;"
-                               onclick="vote_event('vote{{ forloop.counter }}');"></i>
-                            <i class="fa fa-comments"
-                               style="font-size: 24px;cursor: pointer; padding: 5%;padding-top: 0%;"
-                               onclick="comment_event('comment{{ forloop.counter }}');"></i>
-                        </div>
-
-                        <form id="comment{{ forloop.counter }}" method="post"
-                              style="padding-bottom: 2%; display: none;/*! background: #9f9f9f; */padding: 2%;border: 1px dotted #cec4b8;margin-bottom: 2%;"
-                              action="{% url 'search:comment' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
-                                   value="{{ entry.path }}">
-                            <div>
-
-                                    {% for cmnt in entry.comment %}
-                                         <p style="color: #726b6b;">
-                                    <i class="fa fa-quote-left" style="padding-right: 2%;"></i>{{cmnt }}
-                                         </p>
-                                    {% endfor %}
-
-
-                            </div>
-                            <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
-
-                            <input placeholder="Write a comment..." name="comment"
-                                   style="background: #fff !important;border: 1px solid #dcdcdc;padding: 0.6%;border-radius: 24px;width: 35%;padding-left: 2%;"
-                                   type="text">
-
-                            <input type="submit" value="submit" hidden>
-
-
-                        </form>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Solutions
+            <div class="w3-bar w3-black">
+                <div class="col-md-2">
+                    <div class="vid">
+                        <button class="btn float-right" hidden id="query_icon"
+                                style="margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
+                                onclick="openTab('query',this.button)">
+                            <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Code</a>
+                            <span class="badge"
+                                  style="border-radius:30px; color: white;background-color: #00897b ; margin-top: -7px; position: absolute;">{{ amount }}
+                            </span>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="soln">
-                          {% for file in entry.files %}
-                              <form class="form-inline justify-content-center" id="formq" action="/display/" method="GET" target="_blank" >
-                                  <div class="input-group">
-                                      <button type="submit" name = "path" value = "{{entry.path}}/{{file}}" class="dropdown-item">{{file}}</button>
-                                  </div>
-                              </form>
-                          {% endfor %}
-                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="vid">
+                        <button type="submit" hidden class="btn float-right" id="vid_icon"
+                                style="background-color: white; margin-right:-22em;margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
+                                onclick="openTab('video')">
+                            <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Video</a>
+                            <span class="badge" id="notify"
+                                  style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <br> {% endfor %}
-        <h5>Recommended results</h5>
-        <hr> {% for j in recommend %}
-        <div class="card">
-            <div class="card-body">
-
-                <form method="get">
-                    <div>
-                        <h6 class="card-title">
-                            {% for k in j.recdirs %}
-                                {{ k }} /
-                            {% endfor %}
-                        </h6>
-                        <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
-                    </div>
-                </form>
-            </div>
         </div>
-        <br>
-    {% endfor %}
-    {% endif %}
-    <script type="text/javascript">
-        <!--
+    </h6>
+
+    <hr>
+
+    <div id="query" class="w3-container tabs" style="display:none;">
+        {% if result_val is not None or title == 'Calculator' %}
+            {% include 'cosmos/calculator.html' %}
+        {% endif %}
+
+        {% if result %}
+            {% for entry in result %}
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {% for i in entry.dirs %}
+                                {{ i }} /
+                            {% endfor %}
+                        </h4>
+                        <h5>  {{ entry.avg_vote }}
+                            {% if entry.avg_vote < 3 %}
+                                <i class="fa fa-star-half" fa="2x" style="color:#FFD700;"></i>
+                            {% elif entry.avg_vote >= 4 %}
+                                <i class="fa fa-star" fa="2x" style="color:#FFD700;"></i>
+                            {% else %}
+                                <i class="fa fa-star-half-o" fa="2x" style="color:#FFD700;"></i>
+                            {% endif %}</h5>
+                        <div>
+                            <form id="vote{{ forloop.counter }}" method="post" action="{% url 'search:check' %}"
+                                  style="display: none;">
+
+                                {% csrf_token %}
+                                <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
+                                       value="{{ entry.path }}">
+                                <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
+                                {{ vote_form.vote_value }}
+
+                            </form>
+
+                            <div style="width: 20%; ">
+                                <i class="fa fa-thumbs-o-up"
+                                   style="font-size: 24px;cursor:pointer; padding: 5%;padding-top: 0%;"
+                                   onclick="vote_event('vote{{ forloop.counter }}');"></i>
+                                <i class="fa fa-comments"
+                                   style="font-size: 24px;cursor: pointer; padding: 5%;padding-top: 0%;"
+                                   onclick="comment_event('comment{{ forloop.counter }}');"></i>
+                            </div>
+
+                            <form id="comment{{ forloop.counter }}" method="post"
+                                  style="padding-bottom: 2%; display: none;/*! background: #9f9f9f; */padding: 2%;border: 1px dotted #cec4b8;margin-bottom: 2%;"
+                                  action="{% url 'search:comment' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="project_name" maxlength="500" id="id_project_name"
+                                       value="{{ entry.path }}">
+                                <div>
+
+                                    {% for cmnt in entry.comment %}
+                                        <p style="color: #726b6b;">
+                                            <i class="fa fa-quote-left" style="padding-right: 2%;"></i>{{ cmnt }}
+                                        </p>
+                                    {% endfor %}
+
+
+                                </div>
+                                <input type="hidden" name="ip_address" maxlength="50" id="ip" value="">
+
+                                <input placeholder="Write a comment..." name="comment"
+                                       style="background: #fff !important;border: 1px solid #dcdcdc;padding: 0.6%;border-radius: 24px;width: 35%;padding-left: 2%;"
+                                       type="text">
+
+                                <input type="submit" value="submit" hidden>
+
+
+                            </form>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="soln"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                Solutions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="soln">
+                                {% for file in entry.files %}
+                                    <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
+                                       target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br> {% endfor %}
+        {% endif %}
+        {% if recommend %}
+
+            <h5>Recommended results</h5>
+            <hr> {% for j in recommend %}
+            <div class="card">
+                <div class="card-body">
+
+                    <form method="get">
+                        <div>
+                            <h6 class="card-title">
+                                {% for k in j.recdirs %}
+                                    {{ k }} /
+                                {% endfor %}
+                            </h6>
+                            <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+
+    <div id="video" class="w3-container tabs" style="display:none;">
+
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            if ('{{ active_tab }}' == 'query') {
+                $("#query").show();
+            } else if ('{{ active_tab }}' == 'video') {
+                $("#video").show();
+            }
+            if ({{ result|length }}) {
+                $("#vid_icon").removeAttr('hidden');
+                $("#query_icon").removeAttr('hidden');
+            } else if ('{{  result_val }}' != 'None' || '{{ title }}' == 'Calculator') {
+                $("#query").show();
+            } else if ({{ vid_amount }}) {
+                $("#video").show();
+                $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
+
+            }
+        });
+
+        function openTab(tabId) {
+            var i;
+            var x = document.getElementsByClassName("tabs");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            var d = document.getElementById(tabId);
+            d.style.display = "block";
+            if (tabId == 'video') {
+                $("#res_info").html('Showing <span style="color: #5D337F;">' + vid_length + '</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
+            } else {
+                var l = {{ amount }};
+                if (l > 1) {
+                    $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>\n')
+                } else {
+                    $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>\n')
+
+                }
+            }
+        }
+
         function comment_event(comment{{ forloop.counter}}) {
             var e = document.getElementById(comment{{ forloop.counter}});
             if (e.style.display == 'block')
@@ -157,6 +239,5 @@
                 e.style.display = 'block';
         }
 
-        //-->
     </script>
 {% endblock %}

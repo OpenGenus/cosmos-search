@@ -12,3 +12,4 @@ smmap2==2.0.3
 urllib3==1.22
 pep8==1.7.1
 python-decouple==3.1
+google-api-python-client
