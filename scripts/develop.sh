@@ -65,7 +65,11 @@ fi
 ################################################################################
 # main
 ################################################################################
-cp .env.example .env
+
+tmp=`ls \.env 2>/dev/null`
+if [ $? == 1 ]; then
+    cp .env.example .env
+fi
 $PIP install -r requirements.txt
 $PYTHON manage.py createcachetable
 $PYTHON manage.py collectstatic
