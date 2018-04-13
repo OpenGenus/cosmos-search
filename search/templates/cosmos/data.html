@@ -87,6 +87,11 @@
 function getValue(){
   var select = document.getElementById("select");
   var copy = select.innerHTML;
+  copy = copy.replace(/&gt;/g, '>');
+  copy = copy.replace(/&lt;/g, '<');
+  copy = copy.replace(/&quot;/g, '"');
+  copy = copy.replace(/&apos;/g, "'");
+  copy = copy.replace(/&amp;/g, '&'); 
   var createtag = $('<textarea>').val(copy).appendTo('body').select();
   document.execCommand('copy');
   createtag.remove();
