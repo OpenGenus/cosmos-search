@@ -5,17 +5,18 @@ import json
 import random
 from random import shuffle
 import re
-from wikiapi import WikiApi
-from search.templatetags.calculator import getResult
-import bs4
 import requests
+from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
-
-
+from wikiapi import WikiApi
+import bs4
 
 COSMOS_SEP = '_'
 
+# Create your views here
 
+
+# To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
@@ -108,7 +109,6 @@ def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
-
 def stackoverflow(query):
     result = []
     query = query.replace(" ", "+")
@@ -173,6 +173,7 @@ def tutorialpoint(query):
             break
     return final
 
+
 # Search query
 ans = []
 rec = []
@@ -208,8 +209,10 @@ def query(request):
         ans = []
         rec = []
         query = re.escape(request.GET['q']).replace('\ ', ' ')
+
         if '\\' in query:
             query = query.replace('\\', '')
+
         res = getResult(query)
         if type(res) == int or type(res) == float:
             exprResult = round(res, 3)
@@ -219,7 +222,6 @@ def query(request):
             exprResult = None
 
         query = ' '.join(query.split())
-
         q = query.replace(' ', COSMOS_SEP)
         data = json.loads(open(settings.METADATA_JSON, 'r').readline())
         for folder, file in data.items():
@@ -229,10 +231,8 @@ def query(request):
                     filtered_v.append(f)
             if q in folder and "test" not in folder.split("/"):
                 if filtered_v:
-                    stk_res = []
                     path = folder
                     folder_list = folder.split('/')
-                    # print(folder_list[-1])
                     wiki_res = wiki(folder_list[-1])
                     tut_res = tutorialpoint(folder_list[-1])
                     stk_res = stackoverflow(folder_list[-1])
@@ -241,6 +241,7 @@ def query(request):
                                 'wiki': wiki_res,
                                 'stack': stk_res,
                                 'tut': tut_res})
+                    # ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -281,19 +282,6 @@ def query(request):
             amount += 1
 
         shuffle(rec)
-        return render(request, 'cosmos/searchresults.html',
-                      {'amount': amount,
-                       'title': title,
-                       'result': ans,
-                       'recommend': rec[:5],
-                       'query': query,
-                       'result_val': exprResult,
-                       'algo_name': algo_name,
-                       'res_stack': stk_res,
-                       'res_wiki': wiki_res,
-                       'res_tut': tut_res
-                       })
-
 
     elif request.method == 'POST':
         calculator(request)
@@ -313,7 +301,10 @@ def query(request):
                    'videos': video_res['videos'],
                    'next_page': video_res['next_page'],
                    'vid_amount': video_res['amount'],
-                   'active_tab': active
+                   'active_tab': active,
+                   'res_stack': stk_res,
+                   'res_wiki': wiki_res,
+                   'res_tut': tut_res
                    })
 
 

@@ -14,6 +14,7 @@
                     Showing
                     <span style="color: #5D337F;">{{ amount }}</span> results for:
                     <span style="color: #5D337F;">{{ query }}</span>
+
                 {% elif result_val and not result %}
                     Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
@@ -86,47 +87,46 @@
                                     aria-haspopup="true" aria-expanded="false">
                                 Solutions
                             </button>
-                          
-                    <div>
-                        <div>
-                            <ul class="sol_tab nav nav-tabs">
-                                <li class="active">
-                                    <a href="#{{ forloop.counter }}" style="color: #1b1e21;" data-toggle="tab"
-                                       onclick="wiki_event({{ forloop.counter }});">
-                                        <i class="fa fa-wikipedia-w " aria-hidden="true"></i>
+                               <div>
+                                <ul class="sol_tab nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#{{ forloop.counter }}" style="color: #1b1e21;" data-toggle="tab"
+                                           onclick="wiki_event({{ forloop.counter }});">
+                                            <i class="fa fa-wikipedia-w " aria-hidden="true"></i>
 
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#a{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab"><i
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#a{{ forloop.counter }}" style="color: #1b1e21"
+                                           data-toggle="tab"><i
                                             class="fa fa-stack-overflow " aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#b{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab">
-                                        <i class="fa fa-tumblr " aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active"  id="{{ forloop.counter }}">
-                                <p><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
-                            </div>
-                            <div class="tab-pane fade" id="a{{ forloop.counter }}"
-                                 onclick="stack_event(a{{ forloop.counter }});">
-                                {% for stk_url in entry.stack %}
-                                    <a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a>
-                                    <br>
-                                {% endfor %}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#b{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab">
+                                            <i class="fa fa-tumblr " aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
 
                             </div>
-                            <div class="tab-pane fade" id="b{{ forloop.counter }}"
-                                 onclick="stack_event(a{{ forloop.counter }});">
-                                <a href={{ entry.tut }} target="blank">{{ entry.dirs.2 }}</a>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="{{ forloop.counter }}">
+                                    <p><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
+                                </div>
+                                <div class="tab-pane fade" id="a{{ forloop.counter }}"
+                                     onclick="stack_event(a{{ forloop.counter }});">
+                                    {% for stk_url in entry.stack %}
+                                        <a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a>
+                                        <br>
+                                    {% endfor %}
+
+                                </div>
+                                <div class="tab-pane fade" id="b{{ forloop.counter }}"
+                                     onclick="stack_event(a{{ forloop.counter }});">
+                                    <a href={{ entry.tut }} target="blank">{{ entry.dirs.2 }}</a>
+                                </div>
                             </div>
-                        </div>
                             <div class="dropdown-menu" aria-labelledby="soln">
                                 {% for file in entry.files %}
                                     <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
@@ -207,21 +207,5 @@
             }
         }
 
-        function wiki_event({{forloop.counter}}) {
-            var e = document.getElementById({{ forloop.counter}});
-            alert(e);
-            if (e.style.display == 'block')
-                e.style.display = 'none';
-            else
-                e.style.display = 'block';
-        }
-
-        function stack_event(a{{ forloop.counter}}) {
-            var e = document.getElementById(a{{ forloop.counter}});
-            if (e.style.display == 'block')
-                e.style.display = 'none';
-            else
-                e.style.display = 'block';
-        }
     </script>
 {% endblock %}
