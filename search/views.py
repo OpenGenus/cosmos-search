@@ -5,13 +5,13 @@ import json
 import random
 from random import shuffle
 import re
-from search.models import Votes
-from search.models import Comment
 import requests
+
+from search.models import Votes, Comment
 from search.templatetags.calculator import getResult
+from search.templatetags.youtube import youtube_search
 from search.form import VotesForm
 from search.form import CommentForm
-from search.templatetags.youtube import youtube_search
 
 COSMOS_SEP = '_'
 
@@ -141,6 +141,7 @@ def query(request):
             algo = searchSuggestion(request)
             mimetype = 'application/json'
             return HttpResponse(algo, mimetype)
+
     if request.method == 'GET':
         ans = []
         rec = []
@@ -171,10 +172,12 @@ def query(request):
                     avg_vote = fetch(request, path)
                     comment = comment_fetch(request, path)
                     folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list,
+                    ans.append({'path': path,
+                                'dirs': folder_list,
                                 'files': filtered_v,
                                 'avg_vote': avg_vote,
-                                'comment': comment, })
+                                'comment': comment
+                                })
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -213,18 +216,9 @@ def query(request):
 
         if ans and exprResult:
             amount += 1
+
         shuffle(rec)
         vote_form = VotesForm()
-        return render(request, 'cosmos/searchresults.html',
-                      {'amount': amount,
-                       'title': title,
-                       'result': ans,
-                       'recommend': rec[:5],
-                       'query': query,
-                       'result_val': exprResult,
-                       'algo_name': algo_name,
-                       'vote_form': vote_form
-                       })
 
     elif request.method == 'POST':
         calculator(request)
@@ -244,7 +238,8 @@ def query(request):
                    'videos': video_res['videos'],
                    'next_page': video_res['next_page'],
                    'vid_amount': video_res['amount'],
-                   'active_tab': active
+                   'active_tab': active,
+                   'vote_form': vote_form,
                    })
 
 
@@ -306,6 +301,17 @@ def subsq(a, b, m, n):
     return subsq(a, b, m, n - 1)
 
 
+def display(request):
+    path = request.GET['path']
+    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
+    r = requests.get(display)
+    path = path.replace('_', ' ')
+    path = path.replace('.', ' in ')
+    l = path.split('/')
+    if 'src' in l:
+        l.remove('src')
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
+
 def check(request):
     if request.method == 'POST':
         vote_form = VotesForm(request.POST)
@@ -314,7 +320,7 @@ def check(request):
             return redirect('search:index')
     else:
         vote_form = VotesForm()
-    return render(request, 'cosmos/index.html', {'vote_form': vote_form})
+        return render(request, 'cosmos/index.html', {'vote_form': vote_form})
 
 
 def fetch(request, query):
@@ -348,15 +354,3 @@ def comment(request):
     else:
         comment_form = CommentForm()
     return render(request, 'cosmos/index.html', {'comment_form': comment_form})
-
-
-def display(request):
-    path = request.GET['path']
-    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
-    r = requests.get(display)
-    path = path.replace('_', ' ')
-    path = path.replace('.', ' in ')
-    l = path.split('/')
-    if 'src' in l:
-        l.remove('src')
-    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})

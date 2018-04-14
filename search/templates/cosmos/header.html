@@ -51,7 +51,7 @@
             font-size: 16px !important;
             line-height: 1.2 !important;
         }
-  
+
         #id_vote_value {
             display: flex;
             padding: 0%;
@@ -194,7 +194,7 @@
             {# align search bar and middle of vw #}
             <div class="col"></div>
             <div class="col-8 nopadding border">
-                <form class="form-inline justify-content-center" id="formq" action="{% url 'query' %}" method="GET">
+                <form class="form-inline justify-content-center" id="formq" action="/query/" method="GET">
                     <div class="input-group stylish-input-group">
                         <input class="form-control text-center" id="search" type="search" size="128" placeholder="{{ algo_name }}" value="{{ algo_name }}" aria-label="Search" name="q">
                         <span class="input-group-addon">
@@ -257,5 +257,5 @@
 
 
 </body>
-    
+
 </html>
