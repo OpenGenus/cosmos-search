@@ -312,6 +312,7 @@ def display(request):
         l.remove('src')
     return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
 
+
 def check(request):
     if request.method == 'POST':
         vote_form = VotesForm(request.POST)
