@@ -89,8 +89,11 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="soln">
                                 {% for file in entry.files %}
-                                    <a href="https://github.com/OpenGenus/cosmos/blob/master/code/{{ entry.path }}/{{ file }}"
-                                       target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
+                                    <form method="GET" action="{% url 'display' %}" target="_blank">
+                                        <button type="submit" name="path" class="dropdown-item" value="{{ entry.path }}/{{ file }}">{{ file }}</button>
+                                    </form>
+
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
