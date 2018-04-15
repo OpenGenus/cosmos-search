@@ -13,10 +13,7 @@ import bs4
 
 COSMOS_SEP = '_'
 
-# Create your views here
 
-
-# To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
@@ -111,10 +108,10 @@ def is_file_extension_ignored(file_):
 
 def stackoverflow(query):
     result = []
-    query = query.replace(" ", "+")
-    query += "algorithm+Google+site:stackoverflow.com"
-    data = requests.get('https://www.google.co.in/search?q=' + query)
     k = 0
+    query = query.replace(" ", "+")
+    query += "+site:stackoverflow.com"
+    data = requests.get('https://www.google.co.in/search?q=' + query)
     soup = bs4.BeautifulSoup(data.text, 'html.parser')
     for x in soup.find_all('a'):
         k = k + 1
@@ -145,32 +142,21 @@ def wiki(query):
 
 def tutorialpoint(query):
     query = query.replace(" ", "+")
-    query += "tutorial+point"
+    query += "+site:tutorialspoint.com"
     data = requests.get('https://www.google.co.in/search?q=' + query)
     soup = bs4.BeautifulSoup(data.text, 'html.parser')
-    final = None
-    k = 0
-    for x in soup.find_all('a', {'href': re.compile('https://www.tutorialspoint.com/')}):
-        k += 1
+    final = {}
+    for x in soup.find_all('a'):
         str1 = x.get('href')
-        str1 = str1.split("htm")[0]
-        str1 = str1 + 'htm'
-        p = list(str1)
-        s1 = str1.find("http")
-        s2 = str1.find(".htm")
-        s3 = str1.find(".asp")
-        t = []
-        if (s2 != -1):
-            for i in range(s1, s2 + 4):
-                t.append(p[i])
-            final = ''.join(t)
-
-        else:
-            for i in range(s1, s3 + 4):
-                t.append(p[i])
-            final = ''.join(t)
-        if final:
-            break
+        if str1.find(".htm&") != -1:
+            str1 = str1.split(".htm&")[0]
+            str1 = str1 + ".htm"
+            if str1.startswith("/url?q=https://www.tutorialspoint.com"):
+                final = {
+                    "title": ''.join(x.findAll(text=True)),
+                    "url": str1.split("/url?q=")[1]
+                }
+                break
     return final
 
 

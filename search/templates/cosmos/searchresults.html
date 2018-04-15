@@ -87,24 +87,24 @@
                                     aria-haspopup="true" aria-expanded="false">
                                 Solutions
                             </button>
-                               <div>
+                            <div>
                                 <ul class="sol_tab nav nav-tabs">
                                     <li class="active">
-                                        <a href="#{{ forloop.counter }}" style="color: #1b1e21;" data-toggle="tab"
-                                           onclick="wiki_event({{ forloop.counter }});">
-                                            <i class="fa fa-wikipedia-w " aria-hidden="true"></i>
+                                        <a href="#{{ forloop.counter }}"
+                                           style="color: #1b1e21;" data-toggle="tab">
+                                            <i class="wiki fa fa-wikipedia-w " aria-hidden="true"></i>
 
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#a{{ forloop.counter }}" style="color: #1b1e21"
                                            data-toggle="tab"><i
-                                            class="fa fa-stack-overflow " aria-hidden="true"></i>
+                                            class="stack fa fa-stack-overflow " aria-hidden="true"></i>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#b{{ forloop.counter }}" style="color: #1b1e21" data-toggle="tab">
-                                            <i class="fa fa-tumblr " aria-hidden="true"></i>
+                                            <i class="tut fa fa-tumblr " aria-hidden="true"></i>
                                         </a>
                                     </li>
                                 </ul>
@@ -112,19 +112,18 @@
                             </div>
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="{{ forloop.counter }}">
-                                    <p><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
+                                    <p id="wikip"><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
                                 </div>
                                 <div class="tab-pane fade" id="a{{ forloop.counter }}"
                                      onclick="stack_event(a{{ forloop.counter }});">
+                                   <div id="stackp">
                                     {% for stk_url in entry.stack %}
-                                        <a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a>
-                                        <br>
+                                     <p><a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a></p>
                                     {% endfor %}
-
+                                  </div>
                                 </div>
-                                <div class="tab-pane fade" id="b{{ forloop.counter }}"
-                                     onclick="stack_event(a{{ forloop.counter }});">
-                                    <a href={{ entry.tut }} target="blank">{{ entry.dirs.2 }}</a>
+                                <div class="tab-pane fade" id="b{{ forloop.counter }}">
+                                   <p id="tutp"><a href={{ entry.tut.url }} target="blank">{{ entry.tut.title }}</a></p>
                                 </div>
                             </div>
                             <div class="dropdown-menu" aria-labelledby="soln">
@@ -163,7 +162,7 @@
     </div>
 
     <div id="video" class="w3-container tabs" style="display:none;">
-        {% include 'cosmos/youtubeResults.html' %}
+
     </div>
 
 
@@ -207,5 +206,21 @@
             }
         }
 
+        $(document).ready(function () {
+            $(".wiki").click(function () {
+                $("#wikip").toggle();
+            });
+        });
+        $(document).ready(function () {
+            $(".stack").click(function () {
+                $("#stackp").toggle();
+            });
+        });
+        $(document).ready(function () {
+            $(".tut").click(function () {
+                $("#tutp").toggle();
+            });
+        });
     </script>
+
 {% endblock %}
