@@ -112,7 +112,7 @@
         function loadAjax() {
             $("#more").attr("disabled", "disabled");
             $.ajax({
-                url: '{%  url 'query' %}',
+                url: '/query/',
                 data: {'name': keyword + '&' + Token + '&' + vid_length},
                 success: function (data) {
                     //do action

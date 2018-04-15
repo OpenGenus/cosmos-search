@@ -1,13 +1,17 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 import json
 import random
 from random import shuffle
 import re
 import requests
+
+from search.models import Votes, Comment
 from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
+from search.form import VotesForm
+from search.form import CommentForm
 
 COSMOS_SEP = '_'
 
@@ -165,8 +169,15 @@ def query(request):
             if q in folder and "test" not in folder.split("/"):
                 if filtered_v:
                     path = folder
+                    avg_vote = fetch(request, path)
+                    comment = comment_fetch(request, path)
                     folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                    ans.append({'path': path,
+                                'dirs': folder_list,
+                                'files': filtered_v,
+                                'avg_vote': avg_vote,
+                                'comment': comment
+                                })
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -207,6 +218,7 @@ def query(request):
             amount += 1
 
         shuffle(rec)
+        vote_form = VotesForm()
 
     elif request.method == 'POST':
         calculator(request)
@@ -226,7 +238,8 @@ def query(request):
                    'videos': video_res['videos'],
                    'next_page': video_res['next_page'],
                    'vid_amount': video_res['amount'],
-                   'active_tab': active
+                   'active_tab': active,
+                   'vote_form': vote_form,
                    })
 
 
@@ -298,3 +311,47 @@ def display(request):
     if 'src' in l:
         l.remove('src')
     return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
+
+
+def check(request):
+    if request.method == 'POST':
+        vote_form = VotesForm(request.POST)
+        if vote_form.is_valid():
+            vote_form.save()
+            return redirect('search:index')
+    else:
+        vote_form = VotesForm()
+        return render(request, 'cosmos/index.html', {'vote_form': vote_form})
+
+
+def fetch(request, query):
+    data = []
+    count = 0
+    data = Votes.objects.filter(project_name=query)
+    z = len(data)
+    if(z == 0):
+        avg_vote = 4.9
+    else:
+        for vote in data:
+            count = count + int(vote.vote_value)
+        avg_vote = round(count / z, 1)
+    return avg_vote
+
+
+def comment_fetch(request, query):
+    c = []
+    data = Comment.objects.filter(project_name=query)
+    for comment in data:
+        c.append(comment.comment)
+    return c
+
+
+def comment(request):
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+            return redirect('search:index')
+    else:
+        comment_form = CommentForm()
+    return render(request, 'cosmos/index.html', {'comment_form': comment_form})

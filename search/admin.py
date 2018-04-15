@@ -1,3 +1,7 @@
-from django.contrib import admin  # noqa
+from django.contrib import admin
 
-# Register your models here.
+from search.models import Votes
+from search.models import Comment
+
+admin.site.register(Votes)
+admin.site.register(Comment)
