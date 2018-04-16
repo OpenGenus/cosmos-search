@@ -82,27 +82,35 @@ This project uses a number of open source projects:
        ```
         pip install -r requirements.txt
        ```
+6.  Create a project in the Google Developers Console and obtain authorization credentials and API Key for [YouTube Data API v3](https://console.developers.google.com/apis/library/youtube.googleapis.com/).
 
-6. Copy the .env.example file to .env and supply values for the required variables.
+7. Insert the obtained Key in parameter `DEVELOPER_KEY` in .env.example file
 
-7. Collectstatic files using
+8.  Copy the .env.example file to .env and supply values for the required variables.
+
+9. Collectstatic files using
 
 	```
 	$ python manage.py collectstatic
 	```
 
-8. Migrating files using
+10. Migrating files using
 
 	```
     $ python manage.py migrate
 	```
+11. Create Cache Table
 
-9. Run the app
+    ```
+    $ python manage.py createcachetable
+    ```
+
+12. Run the app
 	```
 	$ python manage.py runserver
 	```
 
-10. View the locally built site
+13. View the locally built site
 
 	```
 	localhost:8000
