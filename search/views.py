@@ -13,9 +13,11 @@ COSMOS_SEP = '_'
 
 # Create your views here
 
-a=[]
-b=[]
-count=0
+a = []
+b = []
+count = 0
+
+
 # To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
@@ -116,7 +118,7 @@ rec = []
 
 def query(request):
     global ans, rec
-    global a,b,count
+    global a, b, count
     title = ''
     algo_name = ''
     amount = 0
@@ -173,7 +175,7 @@ def query(request):
 
                     a.append(folder_list)
                     b.append(filtered_v)
-                    count=count+1
+                    count = count + 1
 
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
@@ -295,43 +297,42 @@ def subsq(a, b, m, n):
     # If last characters are not matching
     return subsq(a, b, m, n - 1)
 
+
 def display(request):
     path = request.GET['path']
-    ans=[]
-    abspath = path
-    q=get_array1()
-    p=get_array2()
-    n=cnt()
+    ans = []
+    q = get_array1()
+    p = get_array2()
+    n = cnt()
     new = path.split("/")
-    no=len(new)-2
-    for i in range(0,n):
-        num=len(q[i])
-        for j in range(0,num):
-            if new[no]==q[i][j]:
-                ans=p[i]
-                v=q[i]
-                s="/".join(v)  # path created
+    no = len(new) - 2
+    for i in range(0, n):
+        num = len(q[i])
+        for j in range(0, num):
+            if (new[no] == q[i][j]):
+                ans = p[i]
     display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
     r = requests.get(display)
-    
     k = path.split('/')
     nk = len(k)
     a = k[0]
-    for i in range(1,nk-1):
+    for i in range(1, nk - 1):
         a = a + '/' + k[i]
-    
     path = path.replace('_', ' ')
     path = path.replace('.', ' in ')
     l = path.split('/')
     if 'src' in l:
         l.remove('src')
-    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l,"result":ans, "apath": a})
+    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l, "result": ans, "apath": a})
+
 
 def get_array1():
     return (a)
 
+
 def get_array2():
     return(b)
+
 
 def cnt():
     return(count)
