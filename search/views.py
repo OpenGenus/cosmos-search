@@ -8,7 +8,7 @@ import re
 import requests
 from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
-
+import numpy as np
 COSMOS_SEP = '_'
 
 # Create your views here
@@ -298,3 +298,16 @@ def display(request):
     if 'src' in l:
         l.remove('src')
     return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
+
+def tags(request):
+    with open('tags.txt','r') as file:
+
+        x = file.read().split(',')
+        #print(x)
+        #x = [i.strip('"') for i in x]
+
+        for i in range(len(x)):
+          x[i] = x[i].replace('"', '')
+
+        np.array(x)
+    return render(request,'cosmos/tags.html',{"x":x})

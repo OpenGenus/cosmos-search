@@ -72,6 +72,36 @@
             border-width: 2px;
             border-color: grey;
         }
+
+        .padding
+        {
+        padding-left:160px;
+        }
+
+        .alert
+        {
+         font-size: 10px;
+        }
+        .padding1
+        {
+         padding-left: 450px;
+        }
+        .height
+        {
+         height: 30px;
+        }
+        .tags
+        {
+
+         margin-bottom: 15px;
+         margin-top: 15px;
+         font-size: 13px;
+         background-color: #4da6ff;
+
+
+        }
+
+
     </style>
     {% block style %}
     {% endblock %}
@@ -115,6 +145,19 @@
         </div>
         {# align search bar and middle of vw #}
         <div class="col float-right"></div>
+    </div>
+    <div class="padding" >
+        <br/>
+        <span class="alert alert-dark"> Selection Algorithms</span>
+        <span class="alert alert-dark"> String Algorithms</span>
+        <span class="alert alert-dark"> Edit Distance</span>
+        <span class="alert alert-dark"> Reservoir Sampling</span>
+        <span class="alert alert-dark"> first come first serve</span>
+
+    </div>
+    <div class="height "></div>
+    <div class="padding1">
+       <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'tags' %}';">View All Tags >></button>
     </div>
     <br>
     {% block body %} {% endblock %}
@@ -162,5 +205,5 @@
 
 
 </body>
-    
+
 </html>

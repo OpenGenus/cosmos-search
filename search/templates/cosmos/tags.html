@@ -1,0 +1,25 @@
+
+
+{% extends 'cosmos/header.html' %}
+{% load staticfiles %}
+
+{% block head %}
+    <title>"{{ title }}" | cosmos-search</title>
+
+{% endblock %}
+
+{% block body %}
+
+
+<div class="row">
+
+      {% for i in x %}
+        <div class="col-4" align="center">
+
+        <button type="button" class="btn btn-secondary tags"> {{i}} </button>
+        </div>
+      {% endfor %}
+
+</div>
+{% endblock %}
+
