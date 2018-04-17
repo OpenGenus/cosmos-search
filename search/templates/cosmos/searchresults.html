@@ -18,6 +18,7 @@
                 {% elif result_val and not result %}
                     Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
+
                 {% elif amount is 1 %}
                     Showing
                     <span style="color: #5D337F;">{{ amount }}</span> result for:
@@ -58,6 +59,7 @@
                             <span class="badge" id="notify"
                                   style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
                             </span>
+
                         </button>
                     </div>
                 </div>
@@ -81,12 +83,17 @@
                                 {{ i }} /
                             {% endfor %}
                         </h4>
+                        {% if entry.files|length == 1 %}
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="soln"
-                                    data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                Solutions
-                            </button>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ entry.files|length }} Solution
+                        </button>
+                        {% else %}
+                        <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ entry.files|length }} Solutions 
+                        </button>
+                        {% endif %}
                             <div class="dropdown-menu" aria-labelledby="soln">
                                 {% for file in entry.files %}
                                     <form method="GET" action="{% url 'display' %}" target="_blank">
