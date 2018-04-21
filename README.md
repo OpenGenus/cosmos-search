@@ -1,3 +1,5 @@
+<p align="center"><img src="static/logo/vertical.png" alt="cosmos-search" height="180px"></p>
+
 # Cosmos Search
 
 This is the real-time code search engine for all. We aim to revolutionize the way people interact and search for code. This is evident in our on-going work. Cosmos Search is privacy-focussed as we do not store any data.
