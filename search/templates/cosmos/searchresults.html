@@ -8,7 +8,7 @@
 {% block body %}
 <h6>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-12 col-md-7">
             <span id="res_info">
                 {% if amount > 1 %}
                 Showing
@@ -37,31 +37,16 @@
             </span>
         </div>
 
-        <div class="w3-bar w3-black">
-            <div class="col-md-2">
-                <div class="vid">
-                    <button class="btn float-right" hidden id="query_icon"
-                                                           style="margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
-                                                           onclick="openTab('query',this.button)">
-                        <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Code</a>
-                        <span class="badge"
-                              style="border-radius:30px; color: white;background-color: #00897b ; margin-top: -7px; position: absolute;">{{ amount }}
-                        </span>
-                    </button>
-                </div>
+        <div class="col-12 col-md-5">
+            <div class="vid">
+                <button type="submit" class="btn float-right" id="query_icon" hidden style="cursor:pointer !important ;color: blue; background-color: transparent;" onclick="openTab('query',this.button)">
+                    Code<sup style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ amount }}&nbsp;</sup>
+                </button>
             </div>
-            <div class="col-md-2">
-                <div class="vid">
-                    <button type="submit" hidden class="btn float-right" id="vid_icon"
-                                                                         style="background-color: white; margin-right:-22em;margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
-                                                                         onclick="openTab('video')">
-                        <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Video</a>
-                        <span class="badge" id="notify"
-                                            style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
-                        </span>
-
-                    </button>
-                </div>
+            <div class="vid">
+                <button type="submit" class="btn float-right" id="vid_icon" style="cursor:pointer !important ;color: blue; background-color: transparent;" onclick="openTab('video')">
+                    Video<sup style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ vid_amount }}&nbsp;</sup>
+                </button>
             </div>
         </div>
     </div>
