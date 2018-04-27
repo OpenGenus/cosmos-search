@@ -35,14 +35,15 @@
         }
     </style>
 
-    <div class="row Video">
+    <div class="row Video text-center">
         {% for video in videos %}
 
-            <div class=" col-md-3 col-xs-3 col-sm-3">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
 
                 <img src="{{ video.image }}" class="img-responsive image" data-toggle="modal"
+                     style="max-width: 100%;"
                      data-target="#{{ video.id }}"
-                     style="width: auto; height: 200px; border: solid">
+                     border: solid">
                 <p style=" margin: 0 !important; padding: 0 !important;">
                     <span style="color: #5D337F; font-size: 0.8em">{{ video.title }}</span>
                 </p>
@@ -93,10 +94,8 @@
         {% endfor %}
     </div>
     <hr>
-    <div>
-        <input type="button" id="more" onclick="loadAjax()"
-               style="background-color: #00897b; margin-right: 0px; font-size: 17px; color:  white; height: 38px; width: 80px; border-radius: 15px;"
-               value="More..">
+    <div class="text-center">
+        <input type="button" class="btn btn-primary" id="more" onclick="loadAjax()" value="More.." style="height: 2em; margin-bottom: 3em" />
     </div>
     <script>
         var keyword = '{{ query }}';
@@ -118,9 +117,9 @@
                     //do action
                     for (var i = 0; i < data['videos'].length; ++i) {
 
-                        nvideo = '<div class="col-md-3 col-xs-3 col-sm-3">' +
+                        nvideo = '<div class="col-lg-3 col-md-4 col-sm-6 col-12">' +
                             '<img src="' + data['videos'][i]['image'] + '" class="img-responsive image" data-toggle="modal" data-target="#' + data['videos'][i]['id'] + '"\n' +
-                            '             style="width: auto; height: 200px; border: solid">\n' +
+                            '             style="max-width: 100%; border: solid">\n' +
                             '        <p style=" margin: 0 !important; padding: 0 !important;">\n' +
                             '            <span style="color: #5D337F; font-size: 0.8em">' + data['videos'][i]['title'] + '</span>\n' +
                             '        </p>\n' +
