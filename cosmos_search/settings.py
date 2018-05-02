@@ -27,8 +27,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+
+ALLOWED_HOSTS =['127.0.0.1']
 # OpenGenus specific
 GITHUB_WEBHOOK_SECRET = config('GITHUB_WEBHOOK_SECRET', cast=lambda v: v.encode('UTF-8'))
 
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,6 +71,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'cosmos_search.urls'
+
+
 
 TEMPLATES = [
     {
