@@ -1,165 +1,176 @@
 {% extends 'cosmos/header.html' %}
 {% load staticfiles %}
-{% block head %}
-<title>"{{ title }}" | cosmos-search</title>
 
-{% endblock %}
+{% block head %}
+<title>"{{ query }}" | cosmos-search</title>
+{% endblock head %}
 
 {% block body %}
+<script>
+$("body").hide();
+</script>
+
 <h6>
-    <div class="row">
-        <div class="col-12 col-md-7">
-            <span id="res_info">
-                {% if amount > 1 %}
-                Showing
-                <span style="color: #5D337F;">{{ amount }}</span> results for:
-                <span style="color: #5D337F;">{{ query }}</span>
-
-                {% elif result_val and not result %}
-                Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
-
-
-                {% elif amount is 1 %}
-                Showing
-                <span style="color: #5D337F;">{{ amount }}</span> result for:
-                <span style="color: #5D337F;">{{ query }}</span>
-                {% endif %}
-            </span>
-            <span>
-                <a href="#" style="color: #1b1e21"><div data-network="twitter"
-                                                        class="st-custom-button fa fa-twitter-square"></div></a>
-                <a href="#" style="color: #1b1e21"><div data-network="facebook"
-                                                        class="st-custom-button fa fa-facebook-square"></div></a>
-                <a href="#" style="color: #1b1e21"><div data-network="linkedin"
-                                                        class="st-custom-button fa fa-linkedin-square"></div></a>
-                <a href="#" style="color: #1b1e21"><div data-network="googleplus"
-                                                        class="st-custom-button fa fa-google-plus-square"></div></a>
-            </span>
-        </div>
-
-        <div class="col-12 col-md-5">
-            <div class="vid">
-                <button type="submit" class="btn float-right" id="query_icon" hidden style="cursor:pointer !important ;color: blue; background-color: transparent;" onclick="openTab('query',this.button)">
-                    Code<sup style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ amount }}&nbsp;</sup>
-                </button>
-            </div>
-            <div class="vid">
-                <button type="submit" class="btn float-right" id="vid_icon" style="cursor:pointer !important ;color: blue; background-color: transparent;" onclick="openTab('video')">
-                    Video<sup style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ vid_amount }}&nbsp;</sup>
-                </button>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-12 col-lg-6">
+      <span id="info">
+        Showing
+        <b id="code_amount_info">{{ codes.code_amount }}</b>
+        <b id="video_amount_info">{{ videos.video_amount }}</b>
+        <span id="calculator_result_info">expression</span>
+        <b id="all_amount_info"></b>
+        result(s) for:
+        <b>{{ query }}</b>
+        <a href="#"><span data-network="twitter" class="st-custom-button fa fa-twitter-square"></span></a>
+        <a href="#"><span data-network="facebook" class="st-custom-button fa fa-facebook-square"></span></a>
+        <a href="#"><span data-network="linkedin" class="st-custom-button fa fa-linkedin-square"></span></a>
+        <a href="#"><span data-network="googleplus" class="st-custom-button fa fa-google-plus-square"></span></a>
+      </span>
     </div>
+    <div class="d-lg-none d-md-block" style="height: 2em">&nbsp;</div>
+    <div class="col-12 col-lg-6">
+      <div>
+        <a class="text-primary float-right tab_icons" id="video_icon" style="cursor:pointer !important ;" onclick="openTab('video')">
+          Video<sup>{{ videos.video_amount }}</sup>&nbsp;
+        </a>
+      </div>
+      <div>
+        <a class="text-primary float-right tab_icons" id="code_icon" style="cursor:pointer !important ;" onclick="openTab('code')">
+          Code<sup>{{ codes.code_amount }}</sup>&nbsp;
+        </a>
+      </div>
+      <div>
+        <a class="text-primary float-right tab_icons" id="calculator_icon" style="cursor:pointer !important ;" onclick="openTab('calculator')">
+          Calculator&nbsp;
+        </a>
+      </div>
+      <div>
+        <a class="text-primary float-right tab_icons border-bottom border-primary" id="all_icon" style="cursor:pointer !important ;" onclick="openTab('all')">
+            All<sup id="all_icon_sup"></sup>&nbsp;
+        </a>
+      </div>
+  </div>
 </h6>
-
 <hr>
 
-<div id="query" class="w3-container tabs" style="display:none;">
-    {% if result_val is not None or title == 'Calculator' %}
-    {% include 'cosmos/calculator.html' %}
-    {% endif %}
-
-    {% if result %}
-    {% for entry in result %}
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">
-                {% for i in entry.dirs %}
-                {{ i }} /
-                {% endfor %}
-            </h4>
-            {% if entry.files|length == 1 %}
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ entry.files|length }} Solution
-                </button>
-                {% else %}
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ entry.files|length }} Solutions
-                    </button>
-                    {% endif %}
-                    <div class="dropdown-menu" aria-labelledby="soln">
-                        {% for file in entry.files %}
-                        <form method="GET" action="{% url 'display' %}" target="_blank">
-                            <button type="submit" name="path" class="dropdown-item" value="{{ entry.path }}/{{ file }}">{{ file }}</button>
-                        </form>
-
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br> {% endfor %}
-        {% endif %}
-        {% if recommend %}
-
-        <h5>Recommended results</h5>
-        <hr> {% for j in recommend %}
-        <div class="card">
-            <div class="card-body">
-
-                <form method="get">
-                    <div>
-                        <h6 class="card-title">
-                            {% for k in j.recdirs %}
-                            {{ k }} /
-                            {% endfor %}
-                        </h6>
-                        <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <br>
-        {% endfor %}
-        {% endif %}
-
-    </div>
-
-    <div id="video" class="w3-container tabs" style="display:none;">
-        {% include 'cosmos/youtubeResults.html' %}
-    </div>
-
+<div id="calculator" class="container tabs">
+{% if expression_result is not None %}
+  {% include 'cosmos/calculator.html' %}
+{% endif %}
+</div>
+<div id="code" class="container tabs">
+{% if codes %}
+  {% include 'cosmos/codeResults.html' %}
+{% endif %}
+</div>
+<div id="video" class="container tabs">
+  {% include 'cosmos/youtubeResults.html' %}
+</div>
 
 <script>
 $(document).ready(function () {
-    if ('{{ active_tab }}' == 'query') {
-        $("#query").show();
-    } else if ('{{ active_tab }}' == 'video') {
-        $("#video").show();
-    }
-    if ({{ result|length }}) {
-        $("#vid_icon").removeAttr('hidden');
-        $("#query_icon").removeAttr('hidden');
-    } else if ('{{  result_val }}' != 'None' || '{{ title }}' == 'Calculator') {
-        $("#query").show();
-    } else if ({{ vid_amount }}) {
-        $("#video").show();
-        $("#res_info").html('Showing <span style="color: #5D337F;">{{ vid_amount }}</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
-
-    }
+  hide_all();
+  show_all();
+  show_general()
+  $("body").show()
+  focus()
 });
 
-function openTab(tabId) {
-    var i;
-    var x = document.getElementsByClassName("tabs");
-    for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-    }
-    var d = document.getElementById(tabId);
-    d.style.display = "block";
-    if (tabId == 'video') {
-        $("#res_info").html('Showing <span style="color: #5D337F;">' + vid_length + '</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
-    } else {
-        var l = {{ amount }};
-        if (l > 1) {
-            $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> results for: <span style="color: #5D337F;">{{ query }}</span>\n')
-        } else {
-            $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>\n')
+function show_calculator() {
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator").show();
+    $("#calculator_result_info").show();
+  }
+}
 
-        }
+function show_code() {
+  if ({{ codes.code_amount }}) {
+    $("#code").show();
+    $("#code_icon").show();
+    $("#code_amount_info").show();
+  }
+}
+
+function show_video() {
+  if ({{ videos.video_amount }}) {
+    $("#video").show();
+    $("#video_icon").show();
+    $("#video_amount_info").show();
+    if (!{{ videos.video_amount }} || token == 'None') {
+      $("#more").hide();
     }
+  }
+}
+
+function show_all() {
+  document.getElementById("all_icon_sup").innerHTML = {{ codes.code_amount }} + {{ videos.video_amount}}
+  document.getElementById("all_amount_info").innerHTML = {{ codes.code_amount }} + {{ videos.video_amount}}
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator").show();
+  }
+  if ({{ codes.code_amount }}) {
+    $("#code").show();
+  }
+  if ({{ videos.video_amount }}) {
+    $("#video").show();
+  }
+  $("#all_amount_info").show();
+}
+
+function hide_all() {
+  $("#all_amount_info").hide()
+
+  $("#video").hide();
+  $("#video_icon").hide();
+  $("#video_amount_info").hide();
+
+  $("#code").hide();
+  $("#code_icon").hide();
+  $("#code_amount_info").hide();
+
+  $("#calculator").hide();
+  $("#calculator_icon").hide();
+  $("#calculator_result_info").hide();
+}
+
+function show_general() {
+  if ({{ videos.video_amount }}) {
+    $("#video_icon").show();
+  }
+  if ({{ codes.code_amount }}) {
+    $("#code_icon").show();
+  }
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator_icon").show();
+  }
+}
+
+function openTab(tabId) {
+  hide_all();
+  var container_id = '#' + tabId
+  var icon_id = '#' + tabId + '_icon'
+  $(container_id).show();
+  $('.tab_icons').removeClass('border-bottom')
+  $('.tab_icons').removeClass('border-primary')
+  $(icon_id).addClass('border-bottom')
+  $(icon_id).addClass('border-primary')
+  switch (tabId) {
+    case 'code':
+      show_code();
+      break;
+    case 'video':
+      show_video();
+      break;
+    case 'calculator':
+      show_calculator();
+      break;
+    case 'all':
+      show_all();
+      break;
+    default:
+      break;
+  }
+  show_general();
 }
 </script>
-{% endblock %}
+{% endblock body %}

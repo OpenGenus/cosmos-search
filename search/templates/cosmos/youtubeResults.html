@@ -1,187 +1,148 @@
 {% load random_numbers %}
 
 {% block videos %}
-    <script>
+<h5>Youtube results</h5>
+<hr>
+<div id="videos" class="row">
+</div>
 
-        var tag = document.createElement('script');
+<div class="row">
+<button class="btn btn-primary mx-auto" style="cursor: pointer;" id="more" onclick="loadAjax()">
+  More..
+</button>
+</div>
 
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        var video = [];
+<script>
+var tag = document.createElement('script');
 
-        function Ready(id) {
-            $iframeid = "vid" + id;
-            if (video[id] == null) {
-                object = document.getElementById($iframeid);
-                video[id] = new YT.Player(object);
-            }
-        }
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var video = [];
 
-        function stop(id) {
-            video[id].stopVideo();
-        }
+$(document).ready(function () {
+  dataAdded = false;
+  append_video_html({{ videos.videos|safe }});
+  $("body").show();
+});
 
+function Ready(id) {
+  $iframeid = "vid" + id;
+  if (video[id] == null) {
+    object = document.getElementById($iframeid);
+    video[id] = new YT.Player(object);
+  }
+}
 
-    </script>
+function stop(id) {
+  video[id].stopVideo();
+}
 
-    <style>
-        .image:hover {
-            color: #afc2d3;
-        }
+String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
+  function () {
+    "use strict";
+    var str = this.toString();
+    if (arguments.length) {
+      var t = typeof arguments[0];
+      var key;
+      var args = ("string" === t || "number" === t) ?
+        Array.prototype.slice.call(arguments)
+        : arguments[0];
 
-        .modal-content {
-            background-color: #f5f5f7;
-        }
-    </style>
+      for (key in args) {
+        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+      }
+    }
 
-    <div class="row Video text-center">
-        {% for video in videos %}
+    return str;
+  };
 
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+var token = "{{ videos.nextpage }}";
+var video_amount = 0;
+String.prototype.format = function() {
+  var formatted = this;
+  for( var arg in arguments ) {
+    formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+  }
+  return formatted;
+};
 
-                <img src="{{ video.image }}" class="img-responsive image" data-toggle="modal"
-                     style="max-width: 100%;"
-                     data-target="#{{ video.id }}"
-                     border: solid">
-                <p style=" margin: 0 !important; padding: 0 !important;">
-                    <span style="color: #5D337F; font-size: 0.8em">{{ video.title }}</span>
+function append_video_html(video_data) {
+  var video_html=''
+  for (key in video_data) {
+    video_amount += 1
+    data = video_data[key]
+    video_html += `
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <img src="{0}" class="img-responsive image" data-toggle="modal"
+             style="max-width: 100%;" data-target="#{1}" border: solid">
+        <p style=" margin: 0 !important; padding: 0 !important;">
+          <span style="color: #5D337F; font-size: 0.8em">{2}</span>
+        </p>
+        <p style="font-size: 15px;font-family: initial;"><span
+          style="color: blue">Duration: </span> {3}
+        </p>
+        <div class="modal fade" id="{1}" role="dialog" data-backdrop="static" data-keyboard="false">
+          <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 style="font-weight: bold;font-family: -webkit-body;">{2}</h4>
+                <button type="button" class="close" data-dismiss="modal"><i
+                  class="fa fa-times-circle" onclick="stop({1})"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <iframe src="{4}?enablejsapi=1" id="vid{1}"
+                    class="youtube-iframe"
+                    width="100%" height="530px"
+                    style="padding: 10px;"
+                    allowfullscreen onload="Ready({1})">
+                </iframe>
+                <br>
+                <p>-{5}</p>
+                <p>
+                  <span class="text-primary">
+                    Published At:&nbsp;
+                  </span>{6}
+                  <span class="text-primary">
+                    Time:&nbsp;
+                  </span>{7}
                 </p>
-                <p style="font-size: 15px;font-family: initial;"><span
-                    style="color: blue">Duration: </span> {{ video.duration }}
-                </p>
-                <div class="modal fade" id="{{ video.id }}" role="dialog" data-backdrop="static" data-keyboard="false">
-                    <div class="modal-dialog modal-lg">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 style="font-weight: bold;font-family: -webkit-body;">{{ video.title }}</h4>
-
-                                <button type="button" class="close" data-dismiss="modal"><i
-                                    class="fa fa-times-circle" onclick="stop({{ video.id }})"></i>
-                                </button>
-
-                            </div>
-                            <div class="modal-body">
-                                <iframe src="{{ video.embed }}?enablejsapi=1" id="vid{{ video.id }}"
-                                        class="youtube-iframe"
-                                        width="100%" height="530px"
-                                        style="padding: 10px;"
-                                        allowfullscreen onload="Ready({{ video.id }})">
-                                </iframe>
-                                <br>
-                                <div class="content" style="flex-direction: column;">
-                                    <br>
-                                    <p style="font-family: arial;font-size: 15px;">
-
-                                        -{{ video.description }}
-
-                                    </p>
-                                    <p style="font-size: 15px;font-family: initial;"><span
-                                        style="color: blue"> Published At:</span> {{ video.date }} <span
-                                        style="font-size: 15px;margin-left:10px;font-family: initial;"><span
-                                        style="color: blue"> Time: </span>{{ video.time }}</span></p>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
+              </div>
             </div>
-        {% endfor %}
-    </div>
-    <hr>
-    <div class="text-center">
-        <input type="button" class="btn btn-primary" id="more" onclick="loadAjax()" value="More.." style="height: 2em; margin-bottom: 3em" />
-    </div>
-    <script>
-        var keyword = '{{ query }}';
-        var Token = '{{ next_page }}';
-        var vid_length = '{{ videos|length }}';
-        $(document).ready(function () {
-            if (!vid_length || Token == 'None') {
-                $("#more").hide();
-            }
-            dataAdded = false
-        });
+          </div>
+        </div>
+      </div>
+    `.formatUnicorn(data['image'],
+            data['id'],
+            data['title'],
+            data['duration'],
+            data['embed'],
+            data['description'],
+            data['date'],
+            data['time'])
+  }
+  $("#videos").append(video_html)
+}
 
-        function loadAjax() {
-            $("#more").attr("disabled", "disabled");
-            $.ajax({
-                url: '{%  url 'query' %}',
-                data: {'name': keyword + '&' + Token + '&' + vid_length},
-                success: function (data) {
-                    //do action
-                    for (var i = 0; i < data['videos'].length; ++i) {
-
-                        nvideo = '<div class="col-lg-3 col-md-4 col-sm-6 col-12">' +
-                            '<img src="' + data['videos'][i]['image'] + '" class="img-responsive image" data-toggle="modal" data-target="#' + data['videos'][i]['id'] + '"\n' +
-                            '             style="max-width: 100%; border: solid">\n' +
-                            '        <p style=" margin: 0 !important; padding: 0 !important;">\n' +
-                            '            <span style="color: #5D337F; font-size: 0.8em">' + data['videos'][i]['title'] + '</span>\n' +
-                            '        </p>\n' +
-                            '        <p style="font-size: 15px;font-family: initial;"><span\n' +
-                            '            style="color: blue">Duration: </span> ' + data['videos'][i]['duration'] + '\n' +
-                            '        </p>\n' +
-                            '        <div class="modal fade" id="' + data['videos'][i]['id'] + '" role="dialog" data-backdrop="static" data-keyboard="false">\n' +
-                            '            <div class="modal-dialog modal-lg">\n' +
-                            '\n' +
-                            '                <!-- Modal content-->\n' +
-                            '                <div class="modal-content">\n' +
-                            '                    <div class="modal-header">\n' +
-                            '                        <h4 style="font-weight: bold;font-family: -webkit-body;">' + data['videos'][i]['title'] + '</h4>\n' +
-                            '\n' +
-                            '                        <button type="button" class="close" data-dismiss="modal"><i\n' +
-                            '                            class="fa fa-times-circle" onclick="stop(' + data['videos'][i]['id'] + ')"></i>\n' +
-                            '                        </button>\n' +
-                            '\n' +
-                            '                    </div>\n' +
-                            '                    <div class="modal-body">\n' +
-                            '                        <iframe src="' + data['videos'][i]['embed'] + '?enablejsapi=1" id="vid' + data['videos'][i]['id'] + '" class="youtube-iframe"\n' +
-                            '                                width="100%" height="530px"\n' +
-                            '                                style="padding: 10px;"\n' +
-                            '                                allowfullscreen onload="Ready(' + data['videos'][i]['id'] + ')">\n' +
-                            '                        </iframe>\n' +
-                            '                        <br>\n' +
-                            '                        <div class="content" style="flex-direction: column;">\n' +
-                            '                            <br>\n' +
-                            '                            <p style="font-family: arial;font-size: 15px;">\n' +
-                            '\n' +
-                            '                                -' + data['videos'][i]['description'] + '\n' +
-                            '\n' +
-                            '                            </p>\n' +
-                            '                            <p style="font-size: 15px;font-family: initial;"><span\n' +
-                            '                                style="color: blue"> Published At:</span> ' + data['videos'][i]['date'] + ' <span\n' +
-                            '                                style="font-size: 15px;margin-left:10px;font-family: initial;"><span\n' +
-                            '                                style="color: blue"> Time: </span>' +
-                            '{{ none }}' + data["videos"][i]["time"] + ' </span></p>\n' +
-                            '                        </div>\n' +
-                            '\n' +
-                            '                    </div>\n' +
-                            '\n' +
-                            '                </div>\n' +
-                            '\n' +
-                            '            </div>\n' +
-                            '        </div>\n' +
-                            '    </div>' +
-                            '</div>';
-                        $(".Video").append(nvideo);
-                    }
-                    Token = data['next_page'];
-                    amnt = data['vid_amount'];
-                    vid_length = data['videos'][amnt - 1]['id'] + 1;
-                    $("#res_info").html('Showing <span style="color: #5D337F;">' + vid_length + '</span> video results for: <span style="color: #5D337F;">{{ query }}</span>\n')
-                    if (!vid_length || Token == 'None') {
-                        $("#more").hide();
-                    }
-                    $("#notify").html(''+vid_length+'\n')
-                }
-            });
-            $("#more").removeAttr("disabled", "disabled");
-        }
-
-    </script>
+function loadAjax() {
+  $("#more").attr("disabled", true);
+  $.ajax({
+    url: '{%  url 'query' %}',
+    data: {'type': 'video', 'query': '{{ query }}' + '&' + token + '&' + video_amount, 'max': video_amount},
+    success: function (data) {
+      append_video_html(JSON.parse(data['videos']));
+      token = data['nextpage'];
+      $("#res_info").html('Showing <span>' + video_amount + '</span> video results for: <span>{{ query }}</span>')
+      $("#video_amount").html(video_amount)
+      if (!video_amount || token == 'None') {
+        $("#more").hide();
+      }
+      dataAdded = false
+    }
+  });
+  $("#more").removeAttr("disabled");
+}
+</script>
 {% endblock %}

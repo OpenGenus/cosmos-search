@@ -6,7 +6,7 @@ import random
 from random import shuffle
 import re
 import requests
-from search.templatetags.calculator import getResult
+from search.templatetags.calculator import getResult as calculate
 from search.templatetags.youtube import youtube_search
 
 COSMOS_SEP = '_'
@@ -50,12 +50,12 @@ def searchSuggestion(request):
 
 
 def index(request):
-    algo_tag = get_random_tag()
+    query = get_random_tag()
     algo = searchSuggestion(request)
     if request.is_ajax():
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
-    return render(request, 'cosmos/index.html', {'algo_name': algo_tag})
+    return render(request, 'cosmos/index.html', {'query': query})
 
 
 # Handlers for error pages
@@ -75,204 +75,153 @@ def error500(request):
     return render(request, 'cosmos/error/HTTP500.html')
 
 
-# calculator
-def calculator(request):
-    global exprResult
-    exprResult = 'ds'
-    if request.method == 'POST':
-        q = request.POST.get('txt')
-        if q is not None:
-            getResult(q)
-            res = getResult(q)
-            if type(res) == int or type(res) == float:
-                exprResult = round(res, 3)
-            else:
-                exprResult = 'Error'
-        else:
-            return 'not expression'
-    else:
-        exprResult = None
-        q = None
-    return render(request, 'cosmos/searchresults.html',
-                  {'title': 'Calculator',
-                   'query': q,
-                   'result_val': exprResult,
-                   'active_tab': 'query',
-                   'vid_amount': 0,
-                   'amount': 0,
-                   })
-
-
 def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
-# Search query
-ans = []
-rec = []
+codes = None
+videos = None
+expression_result = None
 
 
 def query(request):
-    global ans, rec
-    title = ''
-    algo_name = ''
-    amount = 0
-    video_res = {}
-    exprResult = None
-    query = ''
-
     if request.is_ajax():
-        data = request.GET.get('name', None)
-        if data:
-            video_res = video_search(request, data)
-            res = {
-                'videos': video_res['videos'],
-                'next_page': video_res['next_page'],
-                'vid_amount': video_res['amount']
-            }
-            video = json.dumps(res)
-            mimetype = 'application/json'
-            return HttpResponse(video, mimetype)
-        else:
-            algo = searchSuggestion(request)
-            mimetype = 'application/json'
-            return HttpResponse(algo, mimetype)
-
-    if request.method == 'GET':
-        ans = []
-        rec = []
-        query = re.escape(request.GET['q']).replace('\ ', ' ')
-
-        if '\\' in query:
-            query = query.replace('\\', '')
-
-        query = query.lower()
-        res = getResult(query)
-        if type(res) == int or type(res) == float:
-            exprResult = round(res, 3)
-            title = "Calculator"
-            algo_name = ""
-        else:
-            exprResult = None
-
-        query = ' '.join(query.split())
-        q = query.replace(' ', COSMOS_SEP)
-        data = json.loads(open(settings.METADATA_JSON, 'r').readline())
-        for folder, file in data.items():
-            filtered_v = []
-            for f in file:
-                if not is_file_extension_ignored(f):
-                    filtered_v.append(f)
-            if q in folder and "test" not in folder.split("/"):
-                if filtered_v:
-                    path = folder
-                    folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
-                    amount += len(filtered_v)
-                    if len(folder_list) == 2:
-                        d = folder_list[-2] + '/'
-                    else:
-                        d = folder_list[-3] + '/'
-                    for i, j in data.items():
-                            if d in i:
-                                if q not in i:
-                                    only_contents_md = True
-                                    for f in j:
-                                        if not is_file_extension_ignored(f):
-                                            only_contents_md = False
-                                            break
-                                    if only_contents_md:
-                                        continue
-                                    p = i
-                                    p = p.split('/')
-                                    l = p[len(p) - 1]
-                                    rec.append({'recpath': i, 'recdirs': p, 'last': l})
-        active = 'query'
-
-        if not ans and exprResult is None:
-            video_res = video_search(request, query)
-            title = query
-
-        elif ans:
-            video_res = video_search(request, query)
-            algo_name = query
-            title = query
-        else:
-            video_res = {
-                'videos': None,
-                'next_page': None,
-                'amount': 0
-            }
-
-        if ans and exprResult:
-            amount += 1
-
-        shuffle(rec)
-
-    elif request.method == 'POST':
-        calculator(request)
-        active = 'query'
-
-    if not ans and not exprResult and not video_res:
-        return render(request, 'cosmos/notfound.html')
-
-    return render(request, 'cosmos/searchresults.html',
-                  {'amount': amount,
-                   'title': title,
-                   'result': ans,
-                   'recommend': rec[:5],
-                   'query': query,
-                   'result_val': exprResult,
-                   'algo_name': algo_name,
-                   'videos': video_res['videos'],
-                   'next_page': video_res['next_page'],
-                   'vid_amount': video_res['amount'],
-                   'active_tab': active
-                   })
-
-
-def video_search(request, term=None):
-    youtube_result = {}
-    query = ''
-
-    if request.is_ajax():
-        query = term
-        q = query.split('&')
-        if len(q[0].split(" ")) == 1:
-            searchKey = q[0] + '+' + 'algorithm'
-        else:
-            searchKey = q[0].replace(' ', '+')
-        youtube_query = {
-            'q': searchKey,
-            'max_results': 25,
-            'next_page': q[1],
-            'id': q[-1]
-        }
-        query = q[0]
-        youtube_result = youtube_search(youtube_query)
+        return query_ajax(request)
     elif request.method == 'GET':
-        query = term
-        if len(query.split(" ")) == 1:
-            searchKey = query + '+' + 'algorithm'
-        else:
-            searchKey = query.replace(' ', '+')
+        return query_get(request)
 
-        youtube_query = {
-            'q': searchKey,
-            'max_results': 25,
-            'next_page': '',
-            'id': 0
-        }
-        youtube_result = youtube_search(youtube_query)
 
-    res = {
-        'amount': len(youtube_result['videos_Results']),
-        'videos': youtube_result['videos_Results'],
-        'title': 'Videos',
-        'query': query,
-        'next_page': youtube_result['nextpage'],
+def query_ajax(request):
+    request_type = request.GET.get('type', '')
+    mimetype = 'application/json'
+    if request_type == 'video':
+        query = request.GET.get('query', None)
+        max_results = request.GET.get('max', 24)
+        video_search(request, query, max_results)
+        return HttpResponse(json.dumps(videos), mimetype)
+    elif request_type == 'calculator':
+        expression = request.GET.get('expression', None)
+        calculator(request, expression)
+        return HttpResponse(json.dumps(expression_result), mimetype)
+
+
+def query_get(request):
+    query = ' '.join(re.escape(request.GET['q'])
+                     .replace('\ ', ' ')
+                     .replace('\\', '')
+                     .lower()
+                     .split())
+    calculator(request, query)
+    code_search(request, query)
+    video_search(request, query)
+
+    if codes['code_amount'] or videos['video_amount'] or expression_result is not None:
+        return render(request, 'cosmos/searchResults.html',
+                      {'query': query,
+                       'expression_result': expression_result,
+                       'codes': codes,
+                       'videos': videos,
+                       'active_tab': (
+                           'calculator' if expression_result is not None else
+                           'code' if codes['code_amount'] else
+                           'video' if videos['video_amount'] else
+                           ''
+                       )})
+    else:
+        return render(request, 'cosmos/notfound.html', {'query': query})
+
+
+def code_search(request, query):
+    global codes
+
+    codes = {
+        'codes': [],
+        'code_amount': 0,
+        'recommendations': [],
     }
-    return res
+
+    query = query.replace(' ', COSMOS_SEP)
+    data = json.loads(open(settings.METADATA_JSON, 'r').readline())
+    for folder, file in data.items():
+        filtered_v = []
+        for f in file:
+            if not is_file_extension_ignored(f):
+                filtered_v.append(f)
+        if query in folder and "test" not in folder.split("/"):
+            if filtered_v:
+                path = folder
+                folder_list = folder.split('/')
+                codes['codes'].append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                codes['code_amount'] += len(filtered_v)
+                if len(folder_list) == 2:
+                    d = folder_list[-2] + '/'
+                else:
+                    d = folder_list[-3] + '/'
+                for i, j in data.items():
+                        if d in i:
+                            if query not in i:
+                                only_contents_md = True
+                                for f in j:
+                                    if not is_file_extension_ignored(f):
+                                        only_contents_md = False
+                                        break
+                                if only_contents_md:
+                                    continue
+                                p = i
+                                p = p.split('/')
+                                l = p[len(p) - 1]
+                                codes['recommendations'].append(
+                                    {'recpath': i, 'recdirs': p, 'last': l})
+    shuffle(codes['recommendations'])
+    codes['recommendations'] = codes['recommendations'][:5]
+
+
+def video_search(request, query='algorithm', max_results=24):
+    global videos
+
+    videos = {
+        'videos': '',
+        'video_amount': 0,
+        'nextpage': None,
+    }
+
+    youtube_result = {}
+    max_results = min(int(max_results), 50)
+    nextpage = ''
+    id_ = 0
+
+    if request.is_ajax():
+        q = query.split('&')
+        query = q[0]
+        nextpage = q[1]
+        id_ = q[2]
+    if len(query.split(" ")) == 1:
+        query = query + '+' + 'algorithm'
+
+    youtube_query = {
+        'q': query.replace(' ', '+'),
+        'max_results': max_results,
+        'nextpage': nextpage,
+        'id': id_
+    }
+    youtube_result = youtube_search(youtube_query)
+    videos = {
+        'videos': json.dumps(youtube_result['videos_Results']),
+        'video_amount': len(youtube_result['videos_Results']),
+        'nextpage': youtube_result['nextpage'],
+    }
+
+
+def calculator(request, expression):
+    global expression_result
+    res = calculate(expression)
+
+    if expression is not None and isinstance(res, (int, float)):
+        expression_result = round(res, 3)
+    elif 'calculator' in expression:
+        expression_result = 0
+    else:
+        expression_result = None
 
 
 # Search strategy
@@ -291,11 +240,8 @@ def subsq(a, b, m, n):
 
 def display(request):
     path = request.GET['path']
-    display = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + path
-    r = requests.get(display)
-    path = path.replace('_', ' ')
-    path = path.replace('.', ' in ')
-    l = path.split('/')
-    if 'src' in l:
-        l.remove('src')
-    return render(request, 'cosmos/data.html', {'code': r.text, 'path': l})
+    link = "https://www.github.com/OpenGenus/cosmos/blob/master/code/" + request.GET['link']
+    raw = "https://raw.githubusercontent.com/OpenGenus/cosmos/master/code/" + request.GET['link']
+    query = request.GET['query']
+    r = requests.get(raw)
+    return render(request, 'cosmos/code.html', {'code': r.text, 'link': link, 'query': query, 'path': path})
