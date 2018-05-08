@@ -11,6 +11,7 @@ from search.templatetags.youtube import youtube_search
 from wikiapi import WikiApi
 import bs4
 
+
 COSMOS_SEP = '_'
 
 
@@ -107,37 +108,34 @@ def is_file_extension_ignored(file_):
 
 
 def stackoverflow(query):
-    result = []
-    k = 0
-    query = query.replace(" ", "+")
-    query += "+site:stackoverflow.com"
-    data = requests.get('https://www.google.co.in/search?q=' + query)
-    soup = bs4.BeautifulSoup(data.text, 'html.parser')
-    for x in soup.find_all('a'):
-        k = k + 1
-        str1 = x.get('href')
-        if str1.startswith("/url?q=https://stackoverflow.com/"):
-            res = {"title": ''.join(x.findAll(text=True)),
-                   "url": str1.split("/url?q=")[1]
-                   }
-            result.append(res)
-            if len(result) > 4:
-                break
-    return result
+   result = []
+   k = 0
+   query = query.replace(" ", "+")
+   query += "+site:stackoverflow.com"
+   data = requests.get('https://www.google.co.in/search?q=' + query)
+   soup = bs4.BeautifulSoup(data.text, 'html.parser')
+   for x in soup.find_all('a'):
+       k = k + 1
+       str1 = x.get('href')
+       if str1.startswith("/url?q=https://stackoverflow.com/"):
+           res = {"title": ''.join(x.findAll(text=True)),
+                  "url": str1.split("/url?q=")[1]
+                  }
+           result.append(res)
+           if len(result) > 4:
+               break
+   return result
+
 
 
 def wiki(query):
-    wiki = WikiApi()
-    wiki_temp = wiki.find(query)
-    if(len(wiki_temp) != 0):
-        wiki_res1 = wiki.get_article(wiki_temp[0])
-        return wiki_res1
-    else:
-        wiki_te = wiki.find('Barack Obama')
-        wiki_res1 = wiki.get_article(wiki_te[0])
-        wiki_res1.heading = '404_NOT_FOUND'
-        wiki_res1.url = '#'
-        return wiki_res1
+    query1 = query.replace("_", " ")
+    url = 'https://en.wikipedia.org/wiki/' + query
+    final = {
+        "heading": (query1.upper()),
+        "url": url
+    }
+    return final
 
 
 def tutorialpoint(query):
@@ -158,6 +156,7 @@ def tutorialpoint(query):
                 }
                 break
     return final
+
 
 
 # Search query
