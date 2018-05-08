@@ -8,7 +8,6 @@ import re
 import requests
 from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
-from wikiapi import WikiApi
 import bs4
 
 
@@ -108,24 +107,23 @@ def is_file_extension_ignored(file_):
 
 
 def stackoverflow(query):
-   result = []
-   k = 0
-   query = query.replace(" ", "+")
-   query += "+site:stackoverflow.com"
-   data = requests.get('https://www.google.co.in/search?q=' + query)
-   soup = bs4.BeautifulSoup(data.text, 'html.parser')
-   for x in soup.find_all('a'):
-       k = k + 1
-       str1 = x.get('href')
-       if str1.startswith("/url?q=https://stackoverflow.com/"):
-           res = {"title": ''.join(x.findAll(text=True)),
-                  "url": str1.split("/url?q=")[1]
-                  }
-           result.append(res)
-           if len(result) > 4:
-               break
-   return result
-
+    result = []
+    k = 0
+    query = query.replace(" ", "+")
+    query += "+site:stackoverflow.com"
+    data = requests.get('https://www.google.co.in/search?q=' + query)
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    for x in soup.find_all('a'):
+        k = k + 1
+        str1 = x.get('href')
+        if str1.startswith("/url?q=https://stackoverflow.com/"):
+            res = {"title": ''.join(x.findAll(text=True)),
+                   "url": str1.split("/url?q=")[1]
+                   }
+            result.append(res)
+            if len(result) > 4:
+                break
+    return result
 
 
 def wiki(query):
@@ -158,8 +156,6 @@ def tutorialpoint(query):
     return final
 
 
-
-# Search query
 ans = []
 rec = []
 
