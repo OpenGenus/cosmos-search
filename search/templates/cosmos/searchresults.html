@@ -8,7 +8,7 @@
 {% block body %}
     <h6>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-12 col-md-7">
             <span id="res_info">
                 {% if amount > 1 %}
                     Showing
@@ -18,48 +18,40 @@
                 {% elif result_val and not result %}
                     Showing result for expression: <span style="color: #5D337F;">{{ query }} = {{ result_val }}</span>
 
+
                 {% elif amount is 1 %}
                     Showing
                     <span style="color: #5D337F;">{{ amount }}</span> result for:
                     <span style="color: #5D337F;">{{ query }}</span>
                 {% endif %}
-                </span>
+            </span>
                 <span>
-                        <a href="#" style="color: #1b1e21"><div data-network="twitter"
-                                                                class="st-custom-button fa fa-twitter-square"></div></a>
-                        <a href="#" style="color: #1b1e21"><div data-network="facebook"
-                                                                class="st-custom-button fa fa-facebook-square"></div></a>
-                        <a href="#" style="color: #1b1e21"><div data-network="linkedin"
-                                                                class="st-custom-button fa fa-linkedin-square"></div></a>
-                        <a href="#" style="color: #1b1e21"><div data-network="googleplus"
-                                                                class="st-custom-button fa fa-google-plus-square"></div></a>
-                    </span>
+                <a href="#" style="color: #1b1e21"><div data-network="twitter"
+                                                        class="st-custom-button fa fa-twitter-square"></div></a>
+                <a href="#" style="color: #1b1e21"><div data-network="facebook"
+                                                        class="st-custom-button fa fa-facebook-square"></div></a>
+                <a href="#" style="color: #1b1e21"><div data-network="linkedin"
+                                                        class="st-custom-button fa fa-linkedin-square"></div></a>
+                <a href="#" style="color: #1b1e21"><div data-network="googleplus"
+                                                        class="st-custom-button fa fa-google-plus-square"></div></a>
+            </span>
             </div>
 
-            <div class="w3-bar w3-black">
-                <div class="col-md-2">
-                    <div class="vid">
-                        <button class="btn float-right" hidden id="query_icon"
-                                style="margin-right: -17em;background-color: white; margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
-                                onclick="openTab('query',this.button)">
-                            <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Code</a>
-                            <span class="badge"
-                                  style="border-radius:30px; color: white;background-color: #00897b ; margin-top: -7px; position: absolute;">{{ amount }}
-                            </span>
-                        </button>
-                    </div>
+            <div class="col-12 col-md-5">
+                <div class="vid">
+                    <button type="submit" class="btn float-right" id="query_icon" hidden
+                            style="cursor:pointer !important ;color: blue; background-color: transparent;"
+                            onclick="openTab('query',this.button)">
+                        Code<sup style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ amount }}&nbsp;</sup>
+                    </button>
                 </div>
-                <div class="col-md-2">
-                    <div class="vid">
-                        <button type="submit" hidden class="btn float-right" id="vid_icon"
-                                style="background-color: white; margin-right:-22em;margin-top: -0.5em; border-radius: 70%;height: 40px;width: 70px"
-                                onclick="openTab('video')">
-                            <a style="cursor:pointer !important ;color: blue;  margin-top: 0; margin-left: -2px">Video</a>
-                            <span class="badge" id="notify"
-                                  style="border-radius:30px;color: white; background-color: #00897b ; margin-top: -7px; position: absolute;">{{ vid_amount }}
-                            </span>
-                        </button>
-                    </div>
+                <div class="vid">
+                    <button type="submit" class="btn float-right" id="vid_icon"
+                            style="cursor:pointer !important ;color: blue; background-color: transparent;"
+                            onclick="openTab('video')">
+                        Video<sup
+                        style="border-radius: 75%; background-color: blue; color: white;">&nbsp;{{ vid_amount }}&nbsp;</sup>
+                    </button>
                 </div>
             </div>
         </div>
@@ -68,18 +60,60 @@
     <hr>
 
     <div id="query" class="w3-container tabs" style="display:none;">
-        {% if result_val is not None or title == 'Calculator' %}
-            {% include 'cosmos/calculator.html' %}
-        {% endif %}
+    {% if result_val is not None or title == 'Calculator' %}
+        {% include 'cosmos/calculator.html' %}
+    {% endif %}
 
-        {% if result %}
-            {% for entry in result %}
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {% for i in entry.dirs %}
-                                {{ i }} /
-                            {% endfor %}
+    {% if result %}
+        {% for entry in result %}
+            <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    {% for i in entry.dirs %}
+                        {{ i }} /
+                    {% endfor %}
+                </h4>
+                {% if entry.files|length == 1 %}
+                    <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        {{ entry.files|length }} Solution
+                    </button>
+                {% else %}
+                    <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        {{ entry.files|length }} Solutions
+                    </button>
+                {% endif %}
+                <div class="dropdown-menu" aria-labelledby="soln">
+                    {% for file in entry.files %}
+                        <form method="GET" action="{% url 'display' %}" target="_blank">
+                            <button type="submit" name="path" class="dropdown-item"
+                                    value="{{ entry.path }}/{{ file }}">{{ file }}</button>
+                        </form>
+
+                    {% endfor %}
+                </div>
+                </div>
+                </div>
+            </div>
+            <br> {% endfor %}
+    {% endif %}
+{% if recommend %}
+
+    <h5>Recommended results</h5>
+    <hr> {% for j in recommend %}
+    <div class="card">
+        <div class="card-body">
+
+            <form method="get">
+                <div>
+                    <h6 class="card-title">
+                        {% for k in j.recdirs %}
+                            {{ k }} /
+                        {% endfor %}
+
                         </h4>
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="soln"
@@ -112,18 +146,20 @@
                             </div>
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="{{ forloop.counter }}">
-                                    <p id="wikip"><a href="{{ entry.wiki.url }}" target="blank"/>{{ entry.wiki.heading }}</p>
+                                    <p id="wikip"><a href="{{ entry.wiki.url }}"
+                                                     target="blank"/>{{ entry.wiki.heading }}</p>
                                 </div>
                                 <div class="tab-pane fade" id="a{{ forloop.counter }}"
                                      onclick="stack_event(a{{ forloop.counter }});">
-                                   <div id="stackp">
-                                    {% for stk_url in entry.stack %}
-                                     <p><a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a></p>
-                                    {% endfor %}
-                                  </div>
+                                    <div id="stackp">
+                                        {% for stk_url in entry.stack %}
+                                            <p><a href="{{ stk_url.url }}" target="blank">{{ stk_url.title }}</a></p>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                                 <div class="tab-pane fade" id="b{{ forloop.counter }}">
-                                   <p id="tutp"><a href={{ entry.tut.url }} target="blank">{{ entry.tut.title }}</a></p>
+                                    <p id="tutp"><a href={{ entry.tut.url }} target="blank">{{ entry.tut.title }}</a>
+                                    </p>
                                 </div>
                             </div>
                             <div class="dropdown-menu" aria-labelledby="soln">
@@ -132,34 +168,19 @@
                                        target="_blank" class="dropdown-item">{{ file }}</a> {% endfor %}
                             </div>
                         </div>
-                    </div>
+
+                    </h6>
+                    <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+
                 </div>
-                <br> {% endfor %}
-        {% endif %}
-        {% if recommend %}
-
-            <h5>Recommended results</h5>
-            <hr> {% for j in recommend %}
-            <div class="card">
-                <div class="card-body">
-
-                    <form method="get">
-                        <div>
-                            <h6 class="card-title">
-                                {% for k in j.recdirs %}
-                                    {{ k }} /
-                                {% endfor %}
-                            </h6>
-                            <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br>
-        {% endfor %}
-        {% endif %}
-
+            </form>
+        </div>
     </div>
+    <br>
+{% endfor %}
+{% endif %}
+
+</div>
 
     <div id="video" class="w3-container tabs" style="display:none;">
 
@@ -202,25 +223,23 @@
                 } else {
                     $("#res_info").html('Showing <span style="color: #5D337F;">{{ amount }}</span> result for: <span style="color: #5D337F;">{{ query }}</span>\n')
 
-                }
-            }
-        }
 
-        $(document).ready(function () {
-            $(".wiki").click(function () {
-                $("#wikip").toggle();
-            });
-        });
-        $(document).ready(function () {
-            $(".stack").click(function () {
-                $("#stackp").toggle();
-            });
-        });
-        $(document).ready(function () {
-            $(".tut").click(function () {
-                $("#tutp").toggle();
-            });
-        });
+                    $(document).ready(function () {
+                        $(".wiki").click(function () {
+                            $("#wikip").toggle();
+                        });
+                    });
+                    $(document).ready(function () {
+                        $(".stack").click(function () {
+                            $("#stackp").toggle();
+                        });
+                    });
+                    $(document).ready(function () {
+                        $(".tut").click(function () {
+                            $("#tutp").toggle();
+                        });
+                    })
     </script>
-
 {% endblock %}
+</div>
+</body>
