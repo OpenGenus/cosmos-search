@@ -73,6 +73,20 @@
   <button type="button" name="button" class="btn btn-light tool" onclick="getValue()"><i class="fa fa-clipboard"></i><span class="tooltiptext">Copied</span></button>
 </div>
 </div>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="soln"
+            data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+        Solutions [{{ result|length }}]
+    </button>
+    <div class="dropdown-menu" aria-labelledby="soln">
+        {% for i in result %} 
+          <form method="GET" action="{% url 'display' %}" target="_blank">
+            <button type="submit" name="path" class="dropdown-item" value="{{ apath }}/{{ i }}">{{ i }}</button>
+          </form>
+        {% endfor %}
+    </div>
+ 
 <div style="display: none;" id="select">{{code}}</div>
 <pre class="language">
       <code>
