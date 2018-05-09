@@ -125,6 +125,7 @@ def stackoverflow(query):
                 break
     return result
 
+
 def wiki(query):
     query1 = query.replace("_", " ")
     url = 'https://en.wikipedia.org/wiki/' + query
