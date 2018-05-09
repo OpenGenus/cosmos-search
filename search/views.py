@@ -8,13 +8,12 @@ import re
 import requests
 from search.templatetags.calculator import getResult
 from search.templatetags.youtube import youtube_search
+import bs4
+
 
 COSMOS_SEP = '_'
 
-# Create your views here
 
-
-# To prefill the searchbar
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
@@ -107,7 +106,56 @@ def is_file_extension_ignored(file_):
     return file_.split('.')[-1] in ['md', 'MD']
 
 
-# Search query
+def stackoverflow(query):
+    result = []
+    k = 0
+    query = query.replace(" ", "+")
+    query += "+site:stackoverflow.com"
+    data = requests.get('https://www.google.co.in/search?q=' + query)
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    for x in soup.find_all('a'):
+        k = k + 1
+        str1 = x.get('href')
+        if str1.startswith("/url?q=https://stackoverflow.com/"):
+            res = {"title": ''.join(x.findAll(text=True)),
+                   "url": str1.split("/url?q=")[1]
+                   }
+            result.append(res)
+            if len(result) > 4:
+                break
+    return result
+
+
+def wiki(query):
+    query1 = query.replace("_", " ")
+    url = 'https://en.wikipedia.org/wiki/' + query
+    final = {
+        "heading": (query1.upper()),
+        "url": url
+    }
+    return final
+
+
+def tutorialpoint(query):
+    query = query.replace(" ", "+")
+    query += "+site:tutorialspoint.com"
+    data = requests.get('https://www.google.co.in/search?q=' + query)
+    soup = bs4.BeautifulSoup(data.text, 'html.parser')
+    final = {}
+    for x in soup.find_all('a'):
+        str1 = x.get('href')
+        if str1.find(".htm&") != -1:
+            str1 = str1.split(".htm&")[0]
+            str1 = str1 + ".htm"
+            if str1.startswith("/url?q=https://www.tutorialspoint.com"):
+                final = {
+                    "title": ''.join(x.findAll(text=True)),
+                    "url": str1.split("/url?q=")[1]
+                }
+                break
+    return final
+
+
 ans = []
 rec = []
 
@@ -167,7 +215,15 @@ def query(request):
                 if filtered_v:
                     path = folder
                     folder_list = folder.split('/')
-                    ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
+                    wiki_res = wiki(folder_list[-1])
+                    tut_res = tutorialpoint(folder_list[-1])
+                    stk_res = stackoverflow(folder_list[-1])
+                    ans.append({'path': path, 'dirs': folder_list,
+                                'files': filtered_v,
+                                'wiki': wiki_res,
+                                'stack': stk_res,
+                                'tut': tut_res})
+                    # ans.append({'path': path, 'dirs': folder_list, 'files': filtered_v})
                     amount += len(filtered_v)
                     if len(folder_list) == 2:
                         d = folder_list[-2] + '/'
@@ -227,7 +283,10 @@ def query(request):
                    'videos': video_res['videos'],
                    'next_page': video_res['next_page'],
                    'vid_amount': video_res['amount'],
-                   'active_tab': active
+                   'active_tab': active,
+                   'res_stack': stk_res,
+                   'res_wiki': wiki_res,
+                   'res_tut': tut_res
                    })
 
 
