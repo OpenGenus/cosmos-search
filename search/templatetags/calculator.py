@@ -241,6 +241,6 @@ def getResult(expr):
     op_math = ['sin', 'cos', 'cosec', 'tan', 'sec', 'cot', 'exp', 'sqrt', 'log']
     tokens = isMathExpression(expr, op_math)
     if tokens:
-        return evaluate(tokens, op_precdn, op_math)
+        return round(evaluate(tokens, op_precdn, op_math), 3)
     else:
-        return False
+        return None

@@ -19,7 +19,7 @@ def fetchJson(url):
 def youtube_search(options):
     global videos_Results
     videos_Results = []
-    if not options['next_page']:
+    if not options['nextpage']:
         videos_Results = []
     content_details = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&"
     SEARCH = "https://www.googleapis.com/youtube/v3/search?"
@@ -29,7 +29,7 @@ def youtube_search(options):
     url = (SEARCH + 'q=' + options['q'] +
            '&part=id,snippet&maxResults=' +
            str(options['max_results']) + '&pageToken=' +
-           options['next_page'] + '&type=video&videoEmbeddable=true&key=' + DEVELOPER_KEY)
+           options['nextpage'] + '&type=video&videoEmbeddable=true&key=' + DEVELOPER_KEY)
 
     search_response = fetchJson(url)
     if not search_response:
@@ -37,13 +37,13 @@ def youtube_search(options):
             q=options['q'],
             part="id, snippet",
             maxResults=options['max_results'],
-            pageToken=options['next_page'],
+            pageToken=options['nextpage'],
             type='video',
             videoEmbeddable='true',
         ).execute()
         if search_response:
             cache.set(url, search_response)
-    next_page = search_response.get('nextPageToken')
+    nextpage = search_response.get('nextPageToken')
     for search_result in search_response.get("items", []):
         if search_result['id']['kind'] == 'youtube#video':
             q = {
@@ -98,4 +98,4 @@ def youtube_search(options):
             videos_Results.append(res)
             i += 1
 
-    return {'videos_Results': videos_Results, 'nextpage': next_page}
+    return {'videos_Results': videos_Results, 'nextpage': nextpage}
