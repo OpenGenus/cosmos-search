@@ -70,16 +70,28 @@ This project uses a number of open source projects:
 3. Setup a virtual environment
 
 	`$ virtualenv -m python3 env_name` **OR** `$ python3 -m venv env_name`
-
+	
+	(For Conda users)
+	
+	`$ conda create -n env_name python=3.6 anaconda`
+	
 
 4. Activate the virtual environment
 	```
 	$ source env_name/bin/activate
 	```
-
+	
 	The virtual environment can be deactivated with the `deactivate` command.
-
+	
+	(For Conda users)
+	
+	`$ source activate env_name`
+	
+	The virtual environment can be deactivated with the `source deactivate` command.
+	
 5.  Install local dependencies
+
+	Conda users need to install pip locally in their virtual environment using `$ conda install pip`
 
        ```
         pip install -r requirements.txt
