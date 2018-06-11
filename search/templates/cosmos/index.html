@@ -1,8 +1,20 @@
 {% extends 'cosmos/header.html' %}
 {% block body %}
 {% load random_numbers %}
-
+<!-- Style for Tags-->
+<style>
+    ul#menu li {
+        display:inline-grid;
+        }
+</style>
+<!-- Styling Ends-->
 <article>
+    <ul id="menu">
+        {% for tag in random %}
+        <li><a href="{% url 'query' %}?q={{tag}}">{{tag}}, </a></li>
+        {% endfor %}
+        <li><a href="{% url 'tags' %}">More...</a></li>
+    </ul>
     <h1 style="text-align: center">Welcome to <em>cosmos-search</em></h1>
     <hr>
 

@@ -14,7 +14,16 @@ COSMOS_SEP = '_'
 # Create your views here
 
 
+# Tags page for users
+def tags(request):
+    f = open(settings.TAGS_JSON, 'r')
+    jsonL = sorted(list(json.load(f)))
+    args = {"tags": jsonL}
+    return render(request, 'cosmos/tags.html', args)
+
 # To prefill the searchbar
+
+
 def get_random_tag():
     jsonFile = open(settings.TAGS_JSON, 'r')
     algo_list = json.load(jsonFile)
@@ -50,12 +59,15 @@ def searchSuggestion(request):
 
 
 def index(request):
+    randomTags = []
+    for i in range(4):
+        randomTags.append(get_random_tag())
     query = get_random_tag()
     algo = searchSuggestion(request)
     if request.is_ajax():
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
-    return render(request, 'cosmos/index.html', {'query': query})
+    return render(request, 'cosmos/index.html', {'query': query, 'random': randomTags})
 
 
 # Handlers for error pages
@@ -158,20 +170,20 @@ def code_search(request, query):
                 else:
                     d = folder_list[-3] + '/'
                 for i, j in data.items():
-                        if d in i:
-                            if query not in i:
-                                only_contents_md = True
-                                for f in j:
-                                    if not is_file_extension_ignored(f):
-                                        only_contents_md = False
-                                        break
-                                if only_contents_md:
-                                    continue
-                                p = i
-                                p = p.split('/')
-                                l = p[len(p) - 1]
-                                codes['recommendations'].append(
-                                    {'recpath': i, 'recdirs': p, 'last': l})
+                    if d in i:
+                        if query not in i:
+                            only_contents_md = True
+                            for f in j:
+                                if not is_file_extension_ignored(f):
+                                    only_contents_md = False
+                                    break
+                            if only_contents_md:
+                                continue
+                            p = i
+                            p = p.split('/')
+                            l = p[len(p) - 1]
+                            codes['recommendations'].append(
+                                {'recpath': i, 'recdirs': p, 'last': l})
     shuffle(codes['recommendations'])
     codes['recommendations'] = codes['recommendations'][:5]
 
