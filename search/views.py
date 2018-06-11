@@ -13,6 +13,13 @@ COSMOS_SEP = '_'
 
 # Create your views here
 
+# Tags page for users
+def tags(request):
+    f = open(settings.TAGS_JSON, 'r')
+    jsonL = sorted(list(json.load(f)))
+    args = {"tags": jsonL}
+    return render(request, 'cosmos/tags.html', args)
+
 
 # To prefill the searchbar
 def get_random_tag():
