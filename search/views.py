@@ -57,12 +57,15 @@ def searchSuggestion(request):
 
 
 def index(request):
+    randomTags = []
+    for i in range(4):
+        randomTags.append(get_random_tag())
     query = get_random_tag()
     algo = searchSuggestion(request)
     if request.is_ajax():
         mimetype = 'application/json'
         return HttpResponse(algo, mimetype)
-    return render(request, 'cosmos/index.html', {'query': query})
+    return render(request, 'cosmos/index.html', {'query': query, 'random': randomTags})
 
 
 # Handlers for error pages
