@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "ARandomSecretKey"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # OpenGenus specific
 GITHUB_WEBHOOK_SECRET = "b8049cbcf55b2ee998c9be302220064757421f85"
@@ -42,7 +42,7 @@ TAGS_JSON = 'tags.json'
 
 TIMESTAMPS_JSON = 'timestamps.json'
 
-DEVELOPER_KEY = "AIzaSyDpuyI61VaG3wRrKlmVbj-puRE6qAhgC28"
+DEVELOPER_KEY = config('DEVELOPER_KEY')
 
 # Application definition
 
