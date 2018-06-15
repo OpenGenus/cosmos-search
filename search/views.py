@@ -7,6 +7,7 @@ from random import shuffle
 import re
 from newsapi import NewsApiClient
 import requests
+from requests.exceptions import ConnectionError, ConnectTimeout
 from search.models import News
 from search.templatetags.calculator import getResult as calculate
 from search.templatetags.youtube import youtube_search
@@ -61,7 +62,9 @@ def news(request):
         else:
             args = {"queries": queries}
         return render(request, 'cosmos/news.html', args)
-    except:
+    except ConnectionError:
+        return render(request, 'cosmos/news.html', args)
+    except ConnectTimeout:
         return render(request, 'cosmos/news.html', args)
 
 
