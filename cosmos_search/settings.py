@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "ARandomSecretKey"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
@@ -30,7 +30,7 @@ DEBUG = config('DEBUG', cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # OpenGenus specific
-GITHUB_WEBHOOK_SECRET = "b8049cbcf55b2ee998c9be302220064757421f85"
+GITHUB_WEBHOOK_SECRET = config('GITHUB_WEBHOOK_SECRET', cast=lambda v: v.encode('UTF-8'))
 
 COSMOS_LINK = 'https://github.com/OpenGenus/cosmos.git'
 
