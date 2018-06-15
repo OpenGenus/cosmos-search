@@ -5,7 +5,9 @@ import json
 import random
 from random import shuffle
 import re
+from newsapi import NewsApiClient
 import requests
+from search.models import News
 from search.templatetags.calculator import getResult as calculate
 from search.templatetags.youtube import youtube_search
 
@@ -14,7 +16,58 @@ COSMOS_SEP = '_'
 # Create your views here
 
 
+def dicToQueries(headlines, queries):
+    count = 1
+    for item in headlines["articles"]:
+        for key, value in item.items():
+            if key == "title":
+                if value == None:
+                    queries.filter(id=count).update(title="None")
+                else:
+                    queries.filter(id=count).update(title=value)
+            if key == "description":
+                if value == None:
+                    queries.filter(id=count).update(description="None")
+                else:
+                    queries.filter(id=count).update(description=value)
+            if key == "author":
+                if value == None:
+                    queries.filter(id=count).update(author="None")
+                else:
+                    queries.filter(id=count).update(author=value)
+            if key == "url":
+                queries.filter(id=count).update(url=value)
+            if key == "urlToImage":
+                if value == None:
+                    queries.filter(id=count).update(urlToImage="None")
+                else:
+                    queries.filter(id=count).update(urlToImage=value)
+        count += 1
+    return queries
+
+
+# News Page
+
+
+def news(request):
+    queries = News.objects.all()
+    args = {"queries": queries}
+    try:
+        api = NewsApiClient(api_key='728bb1f02da34d37b4a5da9f67b87fbe')
+        headlines = api.get_top_headlines(sources='techcrunch')
+        if headlines["status"] == "ok":
+            modified_queries = dicToQueries(headlines, queries)
+            args = {"queries": modified_queries}
+        else:
+            args = {"queries": queries}
+        return render(request, 'cosmos/news.html', args)
+    except:
+        return render(request, 'cosmos/news.html', args)
+
+
 # Tags page for users
+
+
 def tags(request):
     f = open(settings.TAGS_JSON, 'r')
     jsonL = sorted(list(json.load(f)))
