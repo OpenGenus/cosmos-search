@@ -22,24 +22,24 @@ def dicToQueries(headlines, queries):
     for item in headlines["articles"]:
         for key, value in item.items():
             if key == "title":
-                if value == None:
+                if value is None:
                     queries.filter(id=count).update(title="None")
                 else:
                     queries.filter(id=count).update(title=value)
             if key == "description":
-                if value == None:
+                if value is None:
                     queries.filter(id=count).update(description="None")
                 else:
                     queries.filter(id=count).update(description=value)
             if key == "author":
-                if value == None:
+                if value is None:
                     queries.filter(id=count).update(author="None")
                 else:
                     queries.filter(id=count).update(author=value)
             if key == "url":
                 queries.filter(id=count).update(url=value)
             if key == "urlToImage":
-                if value == None:
+                if value is None:
                     queries.filter(id=count).update(urlToImage="None")
                 else:
                     queries.filter(id=count).update(urlToImage=value)
