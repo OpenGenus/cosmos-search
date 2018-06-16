@@ -7,6 +7,7 @@ from random import shuffle
 import re
 from newsapi import NewsApiClient
 import requests
+from requests.exceptions import ConnectionError, ConnectTimeout
 from search.models import News
 from search.templatetags.calculator import getResult as calculate
 from search.templatetags.youtube import youtube_search
@@ -50,18 +51,26 @@ def dicToQueries(headlines, queries):
 
 
 def news(request):
-    queries = News.objects.all()
-    args = {"queries": queries}
     try:
+        queries = News.objects.all()
         api = NewsApiClient(api_key='728bb1f02da34d37b4a5da9f67b87fbe')
         headlines = api.get_top_headlines(sources='techcrunch')
+        if len(queries) == 0:
+            for item in headlines["articles"]:
+                temp = News(author=item["author"], title=item["title"],
+                            description=item["description"], url=item["url"], urlToImage=item["urlToImage"])
+                temp.save()
+            queries = News.objects.all()
+        args = {"queries": queries}
         if headlines["status"] == "ok":
             modified_queries = dicToQueries(headlines, queries)
             args = {"queries": modified_queries}
         else:
             args = {"queries": queries}
         return render(request, 'cosmos/news.html', args)
-    except:
+    except ConnectTimeout:
+        return render(request, 'cosmos/news.html', args)
+    except ConnectionError:
         return render(request, 'cosmos/news.html', args)
 
 
