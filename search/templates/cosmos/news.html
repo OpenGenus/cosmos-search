@@ -11,5 +11,20 @@
             </div>
             <p></p>
         {% endfor %}
+        <div class="pagination">
+            <span class="step-links">
+            {% if queries.has_previous %}
+                <a href="?page={{ queries.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ queries.number }} of {{ queries.paginator.num_pages }}.
+            </span>
+
+            {% if queries.has_next %}
+                <a href="?page={{ queries.next_page_number }}">next</a>
+            {% endif %}
+            </span>
+        </div>
     {% endblock %}
 </html>

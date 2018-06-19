@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 import json
 import random
@@ -52,21 +53,32 @@ def dicToQueries(headlines, queries):
 
 def news(request):
     try:
-        queries = News.objects.all()
-        api = NewsApiClient(api_key='728bb1f02da34d37b4a5da9f67b87fbe')
-        headlines = api.get_top_headlines(sources='techcrunch')
-        if len(queries) == 0:
+        queries_list = News.objects.all()
+        api = NewsApiClient(api_key=settings.NEWS_API_KEY)
+        headlines = api.get_everything(
+            sources='techcrunch, the-verge', domains="techcrunch.com, theverge.com", language='en')
+        if len(queries_list) == 0:
             for item in headlines["articles"]:
                 temp = News(author=item["author"], title=item["title"],
                             description=item["description"], url=item["url"], urlToImage=item["urlToImage"])
                 temp.save()
-            queries = News.objects.all()
-        args = {"queries": queries}
+            queries_list = News.objects.all()
+        args = {"queries": queries_list}
         if headlines["status"] == "ok":
-            modified_queries = dicToQueries(headlines, queries)
-            args = {"queries": modified_queries}
+            modified_queries = dicToQueries(headlines, queries_list)
+            paginator = Paginator(modified_queries, 7)
         else:
-            args = {"queries": queries}
+            paginator = Paginator(queries_list, 7)
+        page = request.GET.get('page')
+        try:
+            queries = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            queries = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            queries = paginator.page(paginator.num_pages)
+        args = {"queries": queries}
         return render(request, 'cosmos/news.html', args)
     except ConnectionError:
         return render(request, 'cosmos/news.html', args)
