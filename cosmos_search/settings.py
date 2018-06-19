@@ -44,6 +44,8 @@ TIMESTAMPS_JSON = 'timestamps.json'
 
 DEVELOPER_KEY = config('DEVELOPER_KEY')
 
+NEWS_API_KEY = "27dda8d73c8340168550c70a32660564"
+
 # Application definition
 
 INSTALLED_APPS = [
