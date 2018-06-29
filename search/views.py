@@ -18,6 +18,21 @@ COSMOS_SEP = '_'
 # Create your views here
 
 
+def lists_template(request, foo):
+    f = open(settings.LISTS_MD + foo + '.md', 'r')
+    md = f.read()
+    title = foo.replace("-", " ").title()
+    args = {'md': md, 'title': title}
+    return render(request, 'cosmos/lists_template.html', args)
+
+
+def lists(request):
+    f = open(settings.LISTS_INFO, 'r')
+    lists = list(json.load(f))
+    args = {"lists": lists}
+    return render(request, 'cosmos/lists.html', args)
+
+
 def dicToQueries(headlines, queries):
     count = 1
     for item in headlines["articles"]:
