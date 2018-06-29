@@ -46,6 +46,10 @@ DEVELOPER_KEY = config('DEVELOPER_KEY')
 
 NEWS_API_KEY = "27dda8d73c8340168550c70a32660564"
 
+LISTS_MD = 'human_curated_lists/'
+
+LISTS_INFO = 'lists.json'
+
 # Application definition
 
 INSTALLED_APPS = [
