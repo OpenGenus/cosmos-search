@@ -217,7 +217,7 @@ def query_get(request):
     video_search(request, query)
 
     if codes['code_amount'] or videos['video_amount'] or expression_result is not None:
-        return render(request, 'cosmos/searchResults.html',
+        return render(request, 'cosmos/searchresults.html',
                       {'query': query,
                        'expression_result': expression_result,
                        'codes': codes,
