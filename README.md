@@ -45,6 +45,14 @@ You might, also, like to take a look at our [Ideas List](https://github.com/Open
 
 Feel free to discuss anything with us. 💭
 
+## Contributing to the Human-Curated Lists
+
+One can contribute to the lists by uploading their files to the repository `human_curated_lists` which supports only `.md` file(s) for now.
+
+After uploading the file(s) update the `lists.json` file with necessary details about the list such as _List Title_, _List Description_, _Author Name_, etc. 
+
+After this a Pull Request can be generated and the lists will be reviewed and merged.
+
 ### Technologies Used
 
 This project uses a number of open source projects:
