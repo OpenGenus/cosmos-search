@@ -35,6 +35,11 @@ $("body").hide();
         </a>
       </div>
       <div>
+        <a class="text-primary float-right tab_icons" id="lists_icon" style="cursor:pointer !important ;" onclick="openTab('lists')">
+          Lists<sup>{{ query_lists|length }}</sup>&nbsp;
+        </a>
+      </div>
+      <div>
         <a class="text-primary float-right tab_icons" id="code_icon" style="cursor:pointer !important ;" onclick="openTab('code')">
           Code<sup>{{ codes.code_amount }}</sup>&nbsp;
         </a>
@@ -52,7 +57,11 @@ $("body").hide();
   </div>
 </h6>
 <hr>
-
+<div id="lists" class="container tabs">
+{% if query_lists|length > 0 %}
+    {% include 'cosmos/listsResults.html' %}
+{% endif %}
+</div>
 <div id="calculator" class="container tabs">
 {% if expression_result is not None %}
   {% include 'cosmos/calculator.html' %}
@@ -91,6 +100,13 @@ function show_code() {
   }
 }
 
+function show_lists() {
+  if ({{ query_lists|length }}) {
+    $("#lists").show();
+    $("#lists_icon").show();
+  }
+}
+
 function show_video() {
   if ({{ videos.video_amount }}) {
     $("#video").show();
@@ -114,6 +130,9 @@ function show_all() {
   if ({{ videos.video_amount }}) {
     $("#video").show();
   }
+  if ({{ query_lists|length }}) {
+    $("#lists").show();
+  }
   $("#all_amount_info").show();
 }
 
@@ -128,6 +147,9 @@ function hide_all() {
   $("#code_icon").hide();
   $("#code_amount_info").hide();
 
+  $("#lists").hide();
+  $("#lists_icon").hide();
+
   $("#calculator").hide();
   $("#calculator_icon").hide();
   $("#calculator_result_info").hide();
@@ -140,6 +162,11 @@ function show_general() {
   if ({{ codes.code_amount }}) {
     $("#code_icon").show();
   }
+
+  if ({{ query_lists|length }}) {
+    $("#lists_icon").show();
+  }
+
   if ('{{ expression_result }}' != 'None') {
     $("#calculator_icon").show();
   }
@@ -163,6 +190,9 @@ function openTab(tabId) {
       break;
     case 'calculator':
       show_calculator();
+      break;
+    case 'lists':
+      show_lists();
       break;
     case 'all':
       show_all();
