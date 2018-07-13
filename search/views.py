@@ -212,6 +212,14 @@ def query_get(request):
                      .replace('\\', '')
                      .lower()
                      .split())
+
+    f = open(settings.LISTS_INFO, 'r')
+    curated_lists = list(json.load(f))
+    query_lists = []
+    for i in range(len(curated_lists)):
+        if query in curated_lists[i]['title'].lower():
+            query_lists.append(curated_lists[i])
+
     calculator(request, query)
     code_search(request, query)
     video_search(request, query)
@@ -219,6 +227,7 @@ def query_get(request):
     if codes['code_amount'] or videos['video_amount'] or expression_result is not None:
         return render(request, 'cosmos/searchresults.html',
                       {'query': query,
+                       'query_lists': query_lists,
                        'expression_result': expression_result,
                        'codes': codes,
                        'videos': videos,
