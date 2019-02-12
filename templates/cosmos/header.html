@@ -37,21 +37,7 @@
             {% block body %} {% endblock %}
         </main>
 
-        <footer class="absolute-footer text-white bg-dark">
-            <div class="text-center">
-                <p class="my-0">Built with ❤ @<a href="https://github.com/OpenGenus/" target="_blank">OpenGenus</a></p>
-                <p class="my-0">Maintained by and part of the <a href="http://www.opengenus.org/" target="_blank">OpenGenus Foundation</a></p>
-            </div>
-
-            <nav class="nav justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://github.com/OpenGenus/cosmos-search" target="_blank">GitHub</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://github.com/OpenGenus/cosmos" target="_blank">cosmos</a>
-                </li>
-            </nav>
-        </footer>
+        {% include 'cosmos/_footer.html' %}
 
         <script type="text/javascript"
                 src="//platform-api.sharethis.com/js/sharethis.js#property=5a8129cbe45fbb001342fed3&product=custom-share-buttons"></script>
