@@ -24,10 +24,10 @@
             {# align search bar and middle of vw #}
             <form class="form-inline justify-content-center col-12" id="formq" action="{% url 'query' %}" method="GET">
                 <div class="input-group">
-                    <button type="button" onclick="clear_search()" class="btn btn-secondary">
+                    <button type="button" onclick="clear_main_search()" class="btn btn-secondary">
                         <i class="fa fa-remove"></i>
                     </button>
-                    <input class="form-control text-center align-middle" id="search" type="search" size="128" placeholder="{{ query }}" value="{{ query }}" aria-label="Search" name="q">
+                    <input class="form-control text-center align-middle" id="main_search" type="search" size="128" placeholder="{{ query }}" value="{{ query }}" aria-label="Search" name="q">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-search"></i>
                     </button>
@@ -49,7 +49,7 @@
             {% endblock %}
             $(document).ready(function() {
               focus();
-              $("#search").autocomplete({
+              $("#main_search").autocomplete({
                         source: "/",
                         minLength: 1,
                         select: function (e, ui) {
@@ -58,7 +58,7 @@
                     });
             });
             function focus() {
-              $("#search").select();
+              $("#main_search").select();
 
             }
             $("#formq").submit(function () {
@@ -66,9 +66,9 @@
                     return false;
                 }
             });
-            function clear_search() {
-                document.getElementById('search').value=''
-                document.getElementById('search').focus()
+            function clear_main_search() {
+                document.getElementById('main_search').value=''
+                document.getElementById('main_search').focus()
             }
         </script>
     </body>
