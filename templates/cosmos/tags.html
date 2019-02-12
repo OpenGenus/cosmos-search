@@ -10,6 +10,9 @@ $(document).ready(function(){
     });
   });
 });
+function show_tags() {
+  $("li").show()
+}
 </script>
 <!--Code Ends-->
 {% endblock %}
@@ -23,6 +26,11 @@ A tag is a keyword or label that categorizes your search query with other, simil
 </h6><br>
 
 <div class="input-group justify-content-center">
+  <div class="input-group-prepend">
+    <button type="button" onclick="clear_search('tags_filter');show_tags();" class="btn btn-dark">
+      <i class="fa fa-remove"></i>
+    </button>
+  </div>
   <input id="tags_filter" type="text" class="text-center" placeholder="Filter tags...">
 </div><br>
 
