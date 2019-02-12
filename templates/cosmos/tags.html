@@ -1,5 +1,5 @@
 {% extends 'cosmos/header.html' %}
-{% block body %}
+{% block javascript %}
 <!--Code for the Search Filter-->
 <script>
 $(document).ready(function(){
@@ -12,6 +12,7 @@ $(document).ready(function(){
 });
 </script>
 <!--Code Ends-->
+{% endblock %}
 
 <!--Creating Columns for HTML List-->
 <style>
@@ -23,6 +24,7 @@ ul {
 </style>
 <!--Styling Ends-->
 
+{% block body %}
 <h1>Tags</h1>
 <hr>
 
