@@ -37,7 +37,7 @@ html {
 
 body {
     font-family: 'Roboto Mono', monospace;
-    margin-bottom: 5em;
+    margin-bottom: 10em;
     font-size: 16px;
     overflow-x: hidden;
 }
@@ -51,11 +51,11 @@ article {
     margin: 0 auto;
 }
 
-.footer {
+.absolute-footer {
     position: absolute;
     bottom: 0;
-    width: 100%;
-    padding-top: 2em;
+    left: 0;
+    right: 0;
 }
 
 #search {
@@ -126,10 +126,10 @@ article {
             {% block body %} {% endblock %}
         </main>
 
-        <footer class="footer">
-            <div class="text-muted bg-light text-center">
-                <div>Built with <3 @<a href="https://github.com/OpenGenus/">OpenGenus</a></div>
-                <div>Maintained by and part of the <a href="http://www.opengenus.org/">OpenGenus Foundation</a></div>
+        <footer class="absolute-footer text-white bg-dark">
+            <div class="text-center">
+                <p class="my-0">Built with ❤ @<a href="https://github.com/OpenGenus/" target="_blank">OpenGenus</a></p>
+                <p class="my-0">Maintained by and part of the <a href="http://www.opengenus.org/" target="_blank">OpenGenus Foundation</a></p>
             </div>
         </footer>
 
