@@ -109,6 +109,7 @@ article {
             </div>
         </nav>
 
+        <main>
             {# align search bar and middle of vw #}
             <form class="form-inline justify-content-center col-12" id="formq" action="{% url 'query' %}" method="GET">
                 <div class="input-group">
@@ -123,6 +124,7 @@ article {
             </form>
 
             {% block body %} {% endblock %}
+        </main>
 
         <footer class="footer">
             <div class="text-muted bg-light text-center">
