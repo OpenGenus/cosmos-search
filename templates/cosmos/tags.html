@@ -14,16 +14,6 @@ $(document).ready(function(){
 <!--Code Ends-->
 {% endblock %}
 
-<!--Creating Columns for HTML List-->
-<style>
-ul {
-    columns: 3;
-    -webkit-columns: 3;
-    -moz-columns: 3;
-}
-</style>
-<!--Styling Ends-->
-
 {% block body %}
 <h1>Tags</h1>
 <hr>
@@ -34,9 +24,11 @@ A tag is a keyword or label that categorizes your search query with other, simil
 
 <input id="myInput" type="text" placeholder="Search...">
 
-<ul id="myList">
+<div class="container mx-auto">
+  <ul id="myList" class="row p-0">
     {% for tag in tags %}
-    <li class="list-group-item"><a href="{% url 'query' %}?q={{tag}}"/>{{ tag }}</li>
+    <li class="list-group-item col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"><a href="{% url 'query' %}?q={{tag}}">{{ tag }}</a></li>
     {% endfor %}
-</ul>
+  </ul>
+</div>
 {% endblock %}
