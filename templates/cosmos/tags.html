@@ -1,5 +1,6 @@
 {% extends 'cosmos/header.html' %}
-{% block javascript %}
+{% block js %}
+
 <!--Code for the Search Filter-->
 <script>
 $(document).ready(function(){
@@ -14,9 +15,12 @@ function show_tags() {
   $("#tags li").show()
 }
 </script>
-{% endblock %}
 
-{% block body %}
+{% endblock js %}
+
+{% block main %}
+
+<main>
 <h1 class="text-center">Tags</h1>
 <hr>
 
@@ -40,4 +44,6 @@ A tag is a keyword or label that categorizes your search query with other, simil
     {% endfor %}
   </ul>
 </div>
-{% endblock %}
+</main>
+
+{% endblock main %}

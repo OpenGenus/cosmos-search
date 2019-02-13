@@ -1,13 +1,18 @@
 {% extends 'cosmos/header.html' %}
-{% block body %}
 {% load random_numbers %}
-<!-- Style for Tags-->
+
+{% block css %}
+
 <style>
     ul#menu li {
         display:inline-grid;
         }
 </style>
-<!-- Styling Ends-->
+
+{% endblock css %}
+
+{% block main %}
+<main>
 <article>
     <ul id="menu">
         {% for tag in random %}
@@ -30,5 +35,5 @@
         &mdash; <a href="http://opengenus.org">OpenGenus, The Open Group to help the needy</a>
     <p>
 </article>
-
-{% endblock %}
+</main>
+{% endblock main %}

@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html>
     {% extends 'cosmos/header.html' %}
-    {% block body %}
+    {% block main %}
+
+    <main>
         <h1>News</h1>
         <hr>
         {% for item in queries %}
@@ -26,5 +26,6 @@
             {% endif %}
             </span>
         </div>
-    {% endblock %}
-</html>
+    </main>
+
+    {% endblock main %}

@@ -1,10 +1,19 @@
 {% extends 'cosmos/header.html' %}
-{% block head %}
-  <title>"cosmos-search</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-{% endblock %}
 
-{% block body %}
+{% block extra_head %}
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% endblock extra_head %}
+
+{% block title %}
+
+  <title>"cosmos-search</title>
+
+{% endblock title %}
+
+{% block main %}
+<main>
 <div class="row">
   <h5 class="col-12" style="overflow-x: scroll !important;">
     {{ path }}
@@ -34,6 +43,11 @@
 </div>
 
 <div style="display: none;" id="code">{{ code }}</div>
+</main>
+
+{% endblock main %}
+
+{% block js %}
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
@@ -48,4 +62,5 @@ function copyToClipboard(id){
   tempElem.remove();
 }
 </script>
-{% endblock %}
+
+{% endblock js %}

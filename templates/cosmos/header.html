@@ -3,9 +3,7 @@
 <html lang="en">
 
     <head>
-        {% block head %}
-        <title>cosmos-search</title>
-        {% endblock %}
+        {% block title %} <title>cosmos-search</title> {% endblock %}
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,29 +11,28 @@
         {% include 'cosmos/bundles/js.html' %}
         {% include 'cosmos/bundles/css.html' %}
         {% include 'cosmos/_base_css.html' %}
-        {% block style %}
-        {% endblock %}
+
+        {% block css %} {% endblock %}
+        {% block extra_head %} {% endblock %}
     </head>
 
     <body>
         {% include 'cosmos/_nav.html' %}
 
-        <main>
-            {# align search bar and middle of vw #}
-            <form class="form-inline justify-content-center col-12" id="formq" action="{% url 'query' %}" method="GET">
-                <div class="input-group">
-                    <button type="button" onclick="clear_search('main_search')" class="btn btn-secondary">
-                        <i class="fa fa-remove"></i>
-                    </button>
-                    <input class="form-control text-center align-middle" id="main_search" type="search" size="128" placeholder="{{ query }}" value="{{ query }}" aria-label="Search" name="q">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-            </form>
+        {# align search bar and middle of vw #}
+        <form class="form-inline justify-content-center col-12" id="formq" action="{% url 'query' %}" method="GET">
+            <div class="input-group">
+                <button type="button" onclick="clear_search('main_search')" class="btn btn-secondary">
+                    <i class="fa fa-remove"></i>
+                </button>
+                <input class="form-control text-center align-middle" id="main_search" type="search" size="128" placeholder="{{ query }}" value="{{ query }}" aria-label="Search" name="q">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
 
-            {% block body %} {% endblock %}
-        </main>
+        {% block main %} {% endblock %}
 
         {% include 'cosmos/_footer.html' %}
 
@@ -45,8 +42,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 
         <script>
-            {% block javascript %}
-            {% endblock %}
             $(document).ready(function() {
               focus();
               $("#main_search").autocomplete({
@@ -71,5 +66,7 @@
                 document.getElementById(id).focus()
             }
         </script>
+        {% block js %}
+        {% endblock %}
     </body>
 </html>

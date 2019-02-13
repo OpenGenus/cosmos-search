@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html>
     {% extends 'cosmos/header.html' %}
-    {% block body %}
+    {% block main %}
+    <main>
         <h1>Human-Curated Lists</h1>
         <hr>
         {% for item in lists %}
@@ -12,5 +11,5 @@
             </div>
             <p></p>
         {% endfor %}
+    </main>
     {% endblock %}
-</html>
