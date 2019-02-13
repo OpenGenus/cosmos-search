@@ -2,47 +2,47 @@
 
 {% block extra_head %}
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 {% endblock extra_head %}
 
 {% block title %}
 
-  <title>"cosmos-search</title>
+<title>"cosmos-search</title>
 
 {% endblock title %}
 
 {% block main %}
 <main>
-<div class="row">
-  <h5 class="col-12" style="overflow-x: scroll !important;">
-    {{ path }}
-  </h5>
-</div>
-<div class="row float-right">
-  <div class="col">
-    <a name="button" class="btn btn-secondary text-light" onclick="copyToClipboard('code')">
-      <i class="fa fa-clipboard"></i>
-      <span> Copy</span>
-    </a>
-  </div>
-</div>
+    <div class="row">
+        <h5 class="col-12" style="overflow-x: scroll !important;">
+          {{ path }}
+        </h5>
+    </div>
+    <div class="row float-right">
+        <div class="col">
+            <a name="button" class="btn btn-secondary text-light" onclick="copyToClipboard('code')">
+                <i class="fa fa-clipboard"></i>
+                <span> Copy</span>
+            </a>
+        </div>
+    </div>
 
-<div class="row">
-  <div class="col-12 mx-auto">
-    <pre class="bg-light p-3">{{ code }}</pre>
-  </div>
-</div>
-<div class="row">
-  <a href="{{ link }}" target="_blank" class="col- btn btn-primary ml-auto">
-    Open on Github
-  </a>&nbsp;
-  <a href="https://discourse.opengenus.org" target="_blank" class="col- btn btn-primary mr-auto">
-    Ask any questions
-  </a>
-</div>
+    <div class="row">
+        <div class="col-12 mx-auto">
+            <pre class="bg-light p-3">{{ code }}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <a href="{{ link }}" target="_blank" class="col- btn btn-primary ml-auto">
+            Open on Github
+        </a>&nbsp;
+        <a href="https://discourse.opengenus.org" target="_blank" class="col- btn btn-primary mr-auto">
+            Ask any questions
+        </a>
+    </div>
 
-<div style="display: none;" id="code">{{ code }}</div>
+    <div style="display: none;" id="code">{{ code }}</div>
 </main>
 
 {% endblock main %}

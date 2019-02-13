@@ -1,231 +1,233 @@
 {% load staticfiles %}
 <style>
 #result:focus {
-  outline: none !important;
-  box-shadow: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 </style>
+
 <h5>Calculator</h5>
 <hr>
+
 <div class="row p-1 bg-light border-secondary border w-75 mx-auto">
-  <div class="col-12 p-1 mx-auto row">
-    <div class="col-1 p-0">
-      <input type="text" id="mr_span" class="bg-light border-0 p-0" value="M" disabled>
+    <div class="col-12 p-1 mx-auto row">
+        <div class="col-1 p-0">
+            <input type="text" id="mr_span" class="bg-light border-0 p-0" value="M" disabled>
+        </div>
+        <input type="text" id="seq" class="text-right bg-light border-0 col-11 p-0" disabled>
+        <input type="text" id="result" class="text-right bg-light border-1 mx-auto w-100 p-0" autocomplete="off" onfocus="focusOn(this.value)">
     </div>
-    <input type="text" id="seq" class="text-right bg-light border-0 col-11 p-0" disabled>
-    <input type="text" id="result" class="text-right bg-light border-1 mx-auto w-100 p-0" autocomplete="off" onfocus="focusOn(this.value)">
-  </div>
-  <div class="col-12 p-0 mx-auto">
-    <div class="row mx-auto">
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_pow" Onclick="displ(this)">
-        ^
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sqrt" Onclick="displ(this)">
-        √
-      </button>
+    <div class="col-12 p-0 mx-auto">
+        <div class="row mx-auto">
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_pow" Onclick="displ(this)">
+                ^
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sqrt" Onclick="displ(this)">
+                √
+            </button>
 
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_mod" Onclick="displ(this)">
-        %
-      </button>
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_cb" Onclick="displ(this)">
-        (
-      </button>
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_ob" Onclick="displ(this)">
-        )
-      </button>
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_ce" Onclick="displ(this)">
-        CE
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_ac" Onclick="cleartext()">
-        AC
-      </button>
-    </div>
-    <div class="row mx-auto">
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_exp" Onclick="displ(this)">
-        exp
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_log" Onclick="displ(this)">
-        log
-      </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_mod" Onclick="displ(this)">
+                %
+            </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_cb" Onclick="displ(this)">
+                (
+            </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_ob" Onclick="displ(this)">
+                )
+            </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_ce" Onclick="displ(this)">
+                CE
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_ac" Onclick="cleartext()">
+                AC
+            </button>
+        </div>
+        <div class="row mx-auto">
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_exp" Onclick="displ(this)">
+                exp
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_log" Onclick="displ(this)">
+                log
+            </button>
 
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_p" Onclick="displ(this)">
-        +
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn7" Onclick="displ(this)">
-        7
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn8" Onclick="displ(this)">
-        8
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn9" Onclick="displ(this)">
-        9
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_mc" Onclick="displ(this)">
-        MC
-      </button>
-    </div>
-    <div class="row mx-auto">
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sin" Onclick="displ(this)">
-        sin
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_cos" Onclick="displ(this)">
-        cos
-      </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_p" Onclick="displ(this)">
+                +
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn7" Onclick="displ(this)">
+                7
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn8" Onclick="displ(this)">
+                8
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn9" Onclick="displ(this)">
+                9
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_mc" Onclick="displ(this)">
+                MC
+            </button>
+        </div>
+        <div class="row mx-auto">
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sin" Onclick="displ(this)">
+                sin
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_cos" Onclick="displ(this)">
+                cos
+            </button>
 
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_m" Onclick="displ(this)">
-        -
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn4" Onclick="displ(this)">
-        4
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn5" Onclick="displ(this)">
-        5
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn6" Onclick="displ(this)">
-        6
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" id="btn_mr" name="btn_mr" Onclick="displ(this)">
-        MR
-      </button>
-    </div>
-    <div class="row mx-auto">
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_tan" Onclick="displ(this)">
-        tan
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_cot" Onclick="displ(this)">
-        cot
-      </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_m" Onclick="displ(this)">
+                -
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn4" Onclick="displ(this)">
+                4
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn5" Onclick="displ(this)">
+                5
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn6" Onclick="displ(this)">
+                6
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" id="btn_mr" name="btn_mr" Onclick="displ(this)">
+                MR
+            </button>
+        </div>
+        <div class="row mx-auto">
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_tan" Onclick="displ(this)">
+                tan
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_cot" Onclick="displ(this)">
+                cot
+            </button>
 
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_mul" Onclick="displ(this)">
-        *
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn1" Onclick="displ(this)">
-        1
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn2" Onclick="displ(this)">
-        2
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn3" Onclick="displ(this)">
-        3
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_mp" Onclick="displ(this)">
-        M+
-      </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_mul" Onclick="displ(this)">
+                *
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn1" Onclick="displ(this)">
+                1
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn2" Onclick="displ(this)">
+                2
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn3" Onclick="displ(this)">
+                3
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_mp" Onclick="displ(this)">
+                M+
+            </button>
+        </div>
+        <div class="row mx-auto">
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_csc" Onclick="displ(this)">
+                csc
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sec" Onclick="displ(this)">
+                sec
+            </button>
+            <button class="key-base btn col bg-secondary text-light m-1" name="btn_div" Onclick="displ(this)">
+                /
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn0" Onclick="displ(this)">
+                0
+            </button>
+            <button class="key-base btn col bg-light border-secondary m-1" name="btn_dec" Onclick="displ(this)">
+                .
+            </button>
+            <button class="key-base btn col bg-dark text-light border-white m-1" name="btn_eq" Onclick="calculatorAjax()">
+                =
+            </button>
+            <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_ms" Onclick="displ(this)">
+                M-
+            </button>
+        </div>
     </div>
-    <div class="row mx-auto">
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_csc" Onclick="displ(this)">
-        csc
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_sec" Onclick="displ(this)">
-        sec
-      </button>
-      <button class="key-base btn col bg-secondary text-light m-1" name="btn_div" Onclick="displ(this)">
-        /
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn0" Onclick="displ(this)">
-        0
-      </button>
-      <button class="key-base btn col bg-light border-secondary m-1" name="btn_dec" Onclick="displ(this)">
-        .
-      </button>
-      <button class="key-base btn col bg-dark text-light border-white m-1" name="btn_eq" Onclick="calculatorAjax()">
-        =
-      </button>
-      <button class="key-adv btn d-none d-md-block col bg-secondary text-light m-1" name="btn_ms" Onclick="displ(this)">
-        M-
-      </button>
-    </div>
-  </div>
 </div>
 <br>
 
 <script>
 var m = 0
 $(document).ready(function() {
-  window.onload = function () {
-    $('#result').focus();
-  }
-  if ('{{ query }}' != 'calculator') {
-    $('#seq').val('{{ query }}')
-    $('#result').val('{{ expression_result }}')
-  } else {
-    $('#result').val(0)
-  }
-  $("#mr_span").hide()
-  $("body").show();
+    window.onload = function () {
+        $('#result').focus();
+    }
+    if ('{{ query }}' != 'calculator') {
+        $('#seq').val('{{ query }}')
+        $('#result').val('{{ expression_result }}')
+    } else {
+        $('#result').val(0)
+    }
+    $("#mr_span").hide()
+    $("body").show();
 });
 
 function focusOn(x) {
-  var temp_value = x;
-  $("#result").val();
-  $("#result").val(temp_value);
+    var temp_value = x;
+    $("#result").val();
+    $("#result").val(temp_value);
 }
 
 function displ(x, end) {
-  value = x.innerHTML.replace(/\s/g, '');
-  name = x.name;
+    value = x.innerHTML.replace(/\s/g, '');
+    name = x.name;
 
-  // memory
-  switch (name) {
-  case 'btn_mc':
-    m = 0;
-    $("#mr_span").hide()
-    break;
+    // memory
+    switch (name) {
+    case 'btn_mc':
+        m = 0;
+        $("#mr_span").hide()
+        break;
 
-  case 'btn_mr':
-    $("#result").val(m);
-    break;
+    case 'btn_mr':
+        $("#result").val(m);
+        break;
 
-  case 'btn_mp':
-    m += parseFloat($("#result").val());
-    $("#mr_span").show()
-    break;
+    case 'btn_mp':
+        m += parseFloat($("#result").val());
+        $("#mr_span").show()
+        break;
 
-  case 'btn_ms':
-    m -= parseFloat($("#result").val());
-    $("#mr_span").show()
-    break;
+    case 'btn_ms':
+        m -= parseFloat($("#result").val());
+        $("#mr_span").show()
+        break;
 
-  case 'btn_ce':
-    if ($("#result").val().length)
-      $("#result").val($("#result").val().substring(0, $("#result").val().length - 1));
-    if (!$("#result").val().length)
-      $("#result").val(0)
-    break;
+    case 'btn_ce':
+        if ($("#result").val().length)
+            $("#result").val($("#result").val().substring(0, $("#result").val().length - 1));
+        if (!$("#result").val().length)
+            $("#result").val(0)
+        break;
 
-  default:
-    if ($("#result").val() == "0" && value != ".") {
-      $("#result").val(value);
+    default:
+        if ($("#result").val() == "0" && value != ".") {
+            $("#result").val(value);
+        }
+        else if (name == 'btn_dec' && $("#result").val().split('.').length > 1) {
+            break;
+        }
+        else if (end == "(") {
+            $("#result").val($("#result").val() + value + end);
+        }
+        else {
+            $("#result").val($("#result").val() + value);
+        }
+        break;
     }
-    else if (name == 'btn_dec' && $("#result").val().split('.').length > 1) {
-      break;
-    }
-    else if (end == "(") {
-      $("#result").val($("#result").val() + value + end);
-    }
-    else {
-      $("#result").val($("#result").val() + value);
-    }
-    break;
-  }
 }
 
 function cleartext() {
-  $("#result").val(0)
+    $("#result").val(0)
 }
 
 function calculatorAjax() {
-  $.ajax({
-    url: '{%  url 'query' %}',
-    data: {'type': 'calculator', 'expression': $("#result").val()},
-    success: function (data) {
-      if (data != null) {
-        $("#seq").val($("#result").val())
-        $("#result").val(data)
-      } else {
-        $("#result").val(0)
-      }
-    }
-  });
+    $.ajax({
+        url: '{%    url 'query' %}',
+        data: {'type': 'calculator', 'expression': $("#result").val()},
+        success: function (data) {
+            if (data != null) {
+                $("#seq").val($("#result").val())
+                $("#result").val(data)
+            } else {
+                $("#result").val(0)
+            }
+        }
+    });
 }
 </script>

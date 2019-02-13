@@ -1,24 +1,25 @@
-    {% extends 'cosmos/header.html' %}
-    {% block main %}
+{% extends 'cosmos/header.html' %}
+{% block main %}
 
-    <main>
-		<base target="_blank">
-        <h1>{{title}}</h1>
-        <hr>
-        <script src="https://cdn.rawgit.com/showdownjs/showdown/1.0.1/dist/showdown.min.js"></script>
-        <div id="sourceTA">
+<main>
+	<base target="_blank">
+    <h1>{{title}}</h1>
+    <hr>
+
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.0.1/dist/showdown.min.js"></script>
+    <div id="sourceTA">
         <input type="hidden" id="myVar" name="variable" value="{{ md }}">
         <script type="text/javascript">
             function run() {
-		        var text = document.getElementById("myVar").value,
+    	        var text = document.getElementById("myVar").value,
                 target = document.getElementById('sourceTA'),
                 converter = new showdown.Converter(),
                 html = converter.makeHtml(text);
                 target.innerHTML = html;
-		    };
+    	    };
             run();
         </script>
-        </div>
-    </main>
+    </div>
+</main>
 
-    {% endblock main %}
+{% endblock main %}
