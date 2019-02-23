@@ -27,7 +27,7 @@ def lists_template(request, foo):
 
 
 def lists(request):
-    f = open(settings.LISTS_INFO, 'r')
+    f = open(settings.LISTS_INFO, 'r', encoding='utf8')
     lists = list(json.load(f))
     args = {"lists": lists}
     return render(request, 'cosmos/lists.html', args)
@@ -213,7 +213,7 @@ def query_get(request):
                      .lower()
                      .split())
 
-    f = open(settings.LISTS_INFO, 'r')
+    f = open(settings.LISTS_INFO, 'r', encoding='utf8')
     curated_lists = list(json.load(f))
     query_lists = []
     for i in range(len(curated_lists)):
