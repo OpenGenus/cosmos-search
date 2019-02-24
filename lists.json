@@ -10,5 +10,11 @@
         "author": "Sindre Sorhus",
         "authorlink" : "http://awesome.re/",
         "filename": "awesome-lists"
+    },
+    {   "title": "Awesome Competitive Coding",
+        "description": "A Curated list of Topic wise Theory and Questions to Get You Started On Competitive Coding.",
+        "author": "Mihir Rana",
+        "authorlink" : "http://ranamihir.github.io",
+        "filename": "awesome-competitive-coding"
     }
 ]
