@@ -1,15 +1,15 @@
 {% load random_numbers %}
 
 {% block videos %}
+
 <h5>Youtube results</h5>
 <hr>
-<div id="videos" class="row">
-</div>
+<div id="videos" class="row"></div>
 
 <div class="row">
-<button class="btn btn-primary mx-auto" style="cursor: pointer;" id="more" onclick="loadAjax()">
-  More..
-</button>
+    <button class="btn btn-primary mx-auto" id="more" onclick="loadAjax()">
+        More..
+    </button>
 </div>
 
 <script>

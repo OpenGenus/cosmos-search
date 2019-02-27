@@ -1,0 +1,52 @@
+<h5>Source code results</h5>
+<hr>
+
+{% for entry in codes.codes %}
+    <div class="card col-12">
+        <div class="card-body">
+            <h4 class="card-title">
+                {% for i in entry.dirs %}
+                    {{ i }} /
+                {% endfor %}
+            </h4>
+            {% if entry.files|length %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="soln" data-toggle="dropdown"    aria-haspopup="true" aria-expanded="false">
+                        {{ entry.files|length }} Solution(s)
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="soln">
+                        {% for file in entry.files %}
+                            <form method="GET" action="{% url 'display' %}" target="_blank">
+                                <button type="submit" class="dropdown-item" value="{{ entry.path }}/{{ file }}">    {{ file }}</button>
+                                <input type="hidden" name="path" value="{% for i in entry.dirs %}{{ i }} / {% endfor %}{{ file }}" />
+                                <input type="hidden" name="link" value="{{ entry.path }}/{{ file }}" />
+                                <input type="hidden" name="query" value="{{ query }}" />
+                            </form>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+{% endfor %}
+
+{% if codes.recommendations %}
+    <h5>Recommended results</h5>
+    <hr>
+    {% for j in codes.recommendations %}
+        <div class="card">
+            <div class="card-body">
+                <div>
+                    <h6 class="card-title">
+                        {% for k in j.recdirs %}
+                            {{ k }} /
+                        {% endfor %}
+                    </h6>
+                    <a class="btn-link" href="/query/?q={{ j.last }}">solution</a>
+                </div>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+{% endif %}

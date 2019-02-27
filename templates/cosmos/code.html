@@ -1,0 +1,66 @@
+{% extends 'cosmos/header.html' %}
+
+{% block extra_head %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% endblock extra_head %}
+
+{% block title %}
+
+<title>"cosmos-search</title>
+
+{% endblock title %}
+
+{% block main %}
+<main>
+    <div class="row">
+        <h5 class="col-12" style="overflow-x: scroll !important;">
+          {{ path }}
+        </h5>
+    </div>
+    <div class="row float-right">
+        <div class="col">
+            <a name="button" class="btn btn-secondary text-light" onclick="copyToClipboard('code')">
+                <i class="fa fa-clipboard"></i>
+                <span> Copy</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mx-auto">
+            <pre class="bg-light p-3">{{ code }}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <a href="{{ link }}" target="_blank" class="col- btn btn-primary ml-auto">
+            Open on Github
+        </a>&nbsp;
+        <a href="https://discourse.opengenus.org" target="_blank" class="col- btn btn-primary mr-auto">
+            Ask any questions
+        </a>
+    </div>
+
+    <div style="display: none;" id="code">{{ code }}</div>
+</main>
+
+{% endblock main %}
+
+{% block js %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.initLineNumbersOnLoad();</script>
+<script>
+function copyToClipboard(id){
+  var e = document.createElement("textarea");
+  e.innerHTML = document.getElementById(id).innerHTML;
+  var tempElem = $(e).appendTo('body').select();
+  document.execCommand('copy');
+  tempElem.remove();
+}
+</script>
+
+{% endblock js %}

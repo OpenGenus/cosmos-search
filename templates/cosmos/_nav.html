@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">cosmos-search</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbarNav" aria-controls="mainNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="mainNavbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'query' %}?q=calculator">calculator</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tags' %}">tags</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'news' %}">news</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'lists' %}">lists</a>
+            </li>
+        </ul>
+    </div>
+</nav>

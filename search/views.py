@@ -19,7 +19,7 @@ COSMOS_SEP = '_'
 
 
 def lists_template(request, foo):
-    f = open(settings.LISTS_MD + foo + '.md', 'r')
+    f = open(settings.LISTS_MD + foo + '.md', 'r', encoding='utf8')
     md = f.read()
     title = foo.replace("-", " ").title()
     args = {'md': md, 'title': title}

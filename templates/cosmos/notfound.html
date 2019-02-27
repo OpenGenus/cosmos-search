@@ -1,12 +1,17 @@
 {% extends 'cosmos/header.html' %}
-{% block head %}
-    <title>Not Found | cosmos-search</title>
-{% endblock %}
-{% block body %}
-<article style="padding-top: 150px">
+{% block title %}
+
+<title>Not Found | cosmos-search</title>
+
+{% endblock title %}
+
+{% block main %}
+
+<main class="text-center mt-5">
     <h1> Sorry! </h1>
     <h2>It seems like there are no results for <b>"{{ query }}"</b> !</h2>
     <h6>Try searching something else or request the algorithm you searched for <a href="https://github.com/OpenGenus/cosmos/issues/new">here</a>.</h6><br>
     <h6>&mdash; <a href="http://opengenus.org">OpenGenus, The Open Group to help the needy</a></h6>
-</article>
-{% endblock %}
+</main>
+
+{% endblock main %}

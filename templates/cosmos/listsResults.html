@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <h5>Human-Curated Lists Results</h5>
+    <hr>
+
+    {% for item in query_lists %}
+        <div class="content" style="border: 2px solid #e5e5e5; border-radius: 10px; background-color: #ffffff; padding: 10px;">
+            <div class="title">
+                <a target="_blank" href="{% url 'lists' %}{{item.filename}}">{{item.title}}</a>
+            </div>
+            <p>{{item.description}}</p>
+            <p style="text-align:right;">
+                -
+                <a href="{{item.authorlink}}" target="_blank">{{item.author}}</a>
+            </p>
+        </div>
+        <p></p>
+    {% endfor %}
+    <hr>
+</html>

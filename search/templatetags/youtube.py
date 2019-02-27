@@ -1,7 +1,7 @@
 import requests
 from apiclient.discovery import build
 import json
-from cosmos_search.settings import DEVELOPER_KEY
+from cosmos_search.settings import YOUTUBE_DATA_API_KEY
 from django.core.cache import cache
 
 YOUTUBE_API_SERVICE_NAME = "youtube"
@@ -24,12 +24,12 @@ def youtube_search(options):
     content_details = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&"
     SEARCH = "https://www.googleapis.com/youtube/v3/search?"
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-                    developerKey=DEVELOPER_KEY)
+                    developerKey=YOUTUBE_DATA_API_KEY)
     i = int(options['id'])
     url = (SEARCH + 'q=' + options['q'] +
            '&part=id,snippet&maxResults=' +
            str(options['max_results']) + '&pageToken=' +
-           options['nextpage'] + '&type=video&videoEmbeddable=true&key=' + DEVELOPER_KEY)
+           options['nextpage'] + '&type=video&videoEmbeddable=true&key=' + YOUTUBE_DATA_API_KEY)
 
     search_response = fetchJson(url)
     if not search_response:
@@ -48,7 +48,7 @@ def youtube_search(options):
         if search_result['id']['kind'] == 'youtube#video':
             q = {
                 'id': search_result['id']['videoId'],
-                'key': DEVELOPER_KEY
+                'key': YOUTUBE_DATA_API_KEY
             }
             d = fetchJson(content_details + '&id=' + q['id'] + '&key=' + q['key'])
             if d:

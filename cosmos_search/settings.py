@@ -42,7 +42,7 @@ TAGS_JSON = 'tags.json'
 
 TIMESTAMPS_JSON = 'timestamps.json'
 
-DEVELOPER_KEY = config('DEVELOPER_KEY')
+YOUTUBE_DATA_API_KEY = config('YOUTUBE_DATA_API_KEY')
 
 NEWS_API_KEY = "27dda8d73c8340168550c70a32660564"
 
@@ -78,7 +78,7 @@ ROOT_URLCONF = 'cosmos_search.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,52 @@
+{% extends 'cosmos/header.html' %}
+{% block js %}
+
+<!--Code for the Search Filter-->
+<script>
+$(document).ready(function(){
+  $("#tags_filter").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#tags li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+function show_tags() {
+  $("#tags li").show()
+}
+</script>
+
+{% endblock js %}
+
+{% block main %}
+
+<main>
+    <h1 class="text-center">Tags</h1>
+    <hr>
+
+    <h6 class="text-center">
+        A tag is a keyword or label that categorizes your search query with other, similar queries. Users can use these tags in exploring new topics and continue browsing without prior knowledge.
+    </h6>
+    <br>
+
+    <div class="input-group justify-content-center">
+        <div class="input-group-prepend">
+            <button type="button" onclick="clear_search('tags_filter');show_tags();" class="btn btn-dark">
+                <i class="fa fa-remove"></i>
+            </button>
+        </div>
+        <input id="tags_filter" type="text" class="text-center" placeholder="Filter tags...">
+    </div>
+    <br>
+
+    <div class="container mx-auto">
+        <ul id="tags" class="row p-0">
+            {% for tag in tags %}
+            <li class="list-group-item col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"><a href="{% url 'query' %}?q={{tag}}">{{ tag }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</main>
+
+{% endblock main %}

@@ -1,0 +1,218 @@
+{% extends 'cosmos/header.html' %}
+{% load staticfiles %}
+
+{% block title %}
+
+<title>"{{ query }}" | cosmos-search</title>
+
+{% endblock title %}
+
+{% block js %}
+
+<script>
+$("body").hide();
+</script>
+
+<script>
+$(document).ready(function () {
+  hide_all();
+  show_all();
+  show_general()
+  $("body").show()
+  focus()
+});
+
+function show_calculator() {
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator").show();
+    $("#calculator_result_info").show();
+  }
+}
+
+function show_code() {
+  if ({{ codes.code_amount }}) {
+    $("#code").show();
+    $("#code_icon").show();
+    $("#code_amount_info").show();
+  }
+}
+
+function show_lists() {
+  if ({{ query_lists|length }}) {
+    $("#lists").show();
+    $("#lists_icon").show();
+  }
+}
+
+function show_video() {
+  if ({{ videos.video_amount }}) {
+    $("#video").show();
+    $("#video_icon").show();
+    $("#video_amount_info").show();
+    if (!{{ videos.video_amount }} || token == 'None') {
+      $("#more").hide();
+    }
+  }
+}
+
+function show_all() {
+  document.getElementById("all_icon_sup").innerHTML = {{ codes.code_amount }} + {{ videos.video_amount}}
+  document.getElementById("all_amount_info").innerHTML = {{ codes.code_amount }} + {{ videos.video_amount}}
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator").show();
+  }
+  if ({{ codes.code_amount }}) {
+    $("#code").show();
+  }
+  if ({{ videos.video_amount }}) {
+    $("#video").show();
+  }
+  if ({{ query_lists|length }}) {
+    $("#lists").show();
+  }
+  $("#all_amount_info").show();
+}
+
+function hide_all() {
+  $("#all_amount_info").hide()
+
+  $("#video").hide();
+  $("#video_icon").hide();
+  $("#video_amount_info").hide();
+
+  $("#code").hide();
+  $("#code_icon").hide();
+  $("#code_amount_info").hide();
+
+  $("#lists").hide();
+  $("#lists_icon").hide();
+
+  $("#calculator").hide();
+  $("#calculator_icon").hide();
+  $("#calculator_result_info").hide();
+}
+
+function show_general() {
+  if ({{ videos.video_amount }}) {
+    $("#video_icon").show();
+  }
+  if ({{ codes.code_amount }}) {
+    $("#code_icon").show();
+  }
+
+  if ({{ query_lists|length }}) {
+    $("#lists_icon").show();
+  }
+
+  if ('{{ expression_result }}' != 'None') {
+    $("#calculator_icon").show();
+  }
+}
+
+function openTab(tabId) {
+  hide_all();
+  var container_id = '#' + tabId
+  var icon_id = '#' + tabId + '_icon'
+  $(container_id).show();
+  $('.tab_icons').removeClass('border-bottom')
+  $('.tab_icons').removeClass('border-primary')
+  $(icon_id).addClass('border-bottom')
+  $(icon_id).addClass('border-primary')
+  switch (tabId) {
+    case 'code':
+      show_code();
+      break;
+    case 'video':
+      show_video();
+      break;
+    case 'calculator':
+      show_calculator();
+      break;
+    case 'lists':
+      show_lists();
+      break;
+    case 'all':
+      show_all();
+      break;
+    default:
+      break;
+  }
+  show_general();
+}
+</script>
+{% endblock js %}
+
+{% block main %}
+<main>
+    <h6>
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <span id="info">
+                    Showing
+                    <b id="code_amount_info">{{ codes.code_amount }}</b>
+                    <b id="video_amount_info">{{ videos.video_amount }}</b>
+                    <span id="calculator_result_info">expression</span>
+                    <b id="all_amount_info"></b>
+                    result(s) for:
+                    <b>{{ query }}</b>
+                    <a href="#"><span data-network="twitter" class="st-custom-button fa fa-twitter-square"></span></a>
+                    <a href="#"><span data-network="facebook" class="st-custom-button fa fa-facebook-square"></span></a>
+                    <a href="#"><span data-network="linkedin" class="st-custom-button fa fa-linkedin-square"></span></a>
+                    <a href="#"><span data-network="googleplus" class="st-custom-button fa fa-google-plus-square"></span></a>
+                </span>
+            </div>
+            <div class="d-lg-none d-md-block" style="height: 2em">&nbsp;</div>
+            <div class="col-12 col-lg-6">
+                <div>
+                    <a class="text-primary float-right tab_icons" id="video_icon" style="cursor:pointer !important ;" onclick="openTab('video')">
+                        Video<sup>{{ videos.video_amount }}</sup>&nbsp;
+                    </a>
+                </div>
+                <div>
+                    <a class="text-primary float-right tab_icons" id="lists_icon" style="cursor:pointer !important ;" onclick="openTab('lists')">
+                        Lists<sup>{{ query_lists|length }}</sup>&nbsp;
+                    </a>
+                </div>
+                <div>
+                    <a class="text-primary float-right tab_icons" id="code_icon" style="cursor:pointer !important ;" onclick="openTab('code')">
+                        Code<sup>{{ codes.code_amount }}</sup>&nbsp;
+                    </a>
+                </div>
+                <div>
+                    <a class="text-primary float-right tab_icons" id="calculator_icon" style="cursor:pointer !important ;" onclick="openTab('calculator')">
+                        Calculator&nbsp;
+                    </a>
+                </div>
+                <div>
+                    <a class="text-primary float-right tab_icons border-bottom border-primary" id="all_icon" style="cursor:pointer !important ;" onclick="openTab('all')">
+                        All<sup id="all_icon_sup"></sup>&nbsp;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </h6>
+    <hr>
+
+    <div id="lists" class="container tabs">
+    {% if query_lists|length > 0 %}
+        {% include 'cosmos/listsResults.html' %}
+    {% endif %}
+    </div>
+
+    <div id="calculator" class="container tabs">
+    {% if expression_result is not None %}
+        {% include 'cosmos/calculator.html' %}
+    {% endif %}
+    </div>
+
+    <div id="code" class="container tabs">
+    {% if codes %}
+        {% include 'cosmos/codeResults.html' %}
+    {% endif %}
+    </div>
+
+    <div id="video" class="container tabs">
+        {% include 'cosmos/youtubeResults.html' %}
+    </div>
+</main>
+{% endblock main %}

@@ -1,19 +1,27 @@
 {% extends 'cosmos/header.html' %}
-{% block body %}
 {% load random_numbers %}
-<!-- Style for Tags-->
-<style>
-    ul#menu li {
-        display:inline-grid;
-        }
-</style>
-<!-- Styling Ends-->
-<article>
-    <ul id="menu">
+
+{% block main %}
+<main class="p-2 text-center">
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link text-danger">
+                hot tags:
+            </a>
+        </li>
         {% for tag in random %}
-        <li><a href="{% url 'query' %}?q={{tag}}">{{tag}}, </a></li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'query' %}?q={{tag}}">
+                {{tag}}
+            </a>
+        </li>
         {% endfor %}
-        <li><a href="{% url 'tags' %}">More...</a></li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'tags' %}">
+                more...
+            </a>
+        </li>
     </ul>
     <h1 style="text-align: center">Welcome to <em>cosmos-search</em></h1>
     <hr>
@@ -29,6 +37,5 @@
         To search for an algorithm, just enter your search keywords in the box above.<br><br>
         &mdash; <a href="http://opengenus.org">OpenGenus, The Open Group to help the needy</a>
     <p>
-</article>
-
-{% endblock %}
+</main>
+{% endblock main %}
