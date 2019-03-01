@@ -4,16 +4,16 @@ A Curated list of Topic wise Theory and Questions to Get You Started On Competit
 
 Topics
 ---
- - [Binary and Ternary Search](#binary-and-ternary-search)
- - [Dynamic Programming](#dynamic-programming)
- - [Game Theory](#game-theory)
- - [Graphs](#graphs)
- - [Greedy](#greedy)
- - [Maths](#maths)
- - [Miscellaneous](#miscellaneous)
- - [Prefix and Suffix Trees](#prefix-and-suffix-trees)
- - [Segment Trees](#segment-trees)
- - [Trees](#trees)
+ - Binary and Ternary Search
+ - Dynamic Programming
+ - Game Theory
+ - Graphs
+ - Greedy
+ - Maths
+ - Miscellaneous
+ - Prefix and Suffix Trees
+ - Segment Trees
+ - Trees
 
 Binary and Ternary Search
 ---
