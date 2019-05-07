@@ -17,11 +17,5 @@
         "authorlink" : "http://ranamihir.github.io",
         "filename": "awesome-competitive-coding"
     }
-    {
-    "title": "Encryption and Decryption",
-     "description":"A topic related to encryption and decryption",
-     "author": "DRISHTI SINGH",
-     "authorlink" : "https://github.com/dristisingh",
-    "filename": "File1"
-    }
+    
 ]
