@@ -2,7 +2,7 @@
 
 # Cosmos Search
 
-This is the real-time code search engine for all. We aim to revolutionize the way people interact and search for code. This is evident in our on-going work. Cosmos Search is privacy-focussed as we do not store any data.
+This is the real-time code search engine for all. We aim to revolutionize the way people interact and search for code. This is evident in our on-going work. Cosmos Search is privacy-focused as we do not store any data.
 
 Some of our **core beliefs** that drive the development of this search engine:
 
@@ -69,7 +69,7 @@ This project uses a number of open source projects:
 	$ git clone https://github.com/OpenGenus/cosmos-search.git
  	```
 
-2. Go inside main Django app
+2. Go inside the main Django app
 
 	```
 	$ cd cosmos-search
@@ -116,7 +116,7 @@ This project uses a number of open source projects:
 	$ python manage.py collectstatic
 	```
 
-10. Migrating files using
+10. Migrate files using
 
 	```
     $ python manage.py migrate
